@@ -1,0 +1,167 @@
+//better way of doing this is to store this in a database and fetch it from there
+//this is just a temporary solution
+
+export const MARKERS = [
+  {
+    name: "Brick's",
+    latitude: 29.6511298,
+    longitude: -82.3260369,
+    id: 'nSBukoMMovar4beXeJAe',
+  },
+  {
+    name: "Ball's",
+    latitude: 29.6522305,
+    longitude: -82.3453015,
+    id: 'vwXr5A1VE9DHIbyXmygv',
+  },
+  {
+    name: 'The Lab',
+    latitude: 29.6520528,
+    longitude: -82.325229,
+    id: 'EDmHQt4E70v0kBplcs9U',
+  },
+  {
+    name: 'Grog',
+    latitude: 29.6521477,
+    longitude: -82.3451035,
+    id: 'EDmHQt4E70v0kBplcs9U',
+  },
+  {
+    name: 'Arcade Bar',
+    latitude: 29.652161,
+    longitude: -82.324722,
+    id: 'tNS8MBkxY7DqqRnbiSC7',
+  },
+  {
+    name: 'JJs Tavern',
+    latitude: 29.6526466,
+    longitude: -82.3450824,
+    id: 'VzxQ7U7nO1ld9Z4w5qgS',
+  },
+  {
+    name: 'The Social',
+    latitude: 29.6523133,
+    longitude: -82.3456167,
+    id: 'Dqh6TqisenZ1vOuBB8x8',
+  },
+  {
+    name: 'DTF',
+    latitude: 29.6505732,
+    longitude: -82.3250994,
+    id: 'P5AqUprZA9NgCy9JAbkz',
+  },
+  {
+    name: 'White Buffalo',
+    latitude: 29.6505732,
+    longitude: -82.3248894,
+    id: '3kbWcYvxMW3wPyXBjvYu',
+  },
+  {
+    name: 'Palomino Pool Hall',
+    latitude: 29.649529,
+    longitude: -82.3245046,
+    id: 'ucykh8fFSCqamulyNgZm',
+  },
+  {
+    name: 'Main Street',
+    latitude: 29.650721682640377,
+    longitude: -82.32517483501326,
+    id: 'ZUXmJRR0BK60n6Efaiz5',
+  },
+  {
+    name: "Cry Baby's",
+    latitude: 29.651818409052794,
+    longitude: -82.32519025771559,
+    id: 'tevsJOryiV8Jbo0FU8v2',
+  },
+  {
+    name: 'University Club',
+    latitude: 29.65209579385515,
+    longitude: -82.32436681955619,
+    id: 'Qcyl0Prhj2HgQdkcC3Gy',
+  },
+  {
+    name: 'The Dime',
+    latitude: 29.65209637659552,
+    longitude: -82.32477518587466,
+    id: 'LeDGN8Agiooojrdrwa4F',
+  },
+  {
+    name: "Baby J's",
+    latitude: 29.65183530857153,
+    longitude: -82.32532705037588,
+    id: 'rwa4TrVlEvzyPsNPBamy',
+  },
+  {
+    name: "Simon's",
+    latitude: 29.651558505787115,
+    longitude: -82.32516008287139,
+    id: '6c5fx7Ek4IY61j87OJBZ',
+  },
+  {
+    name: 'Gold Room',
+    latitude: 29.651622024807402,
+    longitude: -82.32575821547577,
+    id: 'HBf6fXyhm6PlP0A6trTE',
+  },
+  {
+    name: 'The Bull',
+    latitude: 29.651208859079606,
+    longitude: -82.32571462957985,
+    id: 'viAj9F4N4UO0TkF5rk3X',
+  },
+  {
+    name: "Loosey's",
+    latitude: 29.65118846298437,
+    longitude: -82.32645424871446,
+    id: '',
+  },
+  {
+    name: 'Spurred Up',
+    latitude: 29.651325990860677,
+    longitude: -82.32629599838285,
+    id: '253f79zDzvpDo1KQlusJ',
+  },
+  {
+    name: 'The Endup',
+    latitude: 29.651869690334202,
+    longitude: -82.32702757089245,
+    id: 'vhyQ2c0BP0k9EZhfbOoI',
+  },
+  {
+    name: 'Silver Q',
+    latitude: 29.65176887597176,
+    longitude: -82.32714424698345,
+    id: 'fh1Lf7UBYSKsz0XE2tNB',
+  },
+  {
+    name: 'High Dive',
+    latitude: 29.65044666089407,
+    longitude: -82.3269805587718,
+    id: 'vKNcpDBleyqCO2Y1UV5n',
+  },
+  {
+    name: 'Kava Hookah Lounge',
+    latitude: 29.651954003320682,
+    longitude: -82.33552409810672,
+    id: 'CvSOFy8XtnYdXpU0r4pb',
+  },
+  {
+    name: 'Salty Dog Saloon',
+    latitude: 29.652228173241088,
+    longitude: -82.34526950245167,
+    id: 'xfdzS9KSxYeRZaThszyF',
+  },
+  {
+    name: "That 80's Bar",
+    latitude: 29.651974834899935,
+    longitude: -82.32616018148165,
+    id: 'gkqeov3vBFb8esUeEsih',
+  },
+  {
+    name: "Cam's Corner",
+    latitude: 29.6402085,
+    longitude: -82.3434627,
+    id: 'hrcBBbjTmyODvfPbvNWh',
+  },
+];

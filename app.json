@@ -1,0 +1,50 @@
+{
+  "expo": {
+    "name": "clubbr",
+    "slug": "clubbr",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/NightVibes.png",
+    "scheme": "myapp",
+    "userInterfaceStyle": "dark",
+    "splash": {
+      "image": "./assets/images/NightVibes.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#000000"
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0,
+      "url": "https://u.expo.dev/42af3eb2-2ea3-4e60-8406-a2ea7fc572e1"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "clubbr uses your location to display your location to your friends when you're in a party and to notify you when bars/clubs near you are having deals."
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/NightVibes.png",
+        "backgroundColor": "#000000"
+      }
+    },
+    "web": {
+      "favicon": "./assets/images/favicon.png"
+    },
+    "plugins": [
+      "expo-font",
+      "expo-asset"
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "42af3eb2-2ea3-4e60-8406-a2ea7fc572e1"
+      }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    }
+  }
+}

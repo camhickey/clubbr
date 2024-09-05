@@ -48,7 +48,6 @@ const loggedInLinking: LinkingOptions<RootStackParamList> = {
       UserModal: 'userModal',
       SafetyModal: 'safetyModal',
       AddFriendModal: 'addFriendModal',
-      PartySettingsModal: 'partySettingsModal',
     },
   },
 };

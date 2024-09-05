@@ -23,7 +23,6 @@ export interface RootStackParamList {
   UserModal: { user: string; title: string };
   InviteModal: undefined;
   AddFriendModal: undefined;
-  PartySettingsModal: undefined;
   SafetyModal: {
     reportedLatitude: number;
     reportedLongitude: number;

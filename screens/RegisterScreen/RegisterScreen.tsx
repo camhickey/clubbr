@@ -93,7 +93,7 @@ export function RegisterScreen() {
           render={({ field: { onBlur, value } }) => (
             <TextInput
               placeholder="Username"
-              placeholderTextColor={Colors.SUBTEXT}
+              placeholderTextColor={Colors.INACTIVE}
               style={[styles.input, errors.username && { borderBottomColor: Colors.ERROR }]}
               onFocus={() => setFocusedField('username')}
               onBlur={onBlur}
@@ -116,7 +116,7 @@ export function RegisterScreen() {
           render={({ field: { onBlur, value } }) => (
             <TextInput
               placeholder="Display name"
-              placeholderTextColor={Colors.SUBTEXT}
+              placeholderTextColor={Colors.INACTIVE}
               style={[styles.input, errors.displayName && { borderBottomColor: Colors.ERROR }]}
               onFocus={() => setFocusedField('displayName')}
               onBlur={onBlur}
@@ -141,7 +141,7 @@ export function RegisterScreen() {
           render={({ field: { onBlur, value } }) => (
             <TextInput
               placeholder="Email"
-              placeholderTextColor={Colors.SUBTEXT}
+              placeholderTextColor={Colors.INACTIVE}
               style={[styles.input, errors.email && { borderBottomColor: Colors.ERROR }]}
               onFocus={() => setFocusedField('email')}
               onBlur={onBlur}
@@ -162,7 +162,7 @@ export function RegisterScreen() {
           render={({ field: { onBlur, value } }) => (
             <TextInput
               placeholder="Password"
-              placeholderTextColor={Colors.SUBTEXT}
+              placeholderTextColor={Colors.INACTIVE}
               style={[styles.input, errors.password && { borderBottomColor: Colors.ERROR }]}
               onFocus={() => setFocusedField('password')}
               onBlur={onBlur}
@@ -181,7 +181,7 @@ export function RegisterScreen() {
           render={({ field: { onBlur, value } }) => (
             <TextInput
               placeholder="Confirm password"
-              placeholderTextColor={Colors.SUBTEXT}
+              placeholderTextColor={Colors.INACTIVE}
               style={[styles.input, errors.confirmPassword && { borderBottomColor: Colors.ERROR }]}
               onFocus={() => setFocusedField('confirmPassword')}
               onBlur={onBlur}
@@ -200,11 +200,9 @@ export function RegisterScreen() {
         <Button onPress={handleSubmit(onSubmit)} disabled={!isValid}>
           REGISTER
         </Button>
-        <Pressable onPress={() => navigation.navigate('Login')} style={{ marginVertical: 20 }}>
-          <Text style={{ textAlign: 'center' }}>
+          <Text style={styles.loginLink} onPress={() => navigation.navigate('Login')}>
             Already have an account? Sign in <Text style={{ fontWeight: 'bold' }}>here.</Text>
           </Text>
-        </Pressable>
       </SafeAreaView>
     </Container>
   );
@@ -212,7 +210,6 @@ export function RegisterScreen() {
 
 const styles = StyleSheet.create({
   container: {
-    justifyContent: 'center',
     alignItems: 'center',
   },
   inputContainer: {
@@ -227,11 +224,14 @@ const styles = StyleSheet.create({
   input: {
     borderBottomWidth: 1,
     borderBottomColor: Colors.WHITE,
-    backgroundColor: 'transparent',
-    paddingHorizontal: 15,
+    paddingHorizontal: 10,
     paddingVertical: 10,
-    marginBottom: 20,
+    marginBottom: 10,
     color: Colors.WHITE,
     textAlign: 'center',
   },
+  loginLink: {
+    textAlign: 'center',
+    marginVertical: 20,
+  }
 });

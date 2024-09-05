@@ -1,5 +1,4 @@
 import { db } from '@db';
-import { useProfile } from '@hooks/useProfile';
 import * as Location from 'expo-location';
 import {
   doc,
@@ -89,12 +88,38 @@ export async function leaveParty(localUser: string, party: string) {
     {
       text: 'Yes',
       onPress: async () => {
-        await updateDoc(doc(db, 'parties', party), {
-          [`partyMembers.${localUser}`]: deleteField(),
-        });
-        party === localUser && deleteDoc(doc(db, 'parties', party));
         await updateDoc(doc(db, 'users', localUser), {
           party: deleteField(),
+        }).then(async () => {
+          await updateDoc(doc(db, 'parties', party), {
+            [`partyMembers.${localUser}`]: deleteField(),
+          });
+        });
+      },
+    },
+  ]);
+}
+
+export async function disbandParty(localUser: string) {
+  Alert.alert('Disbanding party', 'Are you sure you want to disband the party?', [
+    {
+      text: 'Cancel',
+      onPress: () => {},
+      style: 'cancel',
+    },
+    {
+      text: 'Yes',
+      onPress: async () => {
+        await getDoc(doc(db, 'parties', localUser)).then(async (partyDoc) => {
+          const data = partyDoc.data();
+          const partyMembers = Object.keys(data?.partyMembers);
+          partyMembers.forEach(async (member) => {
+            await updateDoc(doc(db, 'users', member), {
+              party: '',
+            });
+          });
+        }).then(async () => {
+          await deleteDoc(doc(db, 'parties', localUser));
         });
       },
     },
@@ -107,8 +132,8 @@ export async function inviteUser(localUser: string, user: string) {
   });
 }
 
-export async function kickUser(party: string, user: string) {
-  Alert.alert('Kicking user', 'Are you sure you want to kick this user?', [
+export async function kickUser(user: string, party: string) {
+  Alert.alert('Kicking user', `Are you sure you want to kick @${user} from the party?`, [
     {
       text: 'Cancel',
       onPress: () => {},
@@ -119,9 +144,10 @@ export async function kickUser(party: string, user: string) {
       onPress: async () => {
         await updateDoc(doc(db, 'parties', party), {
           [`partyMembers.${user}`]: deleteField(),
-        });
-        await updateDoc(doc(db, 'users', user), {
-          party: deleteField(),
+        }).then(async () => {
+          await updateDoc(doc(db, 'users', user), {
+            party: deleteField(),
+          });
         });
       },
     },

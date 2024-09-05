@@ -10,13 +10,12 @@ import { LoginScreen } from '@screens/LoginScreen/LoginScreen';
 import { ClubModal } from '@screens/MapScreen/ClubModal/ClubModal';
 import { MapScreen } from '@screens/MapScreen/MapScreen';
 import { InviteModal } from '@screens/PartyScreen/Modals/InviteModal';
-import { PartySettingsModal } from '@screens/PartyScreen/Modals/PartySettingsModal';
 import { PartyScreen } from '@screens/PartyScreen/PartyScreen';
 import { RegisterScreen } from '@screens/RegisterScreen/RegisterScreen';
 import { ResetPasswordScreen } from '@screens/ResetPasswordScreeen/ResetPasswordScreen';
-import { SafetyModal } from '@screens/SafetyScreen/Modals/SafetyModal';
+import { SafetyModal } from '@screens/SafetyScreen/SafetyModal/SafetyModal';
 import { SafetyScreen } from '@screens/SafetyScreen/SafetyScreen';
-import { AddFriendModal } from '@screens/SocialScreen/Modals/AddFriendModal';
+import { AddFriendModal } from '@screens/SocialScreen/AddFriendModal/AddFriendModal';
 import { SocialScreen } from '@screens/SocialScreen/SocialScreen';
 import { StartupScreen } from '@screens/StartupScreen/StartupScreen';
 import { UserModalScreen } from '@screens/UserModal/UserModal';
@@ -25,7 +24,6 @@ import * as React from 'react';
 import { useState } from 'react';
 import { Pressable, StyleSheet } from 'react-native';
 
-import { AddFriendModal as TestModal } from './AddFriendModal';
 import { loggedInLinking, loggedOutLinking } from './LinkingConfiguration';
 import { RootStackParamList, RootTabParamList, RootTabScreenProps } from '../types';
 
@@ -143,11 +141,6 @@ function LoggedInNavigator() {
           component={AddFriendModal}
           options={{ title: 'Add Friends' }}
         />
-        <Stack.Screen
-          name="PartySettingsModal"
-          component={PartySettingsModal}
-          options={{ title: 'Party Settings' }}
-        />
       </Stack.Group>
     </Stack.Navigator>
   );
@@ -194,23 +187,14 @@ function BottomTabNavigator() {
       <BottomTab.Screen
         name="Party"
         component={PartyScreen}
-        options={({ navigation, route }: RootTabScreenProps<'Party'>) => ({
-          title: route.params?.title ?? 'Create a Party',
+        options={({ navigation }: RootTabScreenProps<'Party'>) => ({
+          title: 'Party',
           headerTitleStyle: {
             color: Colors.WHITE,
             fontSize: 20,
             fontWeight: 'bold',
           },
           tabBarIcon: ({ color, focused }) => <TabBarIcon name="group" color={color} />,
-          headerRight: () => (
-            <Pressable
-              onPress={() => navigation.navigate('PartySettingsModal')}
-              style={({ pressed }) => ({
-                opacity: pressed ? 0.5 : 1,
-              })}>
-              <FontAwesome name="gear" size={25} color={Colors.WHITE} style={{ marginRight: 15 }} />
-            </Pressable>
-          ),
         })}
       />
       <BottomTab.Screen

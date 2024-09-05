@@ -1,15 +1,14 @@
-import { createParty, leaveParty } from '@actions/partyActions';
+import { createParty, kickUser, leaveParty, disbandParty } from '@actions/partyActions';
 import { Button } from '@components/Button';
 import { Container } from '@components/Container';
 import { Text } from '@components/Text';
 import { UserCard } from '@components/UserCard';
 import { View } from '@components/View';
 import Colors from '@constants/Colors';
-import { AntDesign } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import { useParty } from '@hooks/useParty';
 import { useProfile } from '@hooks/useProfile';
 import { useNavigation } from '@react-navigation/native';
-import { useEffect } from 'react';
 import { Alert, FlatList, StyleSheet } from 'react-native';
 
 export function PartyScreen() {
@@ -17,61 +16,32 @@ export function PartyScreen() {
   const { party, username } = useProfile();
   const { partyLeader, partyName, partyMembers } = useParty();
 
-  useEffect(() => {
-    if (partyName) {
-      navigation.setParams({ title: partyName });
-    } else {
-      navigation.setParams({ title: 'Create a Party' });
-    }
-  }, [partyName]);
-
   return (
     <Container style={styles.container}>
       {party ? (
         <View>
+          <Text style={styles.partyName}>{partyName}</Text>
           {partyMembers && (
             <FlatList
               data={Object.keys(partyMembers)}
               renderItem={({ item, index }) => {
                 return (
+                  <View style={styles.partyMember}>
                   <UserCard
                     user={item}
                     key={index}
                     actions={
-                      [
-                        {
-                          icon: <AntDesign name="star" size={24} color={Colors.WHITE} />,
-                          onPress: () => {},
-                        },
-                      ]
-
-                      /*username === partyLeader && item !== partyLeader
+                      username === partyLeader && item !== partyLeader
                         ? [
                             {
-                              icon: <AntDesign name="close" size={24} color={Colors.ERROR} />,
-                              onPress: () => {
-                                Alert.alert(
-                                  'Remove Member',
-                                  `Are you sure you want to remove ${item} from the party?`,
-                                  [
-                                    {
-                                      text: 'Cancel',
-                                      style: 'cancel',
-                                    },
-                                    {
-                                      text: 'Remove',
-                                      onPress: () => {
-                                        kickUser(item, party!);
-                                      },
-                                    },
-                                  ]
-                                );
-                              },
+                              icon: <Ionicons name="close" size={24} color={Colors.ERROR} />,
+                              onPress: () => kickUser(item, party),
                             },
                           ]
-                        : []*/
+                        : []
                     }
                   />
+                  </View>
                 );
               }}
               keyExtractor={(item) => item}
@@ -79,7 +49,9 @@ export function PartyScreen() {
             />
           )}
           <View style={styles.buttonGroup}>
-            <Button titleStyle={styles.buttonTitle} onPress={() => leaveParty(username, party!)}>
+            <Button titleStyle={styles.buttonTitle} onPress={() => 
+              partyLeader === username ? disbandParty(username) : leaveParty(username, party)
+            }>
               LEAVE PARTY
             </Button>
             {username === partyLeader && (
@@ -95,7 +67,7 @@ export function PartyScreen() {
           </View>
         </View>
       ) : (
-        <View style={styles.test}>
+        <View style={styles.createParty}>
           <Button
             onPress={() =>
               Alert.prompt('Enter a name for your party', 'Party Name', (text) =>
@@ -119,6 +91,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  partyName: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: Colors.WHITE,
+    textAlign: 'center',
+    marginVertical: 10,
+  },
+  partyMember: {
+    marginVertical: 10,
+  },
   buttonGroup: {
     flexDirection: 'row',
     marginVertical: 10,
@@ -130,7 +112,7 @@ const styles = StyleSheet.create({
   list: {
     padding: 10,
   },
-  test: {
+  createParty: {
     gap: 10,
     width: '75%',
   },

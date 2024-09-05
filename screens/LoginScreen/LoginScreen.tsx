@@ -93,14 +93,10 @@ export function LoginScreen() {
         <Button onPress={handleSubmit(onSubmit)} disabled={!isValid}>
           LOGIN
         </Button>
-        <Pressable onPress={() => navigation.navigate('Register')} style={{ marginVertical: 20 }}>
-          <Text style={{ textAlign: 'center' }}>
+          <Text style={styles.link} onPress={() => navigation.navigate('Register')}>
             Don't have an account? Create one <Text style={{ fontWeight: 'bold' }}>here.</Text>
           </Text>
-        </Pressable>
-        <Pressable onPress={() => navigation.navigate('ResetPassword')}>
-          <Text style={{ textAlign: 'center' }}>Forgot password?</Text>
-        </Pressable>
+          <Text style={styles.link} onPress={() => navigation.navigate('ResetPassword')}>Forgot password?</Text>
       </SafeAreaView>
     </Container>
   );
@@ -109,7 +105,6 @@ export function LoginScreen() {
 const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
-    justifyContent: 'center',
   },
   error: {
     textAlign: 'center',
@@ -120,11 +115,14 @@ const styles = StyleSheet.create({
   input: {
     borderBottomWidth: 1,
     borderBottomColor: Colors.WHITE,
-    backgroundColor: 'transparent',
-    paddingHorizontal: 15,
+    paddingHorizontal: 10,
     paddingVertical: 10,
     marginBottom: 20,
     color: Colors.WHITE,
     textAlign: 'center',
   },
+  link: {
+    textAlign: 'center',
+    marginVertical: 20,
+  }
 });

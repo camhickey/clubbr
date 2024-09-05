@@ -5,7 +5,6 @@ import { Alert } from 'react-native';
 export async function sendRequest(localUser: string, friend: string) {
   const friendDoc = await getDoc(doc(db, 'users', friend));
   if (friendDoc.exists()) {
-    console.log(friendDoc.data());
     const friendData = friendDoc.data();
     if (friendData.friends.includes(localUser)) {
       return Alert.alert(`@${friend} is already your friend`);

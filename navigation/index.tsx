@@ -9,7 +9,7 @@ import { IntroScreen } from '@screens/IntroScreen/IntroScreen';
 import { LoginScreen } from '@screens/LoginScreen/LoginScreen';
 import { ClubModal } from '@screens/MapScreen/ClubModal/ClubModal';
 import { MapScreen } from '@screens/MapScreen/MapScreen';
-import { InviteModal } from '@screens/PartyScreen/Modals/InviteModal';
+import { InviteModal } from '@screens/PartyScreen/InviteModal/InviteModal';
 import { PartyScreen } from '@screens/PartyScreen/PartyScreen';
 import { RegisterScreen } from '@screens/RegisterScreen/RegisterScreen';
 import { ResetPasswordScreen } from '@screens/ResetPasswordScreeen/ResetPasswordScreen';
@@ -22,10 +22,13 @@ import { UserModalScreen } from '@screens/UserModal/UserModal';
 import { getAuth } from 'firebase/auth';
 import * as React from 'react';
 import { useState } from 'react';
-import { Pressable, StyleSheet } from 'react-native';
+import { Platform, Pressable, StyleSheet } from 'react-native';
 
 import { loggedInLinking, loggedOutLinking } from './LinkingConfiguration';
 import { RootStackParamList, RootTabParamList, RootTabScreenProps } from '../types';
+import { db } from '@db*';
+import { onSnapshot, doc } from 'firebase/firestore';
+import { useProfile } from '@hooks/useProfile';
 
 const auth = getAuth();
 
@@ -149,6 +152,7 @@ function LoggedInNavigator() {
 const BottomTab = createBottomTabNavigator<RootTabParamList>();
 
 function BottomTabNavigator() {
+  const { friendRequestsReceived, invites } = useProfile();
   return (
     <BottomTab.Navigator
       initialRouteName="Map"
@@ -194,7 +198,9 @@ function BottomTabNavigator() {
             fontSize: 20,
             fontWeight: 'bold',
           },
-          tabBarIcon: ({ color, focused }) => <TabBarIcon name="group" color={color} />,
+          tabBarIcon: ({ color, size }) => (
+            <TabBarIcon name="group" color={color} />
+          )
         })}
       />
       <BottomTab.Screen
@@ -262,6 +268,13 @@ function BottomTabNavigator() {
             fontSize: 20,
             fontWeight: 'bold',
           },
+          tabBarBadge: (friendRequestsReceived.length + invites.length) || undefined,
+          tabBarBadgeStyle: { 
+            backgroundColor: Colors.ERROR,
+            color: Colors.WHITE,
+            fontSize: 12,
+            fontWeight: 'bold',
+           },
           tabBarIcon: ({ color, focused }) => <TabBarIcon name="inbox" color={color} />,
         })}
       />

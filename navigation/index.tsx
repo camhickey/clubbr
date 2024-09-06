@@ -1,6 +1,6 @@
-import { Text } from '@components/Text';
 import Colors from '@constants/Colors';
-import { FontAwesome, Ionicons, AntDesign } from '@expo/vector-icons';
+import { AntDesign, FontAwesome, Ionicons } from '@expo/vector-icons';
+import { useProfile } from '@hooks/useProfile';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer, useNavigation } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -22,13 +22,10 @@ import { UserModalScreen } from '@screens/UserModal/UserModal';
 import { getAuth } from 'firebase/auth';
 import * as React from 'react';
 import { useState } from 'react';
-import { Platform, Pressable, StyleSheet } from 'react-native';
+import { Pressable } from 'react-native';
 
 import { loggedInLinking, loggedOutLinking } from './LinkingConfiguration';
 import { RootStackParamList, RootTabParamList, RootTabScreenProps } from '../types';
-import { db } from '@db*';
-import { onSnapshot, doc } from 'firebase/firestore';
-import { useProfile } from '@hooks/useProfile';
 
 const auth = getAuth();
 
@@ -198,9 +195,7 @@ function BottomTabNavigator() {
             fontSize: 20,
             fontWeight: 'bold',
           },
-          tabBarIcon: ({ color, size }) => (
-            <TabBarIcon name="group" color={color} />
-          )
+          tabBarIcon: ({ color, size }) => <TabBarIcon name="group" color={color} />,
         })}
       />
       <BottomTab.Screen
@@ -268,13 +263,13 @@ function BottomTabNavigator() {
             fontSize: 20,
             fontWeight: 'bold',
           },
-          tabBarBadge: (friendRequestsReceived.length + invites.length) || undefined,
-          tabBarBadgeStyle: { 
-            backgroundColor: Colors.ERROR,
+          tabBarBadge: friendRequestsReceived.length + invites.length || undefined,
+          tabBarBadgeStyle: {
+            backgroundColor: Colors.RED,
             color: Colors.WHITE,
             fontSize: 12,
             fontWeight: 'bold',
-           },
+          },
           tabBarIcon: ({ color, focused }) => <TabBarIcon name="inbox" color={color} />,
         })}
       />

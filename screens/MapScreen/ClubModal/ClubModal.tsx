@@ -10,7 +10,7 @@ import { useProfile } from '@hooks/useProfile';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { doc, getDoc } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, KeyboardAvoidingView } from 'react-native';
+import { ScrollView, StyleSheet } from 'react-native';
 
 import { CommentSection } from './CommentSection/CommentSection';
 
@@ -135,7 +135,6 @@ export function ClubModal({ route }: any) {
 }
 
 const styles = StyleSheet.create({
-  media: {},
   header: {
     flexDirection: 'row',
     padding: 10,
@@ -156,7 +155,7 @@ const styles = StyleSheet.create({
   },
   age: {
     fontWeight: 'bold',
-    color: Colors.ERROR,
+    color: Colors.RED,
   },
   scrollContainer: {
     padding: 5,

@@ -5,7 +5,7 @@ import { UserCard } from '@components/UserCard';
 import { View } from '@components/View';
 import Colors from '@constants/Colors';
 import { db } from '@db';
-import { AntDesign, Ionicons } from '@expo/vector-icons';
+import { AntDesign } from '@expo/vector-icons';
 import { useProfile } from '@hooks/useProfile';
 import { doc, onSnapshot } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
@@ -33,7 +33,7 @@ export function Friends() {
     <Container style={styles.container}>
       {friends.length === 0 ? (
         <Text style={styles.blurb}>
-          Tap the icon at the top of your screen to send a friend request to a user
+          Tap the icon at the top of your screen to send a friend request to a user.
         </Text>
       ) : (
         <View style={styles.searchBar}>

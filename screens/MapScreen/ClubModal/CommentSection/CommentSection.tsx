@@ -6,7 +6,7 @@ import { useProfile } from '@hooks/useProfile';
 import { useNavigation } from '@react-navigation/native';
 import { arrayRemove, arrayUnion, collection, doc, getDocs, updateDoc } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, Modal, Alert } from 'react-native';
+import { Pressable, ScrollView, StyleSheet } from 'react-native';
 
 import { CommentModal } from '../CommentModal/CommentModal';
 

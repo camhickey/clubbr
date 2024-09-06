@@ -6,11 +6,11 @@ import { DEFAULT_PFP } from '@constants/profile';
 import { db } from '@db';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useNavigation } from '@react-navigation/native';
-import { getAuth, createUserWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
-import { getDoc, setDoc, doc } from 'firebase/firestore';
+import { createUserWithEmailAndPassword, getAuth, sendEmailVerification } from 'firebase/auth';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
 import React, { useState } from 'react';
-import { useForm, Controller } from 'react-hook-form';
-import { Pressable, StyleSheet, TextInput } from 'react-native';
+import { Controller, useForm } from 'react-hook-form';
+import { StyleSheet, TextInput } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { registerSchema } from './schema';
@@ -94,7 +94,7 @@ export function RegisterScreen() {
             <TextInput
               placeholder="Username"
               placeholderTextColor={Colors.INACTIVE}
-              style={[styles.input, errors.username && { borderBottomColor: Colors.ERROR }]}
+              style={[styles.input, errors.username && { borderBottomColor: Colors.RED }]}
               onFocus={() => setFocusedField('username')}
               onBlur={onBlur}
               onChange={(e) => setValue('username', e.nativeEvent.text, { shouldValidate: true })}
@@ -117,7 +117,7 @@ export function RegisterScreen() {
             <TextInput
               placeholder="Display name"
               placeholderTextColor={Colors.INACTIVE}
-              style={[styles.input, errors.displayName && { borderBottomColor: Colors.ERROR }]}
+              style={[styles.input, errors.displayName && { borderBottomColor: Colors.RED }]}
               onFocus={() => setFocusedField('displayName')}
               onBlur={onBlur}
               onChange={(e) =>
@@ -142,7 +142,7 @@ export function RegisterScreen() {
             <TextInput
               placeholder="Email"
               placeholderTextColor={Colors.INACTIVE}
-              style={[styles.input, errors.email && { borderBottomColor: Colors.ERROR }]}
+              style={[styles.input, errors.email && { borderBottomColor: Colors.RED }]}
               onFocus={() => setFocusedField('email')}
               onBlur={onBlur}
               onChange={(e) => setValue('email', e.nativeEvent.text, { shouldValidate: true })}
@@ -163,7 +163,7 @@ export function RegisterScreen() {
             <TextInput
               placeholder="Password"
               placeholderTextColor={Colors.INACTIVE}
-              style={[styles.input, errors.password && { borderBottomColor: Colors.ERROR }]}
+              style={[styles.input, errors.password && { borderBottomColor: Colors.RED }]}
               onFocus={() => setFocusedField('password')}
               onBlur={onBlur}
               onChange={(e) => setValue('password', e.nativeEvent.text, { shouldValidate: true })}
@@ -182,7 +182,7 @@ export function RegisterScreen() {
             <TextInput
               placeholder="Confirm password"
               placeholderTextColor={Colors.INACTIVE}
-              style={[styles.input, errors.confirmPassword && { borderBottomColor: Colors.ERROR }]}
+              style={[styles.input, errors.confirmPassword && { borderBottomColor: Colors.RED }]}
               onFocus={() => setFocusedField('confirmPassword')}
               onBlur={onBlur}
               onChange={(e) =>
@@ -200,9 +200,9 @@ export function RegisterScreen() {
         <Button onPress={handleSubmit(onSubmit)} disabled={!isValid}>
           REGISTER
         </Button>
-          <Text style={styles.loginLink} onPress={() => navigation.navigate('Login')}>
-            Already have an account? Sign in <Text style={{ fontWeight: 'bold' }}>here.</Text>
-          </Text>
+        <Text style={styles.loginLink} onPress={() => navigation.navigate('Login')}>
+          Already have an account? Sign in <Text style={{ fontWeight: 'bold' }}>here.</Text>
+        </Text>
       </SafeAreaView>
     </Container>
   );
@@ -216,7 +216,7 @@ const styles = StyleSheet.create({
     width: '80%',
   },
   error: {
-    color: Colors.ERROR,
+    color: Colors.RED,
     textAlign: 'center',
     marginVertical: 10,
     fontSize: 12,
@@ -233,5 +233,5 @@ const styles = StyleSheet.create({
   loginLink: {
     textAlign: 'center',
     marginVertical: 20,
-  }
+  },
 });

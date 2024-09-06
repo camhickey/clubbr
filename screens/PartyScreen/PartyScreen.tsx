@@ -1,4 +1,4 @@
-import { createParty, kickUser, leaveParty, disbandParty } from '@actions/partyActions';
+import { createParty, disbandParty, kickUser, leaveParty } from '@actions/partyActions';
 import { Button } from '@components/Button';
 import { Container } from '@components/Container';
 import { Text } from '@components/Text';
@@ -27,20 +27,20 @@ export function PartyScreen() {
               renderItem={({ item, index }) => {
                 return (
                   <View style={styles.partyMember}>
-                  <UserCard
-                    user={item}
-                    key={index}
-                    actions={
-                      username === partyLeader && item !== partyLeader
-                        ? [
-                            {
-                              icon: <Ionicons name="close" size={24} color={Colors.ERROR} />,
-                              onPress: () => kickUser(item, party),
-                            },
-                          ]
-                        : []
-                    }
-                  />
+                    <UserCard
+                      user={item}
+                      key={index}
+                      actions={
+                        username === partyLeader && item !== partyLeader
+                          ? [
+                              {
+                                icon: <Ionicons name="close" size={24} color={Colors.RED} />,
+                                onPress: () => kickUser(item, party),
+                              },
+                            ]
+                          : []
+                      }
+                    />
                   </View>
                 );
               }}
@@ -49,9 +49,11 @@ export function PartyScreen() {
             />
           )}
           <View style={styles.buttonGroup}>
-            <Button titleStyle={styles.buttonTitle} onPress={() => 
-              partyLeader === username ? disbandParty(username) : leaveParty(username, party)
-            }>
+            <Button
+              titleStyle={styles.buttonTitle}
+              onPress={() =>
+                partyLeader === username ? disbandParty(username) : leaveParty(username, party)
+              }>
               LEAVE PARTY
             </Button>
             {username === partyLeader && (
@@ -70,8 +72,8 @@ export function PartyScreen() {
         <View style={styles.createParty}>
           <Button
             onPress={() =>
-              Alert.prompt('Enter a name for your party', 'Party Name', (text) =>
-                createParty(username, text),
+              Alert.prompt('Enter a name for your party', '', (text) =>
+                text ? createParty(username, text) : createParty(username, `${username}'s Party`),
               )
             }>
             CREATE PARTY
@@ -90,6 +92,7 @@ const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
     justifyContent: 'center',
+    paddingVertical: 20,
   },
   partyName: {
     fontSize: 24,

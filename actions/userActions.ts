@@ -3,7 +3,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { getAuth } from 'firebase/auth';
 import { doc, updateDoc } from 'firebase/firestore';
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from 'firebase/storage';
-import {Alert} from 'react-native';
+import { Alert } from 'react-native';
 
 export async function changeDisplayName(localUser: string, newName: string) {
   await updateDoc(doc(db, 'users', localUser), {

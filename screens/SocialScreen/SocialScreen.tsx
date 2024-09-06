@@ -16,7 +16,7 @@ export function SocialScreen() {
   const Tab = createMaterialTopTabNavigator();
 
   return (
-    <Container>
+    <Container style={styles.container}>
       <View style={styles.userCard}>
         <Pressable onPress={() => changeProfilePicture(username)}>
           <Image style={styles.profilePic} source={{ uri: photoURL }} />
@@ -50,6 +50,9 @@ export function SocialScreen() {
 }
 
 const styles = StyleSheet.create({
+  container: {
+    paddingVertical: 20,
+  },
   userCard: {
     flexDirection: 'row',
     alignItems: 'center',

@@ -2,19 +2,18 @@ import { Container } from '@components/Container';
 import { Text } from '@components/Text';
 import { View } from '@components/View';
 import Colors from '@constants/Colors';
-import { FontAwesome, Ionicons } from '@expo/vector-icons';
+import { FontAwesome } from '@expo/vector-icons';
 import { useParty } from '@hooks/useParty';
 import { useProfile } from '@hooks/useProfile';
 import { useNavigation } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
 import { Alert, Platform, StyleSheet } from 'react-native';
 import MapView from 'react-native-map-clustering';
-import { Marker, PROVIDER_DEFAULT, PROVIDER_GOOGLE } from 'react-native-maps';
+import { Marker, PROVIDER_DEFAULT } from 'react-native-maps';
 
 import { ActionButton } from './ActionButton/ActionButton';
 import { PartyListener } from './Listeners/PartyListener';
 import { ProfileListener } from './Listeners/ProfileListener';
-import { MapFilter } from './MapFilter/MapFilter';
 import { MapStyle } from './MapStyle';
 import { MARKERS } from '../../data/locations';
 
@@ -118,7 +117,7 @@ export function MapScreen() {
                 }}>
                 <View style={styles.marker}>
                   <Text>{member[0]}</Text>
-                  <FontAwesome name="circle" size={24} color={Colors.ERROR} />
+                  <FontAwesome name="circle" size={24} color={Colors.RED} />
                 </View>
               </Marker>
             );

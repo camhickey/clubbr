@@ -110,17 +110,19 @@ export async function disbandParty(localUser: string) {
     {
       text: 'Yes',
       onPress: async () => {
-        await getDoc(doc(db, 'parties', localUser)).then(async (partyDoc) => {
-          const data = partyDoc.data();
-          const partyMembers = Object.keys(data?.partyMembers);
-          partyMembers.forEach(async (member) => {
-            await updateDoc(doc(db, 'users', member), {
-              party: '',
+        await getDoc(doc(db, 'parties', localUser))
+          .then(async (partyDoc) => {
+            const data = partyDoc.data();
+            const partyMembers = Object.keys(data?.partyMembers);
+            partyMembers.forEach(async (member) => {
+              await updateDoc(doc(db, 'users', member), {
+                party: '',
+              });
             });
+          })
+          .then(async () => {
+            await deleteDoc(doc(db, 'parties', localUser));
           });
-        }).then(async () => {
-          await deleteDoc(doc(db, 'parties', localUser));
-        });
       },
     },
   ]);

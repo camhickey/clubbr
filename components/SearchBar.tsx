@@ -12,7 +12,7 @@ export function SearchBar({ search, setSearch, placeholder }: SearchBarProps) {
     <TextInput
       style={styles.search}
       placeholder={placeholder}
-      placeholderTextColor={Colors.INACTIVE}
+      placeholderTextColor={Colors.SUBTEXT}
       onChangeText={(text) => setSearch(text)}
       value={search}
     />

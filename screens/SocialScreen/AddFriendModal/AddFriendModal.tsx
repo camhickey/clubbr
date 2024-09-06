@@ -1,7 +1,6 @@
 import { sendRequest } from '@actions/friendActions';
 import { Button } from '@components/Button';
 import { ModalContainer } from '@components/ModalContainer';
-import { SearchBar } from '@components/SearchBar';
 import { Text } from '@components/Text';
 import Colors from '@constants/Colors';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -35,7 +34,7 @@ export function AddFriendModal() {
             autoCorrect={false}
             placeholder="Enter a username"
             placeholderTextColor={Colors.SUBTEXT}
-            style={[styles.search, errors.username && { borderBottomColor: Colors.ERROR }]}
+            style={[styles.search, errors.username && { borderBottomColor: Colors.RED }]}
             onBlur={onBlur}
             onChange={(e) => setValue('username', e.nativeEvent.text, { shouldValidate: true })}
             value={value}
@@ -69,7 +68,7 @@ const styles = StyleSheet.create({
   },
   error: {
     fontSize: 12,
-    color: Colors.ERROR,
+    color: Colors.RED,
     textAlign: 'center',
   },
 });

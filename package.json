@@ -63,7 +63,6 @@
     "@types/react-native": "~0.70.6",
     "@types/react-native-snap-carousel": "^3.8.5",
     "eslint": "8",
-    
     "eslint-config-expo": "^7.1.2",
     "eslint-config-prettier": "^9.1.0",
     "eslint-config-universe": "^13.0.0",

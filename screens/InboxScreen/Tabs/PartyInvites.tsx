@@ -41,14 +41,12 @@ export function PartyInvites() {
               actions={[
                 {
                   icon: (
-                    <AntDesign name="check" size={24} color={Colors.SUCCESS} style={styles.icon} />
+                    <AntDesign name="check" size={24} color={Colors.GREEN} style={styles.icon} />
                   ),
                   onPress: async () => acceptInvite(username, await getParty(item)),
                 },
                 {
-                  icon: (
-                    <AntDesign name="close" size={24} color={Colors.ERROR} style={styles.icon} />
-                  ),
+                  icon: <AntDesign name="close" size={24} color={Colors.RED} style={styles.icon} />,
                   onPress: () => rejectInvite(username, item),
                 },
               ]}

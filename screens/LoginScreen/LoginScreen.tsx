@@ -6,8 +6,8 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useNavigation } from '@react-navigation/core';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 import React, { useState } from 'react';
-import { useForm, Controller } from 'react-hook-form';
-import { StyleSheet, TextInput, Pressable } from 'react-native';
+import { Controller, useForm } from 'react-hook-form';
+import { StyleSheet, TextInput } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { loginSchema } from './schema';
@@ -57,7 +57,7 @@ export function LoginScreen() {
             <TextInput
               placeholder="Email"
               placeholderTextColor={Colors.SUBTEXT}
-              style={[styles.input, errors.email && { borderBottomColor: Colors.ERROR }]}
+              style={[styles.input, errors.email && { borderBottomColor: Colors.RED }]}
               onFocus={() => setFocusedField('email')}
               onBlur={onBlur}
               onChange={(e) => setValue('email', e.nativeEvent.text, { shouldValidate: true })}
@@ -78,7 +78,7 @@ export function LoginScreen() {
             <TextInput
               placeholder="Password"
               placeholderTextColor={Colors.SUBTEXT}
-              style={[styles.input, errors.password && { borderBottomColor: Colors.ERROR }]}
+              style={[styles.input, errors.password && { borderBottomColor: Colors.RED }]}
               onFocus={() => setFocusedField('password')}
               onBlur={onBlur}
               onChange={(e) => setValue('password', e.nativeEvent.text, { shouldValidate: true })}
@@ -93,10 +93,12 @@ export function LoginScreen() {
         <Button onPress={handleSubmit(onSubmit)} disabled={!isValid}>
           LOGIN
         </Button>
-          <Text style={styles.link} onPress={() => navigation.navigate('Register')}>
-            Don't have an account? Create one <Text style={{ fontWeight: 'bold' }}>here.</Text>
-          </Text>
-          <Text style={styles.link} onPress={() => navigation.navigate('ResetPassword')}>Forgot password?</Text>
+        <Text style={styles.link} onPress={() => navigation.navigate('Register')}>
+          Don't have an account? Create one <Text style={{ fontWeight: 'bold' }}>here.</Text>
+        </Text>
+        <Text style={styles.link} onPress={() => navigation.navigate('ResetPassword')}>
+          Forgot password?
+        </Text>
       </SafeAreaView>
     </Container>
   );
@@ -108,7 +110,7 @@ const styles = StyleSheet.create({
   },
   error: {
     textAlign: 'center',
-    color: Colors.ERROR,
+    color: Colors.RED,
     marginVertical: 10,
     fontSize: 12,
   },
@@ -124,5 +126,5 @@ const styles = StyleSheet.create({
   link: {
     textAlign: 'center',
     marginVertical: 20,
-  }
+  },
 });

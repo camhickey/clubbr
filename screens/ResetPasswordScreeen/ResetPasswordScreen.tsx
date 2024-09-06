@@ -56,7 +56,7 @@ export function ResetPasswordScreen() {
             <TextInput
               placeholder="Email"
               placeholderTextColor={Colors.SUBTEXT}
-              style={[styles.input, errors.email && { borderBottomColor: Colors.ERROR }]}
+              style={[styles.input, errors.email && { borderBottomColor: Colors.RED }]}
               onBlur={onBlur}
               onChange={(e) => setValue('email', e.nativeEvent.text, { shouldValidate: true })}
               value={value}
@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
   },
   error: {
     textAlign: 'center',
-    color: Colors.ERROR,
+    color: Colors.RED,
     marginBottom: 10,
     fontSize: 12,
   },

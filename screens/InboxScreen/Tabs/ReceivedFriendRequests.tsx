@@ -43,14 +43,12 @@ export function ReceivedFriendRequests() {
               actions={[
                 {
                   icon: (
-                    <AntDesign name="check" size={24} color={Colors.SUCCESS} style={styles.icon} />
+                    <AntDesign name="check" size={24} color={Colors.GREEN} style={styles.icon} />
                   ),
                   onPress: () => acceptRequest(username, item),
                 },
                 {
-                  icon: (
-                    <AntDesign name="close" size={24} color={Colors.ERROR} style={styles.icon} />
-                  ),
+                  icon: <AntDesign name="close" size={24} color={Colors.RED} style={styles.icon} />,
                   onPress: () => rejectRequest(username, item),
                 },
               ]}

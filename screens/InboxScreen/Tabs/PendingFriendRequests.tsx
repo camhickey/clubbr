@@ -29,12 +29,14 @@ export function PendingFriendRequests() {
   }, [refreshing]);
 
   return (
-    <Container>
+    <Container style={styles.container}>
       {friendRequestsPending.length === 0 && (
         <Text style={styles.blurb}>You have no pending friend requests</Text>
       )}
       <FlatList
         data={friendRequestsPending}
+        contentContainerStyle={styles.list}
+        showsVerticalScrollIndicator={false}
         renderItem={({ item, index }) => {
           return (
             <UserCard
@@ -56,11 +58,17 @@ export function PendingFriendRequests() {
 }
 
 const styles = StyleSheet.create({
+  container: {
+    padding: 20,
+  },
   blurb: {
     color: Colors.SUBTEXT,
     textAlign: 'center',
     fontSize: 16,
     marginVertical: 10,
+  },
+  list: {
+    gap: 20,
   },
   icon: {
     padding: 10,

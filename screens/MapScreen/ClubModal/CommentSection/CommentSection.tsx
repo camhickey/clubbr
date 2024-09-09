@@ -1,5 +1,6 @@
 import { Text } from '@components/Text';
 import { View } from '@components/View';
+import Colors from '@constants/Colors';
 import { db } from '@db';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { useProfile } from '@hooks/useProfile';
@@ -23,12 +24,11 @@ interface Comment {
 }
 
 export function CommentSection({ clubId }: CommentSectionProps) {
-  const { userId, username } = useProfile();
+  const { username } = useProfile();
   const navigation = useNavigation();
 
   const [comments, setComments] = useState<Comment[]>([]);
   const [loading, setLoading] = useState(true);
-  const [refreshing, setRefreshing] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
 
   async function fetchComments() {
@@ -82,6 +82,7 @@ export function CommentSection({ clubId }: CommentSectionProps) {
                     style={styles.likeButton}
                     onPress={() => {
                       // Update the likes array in the comment state???
+                      //i do not like this
                       setComments((prev) =>
                         prev.map((c) =>
                           c.id === comment.id
@@ -101,12 +102,12 @@ export function CommentSection({ clubId }: CommentSectionProps) {
                       });
                     }}>
                     {comment.likes.includes(username) ? (
-                      <FontAwesome name="heart" size={14} color="white" />
+                      <FontAwesome name="heart" size={14} color={Colors.WHITE} />
                     ) : (
-                      <FontAwesome name="heart-o" size={14} color="white" />
+                      <FontAwesome name="heart-o" size={14} color={Colors.WHITE} />
                     )}
                   </Pressable>
-                  <Text style={{ fontSize: 10 }}>{comment.likes.length}</Text>
+                  <Text style={styles.likes}>{comment.likes.length}</Text>
                 </View>
               </View>
             ))
@@ -119,7 +120,8 @@ export function CommentSection({ clubId }: CommentSectionProps) {
       />
       {/*Probably add the ability to sort by likes or recency*/}
       <Pressable onPress={() => setModalVisible(true)} style={styles.commentButton}>
-        <FontAwesome name="comment" size={24} color="white" />
+        <Text>Leave a comment</Text>
+        <FontAwesome name="comment" size={18} color={Colors.WHITE} />
       </Pressable>
     </View>
   );
@@ -150,7 +152,14 @@ const styles = StyleSheet.create({
   likeButton: {
     padding: 5,
   },
+  likes: {
+    fontSize: 10,
+  },
   commentButton: {
     padding: 5,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 5,
   },
 });

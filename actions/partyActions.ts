@@ -1,15 +1,16 @@
 import { db } from '@db';
+import { useProfile } from '@hooks/useProfile';
 import * as Location from 'expo-location';
 import {
-  doc,
-  updateDoc,
-  setDoc,
   GeoPoint,
-  deleteField,
-  deleteDoc,
-  arrayUnion,
-  getDoc,
   arrayRemove,
+  arrayUnion,
+  deleteDoc,
+  deleteField,
+  doc,
+  getDoc,
+  setDoc,
+  updateDoc,
 } from 'firebase/firestore';
 import { Alert } from 'react-native';
 
@@ -41,14 +42,15 @@ export async function acceptInvite(localUser: string, party: string) {
   const location = await Location.getCurrentPositionAsync({
     accuracy: Location.Accuracy.Balanced,
   });
-  const currentPartyDoc = await getDoc(doc(db, 'users', localUser));
-  const data = currentPartyDoc.data();
-  const oldParty = data?.party;
-  if (oldParty) {
-    await updateDoc(doc(db, 'parties', oldParty), {
-      [`partyMembers.${localUser}`]: deleteField(),
-    });
-  }
+  getDoc(doc(db, 'parties', party)).then(async (partyDoc) => {
+    if (!partyDoc.exists()) {
+      return Alert.alert('This party is on longer active.');
+    }
+    const { party } = useProfile();
+    if (party) {
+      return Alert.alert('You must leave your current party before joining a new one.');
+    }
+  });
   await updateDoc(doc(db, 'users', localUser), {
     party,
     invites: arrayRemove(party),
@@ -79,81 +81,47 @@ export async function updatePosition(
 }
 
 export async function leaveParty(localUser: string, party: string) {
-  Alert.alert('Leaving party', 'Are you sure you want to leave the party?', [
-    {
-      text: 'Cancel',
-      onPress: () => {},
-      style: 'cancel',
-    },
-    {
-      text: 'Yes',
-      onPress: async () => {
-        await updateDoc(doc(db, 'users', localUser), {
-          party: deleteField(),
-        }).then(async () => {
-          await updateDoc(doc(db, 'parties', party), {
-            [`partyMembers.${localUser}`]: deleteField(),
-          });
-        });
-      },
-    },
-  ]);
-}
-
-export async function disbandParty(localUser: string) {
-  Alert.alert('Disbanding party', 'Are you sure you want to disband the party?', [
-    {
-      text: 'Cancel',
-      onPress: () => {},
-      style: 'cancel',
-    },
-    {
-      text: 'Yes',
-      onPress: async () => {
-        await getDoc(doc(db, 'parties', localUser))
-          .then(async (partyDoc) => {
-            const data = partyDoc.data();
-            const partyMembers = Object.keys(data?.partyMembers);
-            partyMembers.forEach(async (member) => {
-              await updateDoc(doc(db, 'users', member), {
-                party: '',
-              });
-            });
-          })
-          .then(async () => {
-            await deleteDoc(doc(db, 'parties', localUser));
-          });
-      },
-    },
-  ]);
-}
-
-export async function inviteUser(localUser: string, user: string) {
-  await updateDoc(doc(db, 'users', user), {
-    invites: arrayUnion(localUser),
+  await updateDoc(doc(db, 'users', localUser), {
+    party: deleteField(),
+  }).then(async () => {
+    await updateDoc(doc(db, 'parties', party), {
+      [`partyMembers.${localUser}`]: deleteField(),
+    });
   });
 }
 
-export async function kickUser(user: string, party: string) {
-  Alert.alert('Kicking user', `Are you sure you want to kick @${user} from the party?`, [
-    {
-      text: 'Cancel',
-      onPress: () => {},
-      style: 'cancel',
-    },
-    {
-      text: 'Yes',
-      onPress: async () => {
-        await updateDoc(doc(db, 'parties', party), {
-          [`partyMembers.${user}`]: deleteField(),
-        }).then(async () => {
-          await updateDoc(doc(db, 'users', user), {
-            party: deleteField(),
-          });
+export async function disbandParty(localUser: string) {
+  await getDoc(doc(db, 'parties', localUser))
+    .then(async (partyDoc) => {
+      const data = partyDoc.data();
+      const partyMembers = Object.keys(data?.partyMembers);
+      partyMembers.forEach(async (member) => {
+        await updateDoc(doc(db, 'users', member), {
+          party: '',
         });
-      },
-    },
-  ]);
+      });
+    })
+    .then(async () => {
+      await deleteDoc(doc(db, 'parties', localUser));
+    });
+}
+
+export async function inviteUsers(localUser: string, users: string[]) {
+  users.map((user) =>
+    updateDoc(doc(db, 'users', user), {
+      invites: arrayUnion(localUser),
+    }),
+  );
+}
+
+export async function kickUser(user: string, party: string) {
+  await updateDoc(doc(db, 'parties', party), {
+    [`partyMembers.${user}`]: deleteField(),
+  }).then(async () => {
+    await updateDoc(doc(db, 'users', user), {
+      party: deleteField(),
+    });
+  });
 }
 
 export async function renameParty(localUser: string, name: string) {

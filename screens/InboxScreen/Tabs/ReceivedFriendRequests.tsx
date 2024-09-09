@@ -29,12 +29,14 @@ export function ReceivedFriendRequests() {
   }, [refreshing]);
 
   return (
-    <Container>
+    <Container style={styles.container}>
       {friendRequestsReceived.length === 0 && (
         <Text style={styles.blurb}>You have no received friend requests</Text>
       )}
       <FlatList
         data={friendRequestsReceived}
+        contentContainerStyle={styles.list}
+        showsVerticalScrollIndicator={false}
         renderItem={({ item, index }) => {
           return (
             <UserCard
@@ -63,11 +65,17 @@ export function ReceivedFriendRequests() {
 }
 
 const styles = StyleSheet.create({
+  container: {
+    padding: 20,
+  },
   blurb: {
     color: Colors.SUBTEXT,
     textAlign: 'center',
     fontSize: 16,
     marginVertical: 10,
+  },
+  list: {
+    gap: 20,
   },
   icon: {
     padding: 10,

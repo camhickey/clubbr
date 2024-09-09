@@ -200,7 +200,7 @@ export function RegisterScreen() {
         <Button onPress={handleSubmit(onSubmit)} disabled={!isValid}>
           REGISTER
         </Button>
-        <Text style={styles.loginLink} onPress={() => navigation.navigate('Login')}>
+        <Text style={styles.link} onPress={() => navigation.navigate('Login')}>
           Already have an account? Sign in <Text style={{ fontWeight: 'bold' }}>here.</Text>
         </Text>
       </SafeAreaView>
@@ -214,11 +214,11 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     width: '80%',
+    gap: 10,
   },
   error: {
     color: Colors.RED,
     textAlign: 'center',
-    marginVertical: 10,
     fontSize: 12,
   },
   input: {
@@ -226,12 +226,11 @@ const styles = StyleSheet.create({
     borderBottomColor: Colors.WHITE,
     paddingHorizontal: 10,
     paddingVertical: 10,
-    marginBottom: 10,
     color: Colors.WHITE,
     textAlign: 'center',
   },
-  loginLink: {
+  link: {
     textAlign: 'center',
-    marginVertical: 20,
+    paddingVertical: 10,
   },
 });

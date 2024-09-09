@@ -2,7 +2,7 @@ import { Text } from '@components/Text';
 import { View } from '@components/View';
 import Colors from '@constants/Colors';
 import { AntDesign } from '@expo/vector-icons';
-import React, { useState, ReactElement } from 'react';
+import React, { ReactElement, useState } from 'react';
 import { Pressable, StyleSheet } from 'react-native';
 
 interface OptionButtonProps {

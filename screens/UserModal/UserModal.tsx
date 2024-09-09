@@ -1,4 +1,4 @@
-import { sendRequest, cancelRequest, removeFriend, acceptRequest } from '@actions/friendActions';
+import { acceptRequest, cancelRequest, removeFriend, sendRequest } from '@actions/friendActions';
 import { Button } from '@components/Button';
 import { ModalContainer } from '@components/ModalContainer';
 import { Text } from '@components/Text';
@@ -9,7 +9,7 @@ import { db } from '@db';
 import { useProfile } from '@hooks/useProfile';
 import { doc, getDoc } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Image } from 'react-native';
+import { Alert, Image, StyleSheet } from 'react-native';
 
 export function UserModalScreen({ route }: any) {
   const { user } = route.params;
@@ -62,7 +62,21 @@ export function UserModalScreen({ route }: any) {
         </View>
       </View>
       {relationship === 'friends' && (
-        <Button onPress={() => removeFriend(username, user)}>REMOVE FRIEND</Button>
+        <Button
+          onPress={() =>
+            Alert.alert('Are you sure you want to remove this friend?', '', [
+              {
+                text: 'Cancel',
+                style: 'cancel',
+              },
+              {
+                text: 'Remove Friend',
+                onPress: () => removeFriend(username, user),
+              },
+            ])
+          }>
+          REMOVE FRIEND
+        </Button>
       )}
       {relationship === 'request sent' && (
         <Button onPress={() => cancelRequest(username, user)}>CANCEL REQUEST</Button>
@@ -71,7 +85,12 @@ export function UserModalScreen({ route }: any) {
         <Button onPress={() => acceptRequest(username, user)}>ACCEPT REQUEST</Button>
       )}
       {relationship === 'not friends' && (
-        <Button onPress={() => sendRequest(username, user)}>SEND REQUEST</Button>
+        <Button
+          onPress={() =>
+            sendRequest(username, user).then(() => Alert.alert('Friend request sent!'))
+          }>
+          SEND REQUEST
+        </Button>
       )}
     </ModalContainer>
   );

@@ -1,12 +1,11 @@
+import { sendComment } from '@actions/clubActions';
 import { Text } from '@components/Text';
 import { View } from '@components/View';
 import Colors from '@constants/Colors';
-import { db } from '@db';
 import { Ionicons } from '@expo/vector-icons';
 import { useProfile } from '@hooks/useProfile';
-import { addDoc, collection, doc } from 'firebase/firestore';
 import React, { useState } from 'react';
-import { Modal, Pressable, StyleSheet, TextInput, Alert } from 'react-native';
+import { Alert, Modal, Pressable, StyleSheet, TextInput } from 'react-native';
 
 export type CommentModalProps = {
   clubId: string;
@@ -19,20 +18,6 @@ export function CommentModal({ clubId, isVisible, onClose }: CommentModalProps) 
   const [comment, setComment] = useState('');
   const COMMENT_CHAR_LIMIT = 200;
 
-  function handleSend(text: string) {
-    const docRef = doc(db, 'clubs', clubId);
-    const colRef = collection(docRef, 'comments');
-    addDoc(colRef, {
-      text,
-      timestamp: new Date(),
-      user: username,
-      likes: [],
-    }).then(() => {
-      Alert.alert('Comment sent!');
-      setComment('');
-      onClose();
-    });
-  }
   return (
     <Modal animationType="slide" transparent={true} visible={isVisible}>
       <View style={styles.modalContainer}>
@@ -56,7 +41,18 @@ export function CommentModal({ clubId, isVisible, onClose }: CommentModalProps) 
               blurOnSubmit
               multiline
             />
-            <Pressable onPress={() => handleSend(comment)} style={styles.sendButton}>
+            <Pressable
+              onPress={() =>
+                sendComment(username, clubId, comment)
+                  .then(() => {
+                    Alert.alert('Comment sent!');
+                    onClose();
+                  })
+                  .catch((error) => {
+                    Alert.alert('Failed to send comment', error.message);
+                  })
+              }
+              style={styles.sendButton}>
               <Ionicons
                 name="send"
                 size={24}
@@ -91,6 +87,15 @@ const styles = StyleSheet.create({
   closeButton: {
     padding: 5,
   },
+  modalContent: {
+    flex: 1,
+    width: '100%',
+  },
+  commentLength: {
+    color: Colors.INACTIVE,
+    fontSize: 12,
+    alignSelf: 'flex-end',
+  },
   commentControls: {
     flexDirection: 'row',
     justifyContent: 'center',
@@ -99,20 +104,12 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   commentBox: {
-    backgroundColor: Colors.SEARCHBAR,
+    backgroundColor: Colors.INPUT,
     borderRadius: 10,
     padding: 10,
     color: Colors.WHITE,
     alignSelf: 'center',
     width: '100%',
-  },
-  modalContent: {
-    flex: 1,
-    width: '100%',
-  },
-  commentLength: {
-    color: Colors.INACTIVE,
-    fontSize: 12,
   },
   sendButton: {
     padding: 5,

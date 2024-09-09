@@ -15,11 +15,6 @@ const loggedInLinking: LinkingOptions<RootStackParamList> = {
     screens: {
       Root: {
         screens: {
-          Safety: {
-            screens: {
-              SafetyScreen: 'safety',
-            },
-          },
           Party: {
             screens: {
               PartyScreen: 'party',
@@ -46,8 +41,9 @@ const loggedInLinking: LinkingOptions<RootStackParamList> = {
       InviteModal: 'inviteModal',
       ClubModal: 'clubModal',
       UserModal: 'userModal',
-      SafetyModal: 'safetyModal',
+      SafetyReportModal: 'safetyReportModal',
       AddFriendModal: 'addFriendModal',
+      MapHelpModal: 'mapHelpModal',
     },
   },
 };

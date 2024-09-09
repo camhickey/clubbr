@@ -1,4 +1,4 @@
-import { changeProfilePicture, changeDisplayName } from '@actions/userActions';
+import { changeDisplayName, changeProfilePicture } from '@actions/userActions';
 import { Container } from '@components/Container';
 import { Text } from '@components/Text';
 import { View } from '@components/View';
@@ -6,7 +6,7 @@ import Colors from '@constants/Colors';
 import { useProfile } from '@hooks/useProfile';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import React from 'react';
-import { StyleSheet, Image, Pressable, Alert } from 'react-native';
+import { Alert, Image, Pressable, StyleSheet } from 'react-native';
 
 import { Clubs } from './Tabs/Clubs';
 import { Friends } from './Tabs/Friends';
@@ -18,7 +18,12 @@ export function SocialScreen() {
   return (
     <Container style={styles.container}>
       <View style={styles.userCard}>
-        <Pressable onPress={() => changeProfilePicture(username)}>
+        <Pressable
+          onPress={() =>
+            changeProfilePicture(username)
+              .then(() => Alert.alert('Profile picture updated!'))
+              .catch((error) => Alert.alert('Failed to update profile picture', error.message))
+          }>
           <Image style={styles.profilePic} source={{ uri: photoURL }} />
         </Pressable>
         <View>

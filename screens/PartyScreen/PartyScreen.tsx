@@ -24,35 +24,71 @@ export function PartyScreen() {
           {partyMembers && (
             <FlatList
               data={Object.keys(partyMembers)}
+              contentContainerStyle={styles.memberList}
+              showsVerticalScrollIndicator={false}
               renderItem={({ item, index }) => {
                 return (
-                  <View style={styles.partyMember}>
-                    <UserCard
-                      user={item}
-                      key={index}
-                      actions={
-                        username === partyLeader && item !== partyLeader
-                          ? [
-                              {
-                                icon: <Ionicons name="close" size={24} color={Colors.RED} />,
-                                onPress: () => kickUser(item, party),
-                              },
-                            ]
-                          : []
-                      }
-                    />
-                  </View>
+                  <UserCard
+                    user={item}
+                    key={index}
+                    actions={
+                      username === partyLeader && item !== partyLeader
+                        ? [
+                            {
+                              icon: <Ionicons name="close" size={24} color={Colors.RED} />,
+                              onPress: () =>
+                                Alert.alert(
+                                  'Kick User',
+                                  `Are you sure you want to kick ${item} from the party?`,
+                                  [
+                                    {
+                                      text: 'Cancel',
+                                      onPress: () => {},
+                                      style: 'cancel',
+                                    },
+                                    {
+                                      text: 'Yes',
+                                      onPress: () => kickUser(item, party),
+                                    },
+                                  ],
+                                ),
+                            },
+                          ]
+                        : []
+                    }
+                  />
                 );
               }}
               keyExtractor={(item) => item}
-              style={styles.list}
             />
           )}
           <View style={styles.buttonGroup}>
             <Button
               titleStyle={styles.buttonTitle}
               onPress={() =>
-                partyLeader === username ? disbandParty(username) : leaveParty(username, party)
+                partyLeader === username
+                  ? Alert.alert('Disband Party', 'Are you sure you want to disband the party?', [
+                      {
+                        text: 'Cancel',
+                        onPress: () => {},
+                        style: 'cancel',
+                      },
+                      {
+                        text: 'Yes',
+                        onPress: () => disbandParty(username),
+                      },
+                    ])
+                  : Alert.alert('Leave Party', 'Are you sure you want to leave the party?', [
+                      {
+                        text: 'Cancel',
+                        onPress: () => {},
+                        style: 'cancel',
+                      },
+                      {
+                        text: 'Yes',
+                        onPress: () => leaveParty(username, party),
+                      },
+                    ])
               }>
               LEAVE PARTY
             </Button>
@@ -92,7 +128,6 @@ const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 20,
   },
   partyName: {
     fontSize: 24,
@@ -101,8 +136,8 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginVertical: 10,
   },
-  partyMember: {
-    marginVertical: 10,
+  memberList: {
+    gap: 20,
   },
   buttonGroup: {
     flexDirection: 'row',
@@ -111,9 +146,6 @@ const styles = StyleSheet.create({
   },
   buttonTitle: {
     fontSize: 10,
-  },
-  list: {
-    padding: 10,
   },
   createParty: {
     gap: 10,

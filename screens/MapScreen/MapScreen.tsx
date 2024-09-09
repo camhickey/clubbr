@@ -2,10 +2,12 @@ import { Container } from '@components/Container';
 import { Text } from '@components/Text';
 import { View } from '@components/View';
 import Colors from '@constants/Colors';
+import { db } from '@db*';
 import { FontAwesome } from '@expo/vector-icons';
 import { useParty } from '@hooks/useParty';
 import { useProfile } from '@hooks/useProfile';
 import { useNavigation } from '@react-navigation/native';
+import { collection, onSnapshot, query } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
 import { Alert, Platform, StyleSheet } from 'react-native';
 import MapView from 'react-native-map-clustering';
@@ -24,22 +26,36 @@ const GAINESVILLE = {
   longitudeDelta: 2,
 };
 
+export type SafetyMarker = {
+  description: string;
+  location: { latitude: number; longitude: number };
+  timestamp: number;
+};
+
 export function MapScreen() {
-  const [mapState, setMapState] = useState({
-    markerView: true,
-    safetyView: false,
-    partyView: false,
-    filterView: true,
-    location: GAINESVILLE,
-  });
+  const [clubView, setClubView] = useState(true);
+  const [safetyView, setSafetyView] = useState(false);
+  const [partyView, setPartyView] = useState(false);
+  const [filterView, setFilterView] = useState(true);
 
   const navigation = useNavigation();
 
   const { partyMembers } = useParty();
   const { party } = useProfile();
 
+  const [safetyMarkers, setSafetyMarkers] = useState<SafetyMarker[]>([]);
+
   useEffect(() => {
-    !party && setMapState({ ...mapState, partyView: false });
+    const q = query(collection(db, 'safety'));
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const data = snapshot.docs.map((doc) => doc.data() as SafetyMarker);
+      setSafetyMarkers(data);
+    });
+    return () => unsubscribe();
+  }, []);
+
+  useEffect(() => {
+    party === '' && setPartyView(false);
   }, [party]);
 
   return (
@@ -47,28 +63,26 @@ export function MapScreen() {
       <ProfileListener />
       <PartyListener />
       <MapView
-        initialRegion={mapState.location}
+        initialRegion={GAINESVILLE}
         provider={PROVIDER_DEFAULT}
         style={styles.mainMap}
-        customMapStyle={MapStyle}
+        customMapStyle={Platform.OS !== 'ios' ? MapStyle : []}
         showsPointsOfInterest={Platform.OS !== 'ios'}
         tracksViewChanges={false}
         //iOS is weirdly unresponsive with user location marker
         //showsUserLocation={Platform.OS !== 'ios'}
         followsUserLocation
-        tintColor="#121113"
-        clusterColor="#F4EDED"
-        clusterTextColor="#121113"
+        tintColor={Colors.BLACK}
+        clusterColor={Colors.WHITE}
+        clusterTextColor={Colors.BLACK}
         onLongPress={(e) => {
-          navigation.navigate('SafetyModal', {
-            reportedLatitude: e.nativeEvent.coordinate.latitude,
-            reportedLongitude: e.nativeEvent.coordinate.longitude,
-            actualLatitude: e.nativeEvent.coordinate.latitude,
-            actualLongitude: e.nativeEvent.coordinate.longitude,
+          navigation.navigate('SafetyReportModal', {
+            latitude: e.nativeEvent.coordinate.latitude,
+            longitude: e.nativeEvent.coordinate.longitude,
           });
         }}>
-        {/*START: Marker rendering*/}
-        {mapState.markerView &&
+        {/*START: Club rendering*/}
+        {clubView &&
           MARKERS.map((marker, index) => (
             <Marker
               key={index}
@@ -76,7 +90,6 @@ export function MapScreen() {
                 latitude: marker.latitude,
                 longitude: marker.longitude,
               }}
-              pinColor="white"
               tracksViewChanges={false}
               onPress={() => {
                 navigation.navigate('ClubModal', {
@@ -85,17 +98,38 @@ export function MapScreen() {
                 });
               }}>
               <View style={styles.marker}>
-                <Text>{marker.name}</Text>
-                <FontAwesome name="map-marker" size={24} color={Colors.WHITE} />
+                <Text style={styles.clubMarkerText}>{marker.name}</Text>
+                <FontAwesome
+                  style={styles.clubMarkerText}
+                  name="map-marker"
+                  size={24}
+                  color={Colors.WHITE}
+                />
               </View>
             </Marker>
           ))}
-        {/*END: Marker rendering*/}
-        {/*START: Safety rendering*/}
+        {/*END: Club rendering*/}
 
+        {/*START: Safety rendering*/}
+        {safetyView &&
+          safetyMarkers.map((marker, index) => (
+            <Marker
+              key={index}
+              coordinate={{
+                latitude: marker.location.latitude,
+                longitude: marker.location.longitude,
+              }}
+              pinColor={Colors.RED}
+              tracksViewChanges={false}>
+              <View style={styles.marker}>
+                <FontAwesome name="exclamation-triangle" size={16} color={Colors.ORANGE} />
+              </View>
+            </Marker>
+          ))}
         {/*END: Safety rendering*/}
+
         {/*START: Party rendering*/}
-        {mapState.partyView &&
+        {partyView &&
           partyMembers &&
           Object.entries(partyMembers).map((member, index) => {
             return (
@@ -171,23 +205,23 @@ export function MapScreen() {
                 <FontAwesome
                   name="map-marker"
                   size={24}
-                  color={mapState.markerView ? Colors.WHITE : Colors.INACTIVE}
+                  color={clubView ? Colors.WHITE : Colors.INACTIVE}
                 />
               ),
-              active: mapState.markerView,
-              onPress: () => setMapState((prev) => ({ ...mapState, markerView: !prev.markerView })),
+              active: clubView,
+              onPress: () => setClubView(!clubView),
             },
             {
               title: 'Safety',
               icon: (
                 <FontAwesome
-                  name="heart"
+                  name="exclamation-triangle"
                   size={24}
-                  color={mapState.safetyView ? Colors.WHITE : Colors.INACTIVE}
+                  color={safetyView ? Colors.WHITE : Colors.INACTIVE}
                 />
               ),
-              onPress: () => setMapState((prev) => ({ ...mapState, safetyView: !prev.safetyView })),
-              active: mapState.safetyView,
+              onPress: () => setSafetyView(!safetyView),
+              active: safetyView,
             },
             {
               title: 'Party',
@@ -195,14 +229,14 @@ export function MapScreen() {
                 <FontAwesome
                   name="group"
                   size={24}
-                  color={mapState.partyView ? Colors.WHITE : Colors.INACTIVE}
+                  color={partyView ? Colors.WHITE : Colors.INACTIVE}
                 />
               ),
               onPress: () => {
-                if (!party) return Alert.alert('You are not in a party');
-                else setMapState((prev) => ({ ...mapState, partyView: !prev.partyView }));
+                if (party === '') return Alert.alert('You are not in a party');
+                else setPartyView(!partyView);
               },
-              active: mapState.partyView,
+              active: partyView,
             },
             /*{
               title: 'Filter',
@@ -237,6 +271,14 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     backgroundColor: 'transparent',
+  },
+  clubMarkerText: {
+    textShadowColor: Colors.BLACK,
+    textShadowRadius: 1,
+    textShadowOffset: {
+      width: 2,
+      height: 2,
+    },
   },
   filterContainer: {
     position: 'absolute',

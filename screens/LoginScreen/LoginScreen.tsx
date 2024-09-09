@@ -49,7 +49,7 @@ export function LoginScreen() {
 
   return (
     <Container style={styles.container}>
-      <SafeAreaView style={{ width: '80%' }}>
+      <SafeAreaView style={styles.inputContainer}>
         <Controller
           control={control}
           name="email"
@@ -108,10 +108,13 @@ const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
   },
+  inputContainer: {
+    width: '80%',
+    gap: 10,
+  },
   error: {
     textAlign: 'center',
     color: Colors.RED,
-    marginVertical: 10,
     fontSize: 12,
   },
   input: {
@@ -119,12 +122,10 @@ const styles = StyleSheet.create({
     borderBottomColor: Colors.WHITE,
     paddingHorizontal: 10,
     paddingVertical: 10,
-    marginBottom: 20,
     color: Colors.WHITE,
     textAlign: 'center',
   },
   link: {
     textAlign: 'center',
-    marginVertical: 20,
   },
 });

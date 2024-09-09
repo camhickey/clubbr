@@ -4,9 +4,9 @@ import { View } from '@components/View';
 import Colors from '@constants/Colors';
 import { db } from '@db';
 import { useNavigation } from '@react-navigation/native';
-import { getDoc, doc } from 'firebase/firestore';
+import { doc, getDoc } from 'firebase/firestore';
 import React, { ReactElement, useEffect, useState } from 'react';
-import { StyleSheet, Image, Pressable, Alert } from 'react-native';
+import { Alert, Image, Pressable, StyleSheet } from 'react-native';
 
 interface Action {
   icon: ReactElement;
@@ -52,8 +52,6 @@ export function ClubCard({ id, actions, blurb }: ClubCardProps) {
       <Pressable
         onPress={() => {
           if (clubFound) {
-            // use the IS_USER ternary inside the navigate() function
-
             navigation.navigate('ClubModal', { name: club.name, id });
           } else {
             Alert.alert('Club not found');

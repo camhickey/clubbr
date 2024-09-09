@@ -37,11 +37,13 @@ export function Friends() {
         </Text>
       ) : (
         <View style={styles.searchBar}>
-          <SearchBar search={search} setSearch={setSearch} placeholder="Search for friends..." />
+          <SearchBar search={search} setSearch={setSearch} placeholder="Search your friends..." />
         </View>
       )}
       <FlatList
         refreshing={refreshing}
+        contentContainerStyle={styles.list}
+        showsVerticalScrollIndicator={false}
         onRefresh={() => setRefreshing(true)}
         data={
           search
@@ -49,17 +51,15 @@ export function Friends() {
             : friends
         }
         renderItem={({ item }) => (
-          <View style={styles.item}>
-            <UserCard
-              user={item}
-              actions={[
-                {
-                  icon: <AntDesign name="star" size={24} color={Colors.WHITE} />,
-                  onPress: () => {},
-                },
-              ]}
-            />
-          </View>
+          <UserCard
+            user={item}
+            actions={[
+              {
+                icon: <AntDesign name="star" size={24} color={Colors.WHITE} />,
+                onPress: () => {},
+              },
+            ]}
+          />
         )}
         keyExtractor={(item) => item}
       />
@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
   searchBar: {
     alignItems: 'center',
   },
-  item: {
-    marginVertical: 5,
+  list: {
+    gap: 10,
   },
 });

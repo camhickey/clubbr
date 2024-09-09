@@ -23,11 +23,10 @@ export interface RootStackParamList {
   UserModal: { user: string; title: string };
   InviteModal: undefined;
   AddFriendModal: undefined;
-  SafetyModal: {
-    reportedLatitude: number;
-    reportedLongitude: number;
-    actualLatitude: number;
-    actualLongitude: number;
+  MapHelpModal: undefined;
+  SafetyReportModal: {
+    latitude: number;
+    longitude: number;
   };
   StartupScreen: undefined;
 }

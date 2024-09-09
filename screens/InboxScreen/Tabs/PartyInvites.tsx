@@ -1,4 +1,4 @@
-import { acceptInvite, rejectInvite, getParty } from '@actions/partyActions';
+import { acceptInvite, getParty, rejectInvite } from '@actions/partyActions';
 import { Container } from '@components/Container';
 import { Text } from '@components/Text';
 import { UserCard } from '@components/UserCard';
@@ -29,10 +29,12 @@ export function PartyInvites() {
   }, [refreshing]);
 
   return (
-    <Container>
+    <Container style={styles.container}>
       {invites.length === 0 && <Text style={styles.blurb}>You have no party invites</Text>}
       <FlatList
         data={invites}
+        contentContainerStyle={styles.list}
+        showsVerticalScrollIndicator={false}
         renderItem={({ item, index }) => {
           return (
             <UserCard
@@ -61,11 +63,17 @@ export function PartyInvites() {
 }
 
 const styles = StyleSheet.create({
+  container: {
+    padding: 20,
+  },
   blurb: {
     color: Colors.SUBTEXT,
     textAlign: 'center',
     fontSize: 16,
     marginVertical: 10,
+  },
+  list: {
+    gap: 20,
   },
   icon: {
     padding: 10,

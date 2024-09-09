@@ -1,5 +1,6 @@
 import Colors from '@constants/Colors';
 import { AntDesign, FontAwesome, Ionicons } from '@expo/vector-icons';
+import Entypo from '@expo/vector-icons/Entypo';
 import { useProfile } from '@hooks/useProfile';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer, useNavigation } from '@react-navigation/native';
@@ -8,13 +9,13 @@ import { InboxScreen } from '@screens/InboxScreen/InboxScreen';
 import { IntroScreen } from '@screens/IntroScreen/IntroScreen';
 import { LoginScreen } from '@screens/LoginScreen/LoginScreen';
 import { ClubModal } from '@screens/MapScreen/ClubModal/ClubModal';
+import { MapHelpModal } from '@screens/MapScreen/MapHelpModal/MapHelpModal';
 import { MapScreen } from '@screens/MapScreen/MapScreen';
+import { SafetyReportModal } from '@screens/MapScreen/SafetyReportModal/SafetyReportModal';
 import { InviteModal } from '@screens/PartyScreen/InviteModal/InviteModal';
 import { PartyScreen } from '@screens/PartyScreen/PartyScreen';
 import { RegisterScreen } from '@screens/RegisterScreen/RegisterScreen';
 import { ResetPasswordScreen } from '@screens/ResetPasswordScreeen/ResetPasswordScreen';
-import { SafetyModal } from '@screens/SafetyScreen/SafetyModal/SafetyModal';
-import { SafetyScreen } from '@screens/SafetyScreen/SafetyScreen';
 import { AddFriendModal } from '@screens/SocialScreen/AddFriendModal/AddFriendModal';
 import { SocialScreen } from '@screens/SocialScreen/SocialScreen';
 import { StartupScreen } from '@screens/StartupScreen/StartupScreen';
@@ -112,7 +113,7 @@ function LoggedInNavigator() {
                 opacity: pressed ? 0.5 : 1,
                 padding: 10,
               })}>
-              <FontAwesome name="angle-double-down" size={25} color="white" />
+              <FontAwesome name="angle-double-down" size={25} color={Colors.WHITE} />
             </Pressable>
           ),
         }}>
@@ -132,14 +133,19 @@ function LoggedInNavigator() {
           options={{ title: 'Invite to Party' }}
         />
         <Stack.Screen
-          name="SafetyModal"
-          component={SafetyModal}
+          name="SafetyReportModal"
+          component={SafetyReportModal}
           options={{ title: 'Report an Incident' }}
         />
         <Stack.Screen
           name="AddFriendModal"
           component={AddFriendModal}
           options={{ title: 'Add Friends' }}
+        />
+        <Stack.Screen
+          name="MapHelpModal"
+          component={MapHelpModal}
+          options={{ title: 'How to use the map' }}
         />
       </Stack.Group>
     </Stack.Navigator>
@@ -163,28 +169,6 @@ function BottomTabNavigator() {
           backgroundColor: Colors.BLACK,
         },
       }}>
-      <BottomTab.Screen
-        name="Safety"
-        component={SafetyScreen}
-        options={({ navigation }: RootTabScreenProps<'Safety'>) => ({
-          title: 'Safety',
-          headerTitleStyle: {
-            color: Colors.WHITE,
-            fontSize: 20,
-            fontWeight: 'bold',
-          },
-          tabBarIcon: ({ color, focused }) => <TabBarIcon name="heart" color={color} />,
-          headerRight: () => (
-            <Pressable
-              onPress={() => alert('Settings')}
-              style={({ pressed }) => ({
-                opacity: pressed ? 0.5 : 1,
-              })}>
-              <FontAwesome name="gear" size={25} color={Colors.WHITE} style={{ marginRight: 15 }} />
-            </Pressable>
-          ),
-        })}
-      />
       <BottomTab.Screen
         name="Party"
         component={PartyScreen}
@@ -211,13 +195,13 @@ function BottomTabNavigator() {
           tabBarIcon: ({ color, focused }) => <TabBarIcon name="map" color={color} />,
           headerRight: () => (
             <Pressable
-              onPress={() => auth.signOut()}
+              onPress={() => navigation.navigate('MapHelpModal')}
               style={({ pressed }) => ({
                 opacity: pressed ? 0.5 : 1,
               })}>
-              <FontAwesome
-                name="remove"
-                size={25}
+              <Entypo
+                name="help-with-circle"
+                size={24}
                 color={Colors.WHITE}
                 style={{ marginRight: 15 }}
               />

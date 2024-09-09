@@ -5,7 +5,8 @@ const Colors = {
   SUBTEXT: '#aaa',
   GREEN: '#00b300',
   RED: '#ff3333',
-  SEARCHBAR: '#2d2d2d',
+  ORANGE: '#ff6600',
+  INPUT: '#2d2d2d',
 };
 
 export default Colors;

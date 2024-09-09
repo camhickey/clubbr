@@ -43,15 +43,13 @@ export function Clubs() {
       )}
       <FlatList
         refreshing={refreshing}
+        contentContainerStyle={styles.list}
+        showsVerticalScrollIndicator={false}
         onRefresh={() => setRefreshing(true)}
         data={
           search ? clubs.filter((club) => club.toLowerCase().includes(search.toLowerCase())) : clubs
         }
-        renderItem={({ item }) => (
-          <View style={styles.item}>
-            <ClubCard id={item} />
-          </View>
-        )}
+        renderItem={({ item }) => <ClubCard id={item} />}
         keyExtractor={(item) => item}
       />
     </Container>
@@ -72,7 +70,7 @@ const styles = StyleSheet.create({
   searchBar: {
     alignItems: 'center',
   },
-  item: {
-    marginVertical: 5,
+  list: {
+    gap: 10,
   },
 });

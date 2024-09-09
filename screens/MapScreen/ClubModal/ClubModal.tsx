@@ -102,7 +102,7 @@ export function ClubModal({ route }: any) {
           name="Info"
           children={() => (
             <Container style={styles.tabContainer}>
-              <ScrollView>
+              <ScrollView showsVerticalScrollIndicator={false}>
                 <Text>{details.description}</Text>
               </ScrollView>
             </Container>
@@ -113,7 +113,7 @@ export function ClubModal({ route }: any) {
           name="Tonight"
           children={() => (
             <Container style={styles.tabContainer}>
-              <ScrollView>
+              <ScrollView showsVerticalScrollIndicator={false}>
                 <Text>{details.tonight}</Text>
               </ScrollView>
             </Container>
@@ -161,7 +161,7 @@ const styles = StyleSheet.create({
     padding: 5,
   },
   vibe: {
-    backgroundColor: Colors.SEARCHBAR,
+    backgroundColor: Colors.INPUT,
     borderRadius: 10,
     padding: 5,
     paddingHorizontal: 10,

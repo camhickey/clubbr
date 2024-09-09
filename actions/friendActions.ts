@@ -1,5 +1,5 @@
 import { db } from '@db';
-import { doc, updateDoc, arrayRemove, arrayUnion, getDoc } from 'firebase/firestore';
+import { arrayRemove, arrayUnion, doc, getDoc, updateDoc } from 'firebase/firestore';
 import { Alert } from 'react-native';
 
 export async function sendRequest(localUser: string, friend: string) {
@@ -15,9 +15,8 @@ export async function sendRequest(localUser: string, friend: string) {
     await updateDoc(doc(db, 'users', friend), {
       friendRequestsReceived: arrayUnion(localUser),
     });
-    Alert.alert(`Friend request sent to @${friend}`);
   } else {
-    Alert.alert('User does not exist');
+    return Alert.alert('User does not exist');
   }
 }
 
@@ -51,18 +50,10 @@ export async function acceptRequest(localUser: string, friend: string) {
 }
 
 export async function removeFriend(localUser: string, friend: string) {
-  Alert.alert(`Are you sure you want to remove @${friend}?`, '', [
-    { text: 'Cancel', style: 'cancel' },
-    {
-      text: 'Remove',
-      onPress: async () => {
-        await updateDoc(doc(db, 'users', localUser), {
-          friends: arrayRemove(friend),
-        });
-        await updateDoc(doc(db, 'users', friend), {
-          friends: arrayRemove(localUser),
-        });
-      },
-    },
-  ]);
+  await updateDoc(doc(db, 'users', localUser), {
+    friends: arrayRemove(friend),
+  });
+  await updateDoc(doc(db, 'users', friend), {
+    friends: arrayRemove(localUser),
+  });
 }

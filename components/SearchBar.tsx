@@ -1,5 +1,5 @@
 import Colors from '@constants/Colors';
-import { TextInput, StyleSheet } from 'react-native';
+import { StyleSheet, TextInput } from 'react-native';
 
 interface SearchBarProps {
   search: string;
@@ -22,7 +22,7 @@ export function SearchBar({ search, setSearch, placeholder }: SearchBarProps) {
 const styles = StyleSheet.create({
   search: {
     width: '100%',
-    backgroundColor: Colors.SEARCHBAR,
+    backgroundColor: Colors.INPUT,
     borderRadius: 10,
     padding: 10,
     color: Colors.WHITE,

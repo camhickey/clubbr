@@ -61,7 +61,7 @@ const styles = StyleSheet.create({
   },
   search: {
     width: '100%',
-    backgroundColor: Colors.SEARCHBAR,
+    backgroundColor: Colors.INPUT,
     borderRadius: 10,
     padding: 10,
     color: Colors.WHITE,

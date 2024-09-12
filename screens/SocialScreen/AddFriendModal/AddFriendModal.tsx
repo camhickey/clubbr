@@ -2,11 +2,13 @@ import { sendRequest } from '@actions/friendActions';
 import { Button } from '@components/Button';
 import { ModalContainer } from '@components/ModalContainer';
 import { Text } from '@components/Text';
+import { Toast } from '@components/Toast';
 import Colors from '@constants/Colors';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useProfile } from '@hooks/useProfile';
+import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { StyleSheet, TextInput } from 'react-native';
+import { Alert, StyleSheet, TextInput } from 'react-native';
 
 import { addFriendSchema } from './schema';
 
@@ -22,6 +24,8 @@ export function AddFriendModal() {
   });
 
   const formState = watch();
+
+  const [toast, setToast] = useState(false);
 
   return (
     <ModalContainer style={styles.container}>
@@ -43,14 +47,22 @@ export function AddFriendModal() {
       />
       <Button
         onPress={() =>
-          sendRequest(username, formState.username.toLowerCase()).then(() =>
-            setValue('username', ''),
-          )
+          formState.username.toLowerCase() === username
+            ? setToast(true)
+            : sendRequest(username, formState.username.toLowerCase())
+                .then(() => {
+                  Alert.alert('Friend request sent');
+                  setValue('username', '', { shouldValidate: true });
+                })
+                .catch((error) => {
+                  Alert.alert('Error sending friend request', error.message);
+                })
         }
         disabled={!isValid}>
         ADD FRIEND
       </Button>
       {errors.username && <Text style={styles.error}>{errors.username.message}</Text>}
+      {toast && <Toast header="Add friend" message="blah blah blah" setToast={setToast} />}
     </ModalContainer>
   );
 }

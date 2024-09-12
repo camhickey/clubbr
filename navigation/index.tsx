@@ -16,7 +16,6 @@ import { InviteModal } from '@screens/PartyScreen/InviteModal/InviteModal';
 import { PartyScreen } from '@screens/PartyScreen/PartyScreen';
 import { RegisterScreen } from '@screens/RegisterScreen/RegisterScreen';
 import { ResetPasswordScreen } from '@screens/ResetPasswordScreeen/ResetPasswordScreen';
-import { AddFriendModal } from '@screens/SocialScreen/AddFriendModal/AddFriendModal';
 import { SocialScreen } from '@screens/SocialScreen/SocialScreen';
 import { StartupScreen } from '@screens/StartupScreen/StartupScreen';
 import { UserModalScreen } from '@screens/UserModal/UserModal';
@@ -94,6 +93,11 @@ function LoggedInNavigator() {
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="StartupScreen" component={StartupScreen} />
       <Stack.Screen name="Root" component={BottomTabNavigator} />
+      <Stack.Screen
+        name="ClubModal"
+        component={ClubModal}
+        options={({ route }) => ({ title: route.params.name, id: route.params.id })}
+      />
       <Stack.Group
         screenOptions={{
           presentation: 'modal',
@@ -118,11 +122,6 @@ function LoggedInNavigator() {
           ),
         }}>
         <Stack.Screen
-          name="ClubModal"
-          component={ClubModal}
-          options={({ route }) => ({ title: route.params.name, id: route.params.id })}
-        />
-        <Stack.Screen
           name="UserModal"
           component={UserModalScreen}
           options={({ route }) => ({ title: route.params.title })}
@@ -136,11 +135,6 @@ function LoggedInNavigator() {
           name="SafetyReportModal"
           component={SafetyReportModal}
           options={{ title: 'Report an Incident' }}
-        />
-        <Stack.Screen
-          name="AddFriendModal"
-          component={AddFriendModal}
-          options={{ title: 'Add Friends' }}
         />
         <Stack.Screen
           name="MapHelpModal"
@@ -223,12 +217,12 @@ function BottomTabNavigator() {
           headerRight: () => (
             <>
               <Pressable
-                onPress={() => navigation.navigate('AddFriendModal')}
+                onPress={() => alert('log out')}
                 style={({ pressed }) => ({
                   opacity: pressed ? 0.5 : 1,
                 })}>
                 <Ionicons
-                  name="person-add"
+                  name="settings-sharp"
                   size={25}
                   color={Colors.WHITE}
                   style={{ marginRight: 15 }}

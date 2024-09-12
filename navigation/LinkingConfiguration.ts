@@ -42,7 +42,6 @@ const loggedInLinking: LinkingOptions<RootStackParamList> = {
       ClubModal: 'clubModal',
       UserModal: 'userModal',
       SafetyReportModal: 'safetyReportModal',
-      AddFriendModal: 'addFriendModal',
       MapHelpModal: 'mapHelpModal',
     },
   },

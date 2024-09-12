@@ -9,7 +9,7 @@ export const registerSchema = yup.object().shape({
     .required('Enter a username'),
   displayName: yup
     .string()
-    .min(3, 'Display name must be at least 3 characters')
+    .min(1, 'Display name must be at least 1 character')
     .max(15, 'Display name must be at most 15 characters')
     .matches(/^[a-zA-Z0-9_]*$/, 'Display name can only contain letters, numbers, and underscores')
     .required('Enter a display name'),

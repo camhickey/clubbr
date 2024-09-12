@@ -21,7 +21,6 @@ export function SearchBar({ search, setSearch, placeholder }: SearchBarProps) {
 
 const styles = StyleSheet.create({
   search: {
-    width: '100%',
     backgroundColor: Colors.INPUT,
     borderRadius: 10,
     padding: 10,

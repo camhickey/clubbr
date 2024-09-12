@@ -84,6 +84,7 @@ export function LoginScreen() {
               onChange={(e) => setValue('password', e.nativeEvent.text, { shouldValidate: true })}
               value={value}
               secureTextEntry
+              autoCapitalize="none"
             />
           )}
         />

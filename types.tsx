@@ -22,7 +22,6 @@ export interface RootStackParamList {
   ClubModal: { name: string; id: string };
   UserModal: { user: string; title: string };
   InviteModal: undefined;
-  AddFriendModal: undefined;
   MapHelpModal: undefined;
   SafetyReportModal: {
     latitude: number;
@@ -37,7 +36,6 @@ export type RootStackScreenProps<Screen extends keyof RootStackParamList> = Nati
 >;
 
 export interface RootTabParamList {
-  Safety: undefined;
   Party: { title: string };
   Map: undefined;
   Inbox: undefined;

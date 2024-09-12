@@ -1,12 +1,15 @@
 import { changeDisplayName, changeProfilePicture } from '@actions/userActions';
+import { Button } from '@components/Button';
 import { Container } from '@components/Container';
+import { CustomAlert } from '@components/CustomAlert';
 import { Text } from '@components/Text';
+import { Toast } from '@components/Toast';
 import { View } from '@components/View';
 import Colors from '@constants/Colors';
 import { useProfile } from '@hooks/useProfile';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import React from 'react';
-import { Alert, Image, Pressable, StyleSheet } from 'react-native';
+import React, { useState } from 'react';
+import { Alert, Image, Keyboard, Pressable, StyleSheet, TextInput } from 'react-native';
 
 import { Clubs } from './Tabs/Clubs';
 import { Friends } from './Tabs/Friends';
@@ -15,8 +18,12 @@ export function SocialScreen() {
   const { displayName, photoURL, username } = useProfile();
   const Tab = createMaterialTopTabNavigator();
 
+  const [changeDisplayNameModalVisible, setChangeDisplayNameModalVisible] = useState(false);
+  const [newDisplayName, setNewDisplayName] = useState('');
+  const [changeDisplayNameToastVisible, setChangeDisplayNameToastVisible] = useState(false);
+
   return (
-    <Container style={styles.container}>
+    <Container>
       <View style={styles.userCard}>
         <Pressable
           onPress={() =>
@@ -27,13 +34,10 @@ export function SocialScreen() {
           <Image style={styles.profilePic} source={{ uri: photoURL }} />
         </Pressable>
         <View>
-          <Pressable
-            onPress={() =>
-              Alert.prompt('Change Display Name', 'Enter your new display name', (text) =>
-                changeDisplayName(username, text),
-              )
-            }>
-            <Text style={styles.displayName}>{displayName}</Text>
+          <Pressable onPress={() => setChangeDisplayNameModalVisible(true)}>
+            <Text style={styles.displayName} onPress={() => setChangeDisplayNameModalVisible(true)}>
+              {displayName}
+            </Text>
           </Pressable>
           <Text style={styles.username}>{username}</Text>
         </View>
@@ -50,14 +54,65 @@ export function SocialScreen() {
         <Tab.Screen name="Invites" component={Friends} options={{ tabBarLabel: 'Friends' }} />
         <Tab.Screen name="Clubs" component={Clubs} options={{ tabBarLabel: 'Clubs' }} />
       </Tab.Navigator>
+      {changeDisplayNameModalVisible && (
+        <CustomAlert visible={changeDisplayNameModalVisible}>
+          <View style={modalStyles.container}>
+            <Text style={modalStyles.header}>Change Display Name</Text>
+            {/*Enforce regex*/}
+            <TextInput
+              style={modalStyles.input}
+              placeholder="Enter your new display name..."
+              placeholderTextColor={Colors.SUBTEXT}
+              onChangeText={setNewDisplayName}
+              value={newDisplayName}
+              autoCapitalize="none"
+              multiline
+              blurOnSubmit
+              maxLength={15}
+            />
+            <View style={modalStyles.buttonGroup}>
+              <Button
+                onPress={() => {
+                  setChangeDisplayNameModalVisible(false);
+                  setNewDisplayName('');
+                }}>
+                CANCEL
+              </Button>
+              <Button
+                disabled={!newDisplayName}
+                onPress={() => {
+                  Keyboard.dismiss();
+                  changeDisplayName(username, newDisplayName)
+                    .then(() => {
+                      setChangeDisplayNameModalVisible(false);
+                      setChangeDisplayNameToastVisible(true);
+                      setNewDisplayName('');
+                    })
+                    .catch((error) => {
+                      setChangeDisplayNameModalVisible(false);
+                      Alert.alert('Failed to change display name', error.message);
+                      setNewDisplayName('');
+                    });
+                }}>
+                SAVE
+              </Button>
+            </View>
+          </View>
+        </CustomAlert>
+      )}
+      {changeDisplayNameToastVisible && (
+        <Toast
+          setToast={setChangeDisplayNameToastVisible}
+          variant="success"
+          header="Display Name"
+          message="Your display name was changed successfully!"
+        />
+      )}
     </Container>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    paddingVertical: 20,
-  },
   userCard: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -75,9 +130,31 @@ const styles = StyleSheet.create({
   displayName: {
     fontSize: 20,
     fontWeight: 'bold',
+    width: 200,
   },
   username: {
     fontSize: 16,
     color: Colors.SUBTEXT,
+  },
+});
+
+const modalStyles = StyleSheet.create({
+  container: {
+    gap: 20,
+  },
+  header: {
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  input: {
+    paddingHorizontal: 10,
+    paddingVertical: 10,
+    color: Colors.WHITE,
+    textAlign: 'center',
+  },
+  buttonGroup: {
+    gap: 20,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
 });

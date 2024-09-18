@@ -20,8 +20,6 @@ const firebaseConfig = {
   messagingSenderId: process.env.EXPO_PUBLIC_MESSAGINGSENDERID,
 
   appId: process.env.EXPO_PUBLIC_APPID,
-
-  storageBucket: process.env.EXPO_PUBLIC_STORAGEBUCKET,
 };
 
 const app = initializeApp(firebaseConfig);

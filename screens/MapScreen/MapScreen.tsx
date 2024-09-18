@@ -1,5 +1,9 @@
+import { submitSafetyReport } from '@actions/safetyActions';
+import { Button } from '@components/Button';
 import { Container } from '@components/Container';
+import { CustomAlert } from '@components/CustomAlert';
 import { Text } from '@components/Text';
+import { Toast } from '@components/Toast';
 import { View } from '@components/View';
 import Colors from '@constants/Colors';
 import { db } from '@db*';
@@ -9,15 +13,15 @@ import { useProfile } from '@hooks/useProfile';
 import { useNavigation } from '@react-navigation/native';
 import { collection, onSnapshot, query } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
-import { Alert, Platform, StyleSheet } from 'react-native';
+import { Alert, Platform, StyleSheet, TextInput } from 'react-native';
 import MapView from 'react-native-map-clustering';
 import { Marker, PROVIDER_DEFAULT } from 'react-native-maps';
 
+import { MARKERS } from '../../data/locations';
 import { ActionButton } from './ActionButton/ActionButton';
 import { PartyListener } from './Listeners/PartyListener';
 import { ProfileListener } from './Listeners/ProfileListener';
 import { MapStyle } from './MapStyle';
-import { MARKERS } from '../../data/locations';
 
 const GAINESVILLE = {
   latitude: 29.6436,
@@ -36,12 +40,21 @@ export function MapScreen() {
   const [clubView, setClubView] = useState(true);
   const [safetyView, setSafetyView] = useState(false);
   const [partyView, setPartyView] = useState(false);
-  const [filterView, setFilterView] = useState(true);
+
+  const [safetyModalVisible, setSafetyModalVisible] = useState(false);
+  const [safetyToastVisible, setSafetyToastVisible] = useState(false);
+
+  const SAFETY_REPORT_MAX_LENGTH = 200;
+  const [safetyReport, setSafetyReport] = useState<SafetyMarker>({
+    description: '',
+    location: { latitude: 0, longitude: 0 },
+    timestamp: Date.now(),
+  });
 
   const navigation = useNavigation();
 
   const { partyMembers } = useParty();
-  const { party } = useProfile();
+  const { username, party } = useProfile();
 
   const [safetyMarkers, setSafetyMarkers] = useState<SafetyMarker[]>([]);
 
@@ -69,6 +82,7 @@ export function MapScreen() {
         customMapStyle={Platform.OS !== 'ios' ? MapStyle : []}
         showsPointsOfInterest={Platform.OS !== 'ios'}
         tracksViewChanges={false}
+        toolbarEnabled={false}
         //iOS is weirdly unresponsive with user location marker
         //showsUserLocation={Platform.OS !== 'ios'}
         followsUserLocation
@@ -76,10 +90,12 @@ export function MapScreen() {
         clusterColor={Colors.WHITE}
         clusterTextColor={Colors.BLACK}
         onLongPress={(e) => {
-          navigation.navigate('SafetyReportModal', {
-            latitude: e.nativeEvent.coordinate.latitude,
-            longitude: e.nativeEvent.coordinate.longitude,
+          setSafetyReport({
+            description: '',
+            location: e.nativeEvent.coordinate,
+            timestamp: Date.now(),
           });
+          setSafetyModalVisible(true);
         }}>
         {/*START: Club rendering*/}
         {clubView &&
@@ -98,9 +114,9 @@ export function MapScreen() {
                 });
               }}>
               <View style={styles.marker}>
-                <Text style={styles.clubMarkerText}>{marker.name}</Text>
+                <Text style={styles.markerText}>{marker.name}</Text>
                 <FontAwesome
-                  style={styles.clubMarkerText}
+                  style={styles.markerText}
                   name="map-marker"
                   size={24}
                   color={Colors.WHITE}
@@ -119,7 +135,6 @@ export function MapScreen() {
                 latitude: marker.location.latitude,
                 longitude: marker.location.longitude,
               }}
-              pinColor={Colors.RED}
               tracksViewChanges={false}>
               <View style={styles.marker}>
                 <FontAwesome name="exclamation-triangle" size={16} color={Colors.ORANGE} />
@@ -158,44 +173,6 @@ export function MapScreen() {
           })}
         {/*END: Party rendering*/}
       </MapView>
-      {/*mapState.filterView && (
-        <View style={styles.filterContainer}>
-          <MapFilter
-            options={[
-              {
-                text: '21+',
-                onPress: () =>
-                  setMapState((prev) => ({ ...mapState, markerView: !prev.markerView })),
-                active: false,
-              },
-              {
-                text: 'No cover',
-                onPress: () =>
-                  setMapState((prev) => ({ ...mapState, markerView: !prev.markerView })),
-                active: true,
-              },
-              {
-                text: 'Bar',
-                onPress: () =>
-                  setMapState((prev) => ({ ...mapState, markerView: !prev.markerView })),
-                active: true,
-              },
-              {
-                text: 'Club',
-                onPress: () =>
-                  setMapState((prev) => ({ ...mapState, markerView: !prev.markerView })),
-                active: true,
-              },
-              {
-                text: 'Live music',
-                onPress: () =>
-                  setMapState((prev) => ({ ...mapState, markerView: !prev.markerView })),
-                active: true,
-              },
-            ]}
-          />
-        </View>
-          )*/}
       <View style={styles.buttonContainer}>
         <ActionButton
           options={[
@@ -238,21 +215,79 @@ export function MapScreen() {
               },
               active: partyView,
             },
-            /*{
-              title: 'Filter',
-              icon: (
-                <FontAwesome
-                  name="filter"
-                  size={24}
-                  color={mapState.filterView ? Colors.WHITE : Colors.INACTIVE}
-                />
-              ),
-              onPress: () => setMapState((prev) => ({ ...mapState, filterView: !prev.filterView })),
-              active: mapState.filterView,
-            },*/
           ]}
         />
       </View>
+      {safetyModalVisible && (
+        <CustomAlert visible={safetyModalVisible}>
+          <View style={safetyStyles.container}>
+            <Text style={safetyStyles.header}>Make a Safety Report</Text>
+            <Text style={safetyStyles.blurb}>
+              Please describe the safety concern you are reporting.
+            </Text>
+            <TextInput
+              style={safetyStyles.input}
+              placeholder="Type your description here..."
+              placeholderTextColor={Colors.SUBTEXT}
+              multiline
+              blurOnSubmit
+              textAlignVertical="top"
+              maxLength={SAFETY_REPORT_MAX_LENGTH}
+              value={safetyReport.description}
+              onChangeText={(text) => setSafetyReport({ ...safetyReport, description: text })}
+            />
+            <Text style={safetyStyles.descriptionLength}>
+              Characters: {safetyReport.description.length}/{SAFETY_REPORT_MAX_LENGTH}
+            </Text>
+            <View style={safetyStyles.controls}>
+              <Button
+                onPress={() => {
+                  setSafetyModalVisible(false);
+                  setSafetyReport({
+                    description: '',
+                    location: { latitude: 0, longitude: 0 },
+                    timestamp: Date.now(),
+                  });
+                }}>
+                CANCEL
+              </Button>
+              <Button
+                disabled={safetyReport.description.length === 0}
+                onPress={() => {
+                  submitSafetyReport(
+                    username,
+                    safetyReport.description,
+                    safetyReport.location.latitude,
+                    safetyReport.location.longitude,
+                  )
+                    .then(() => {
+                      //add date to schema in firebase
+                      setSafetyModalVisible(false);
+                      setSafetyReport({
+                        description: '',
+                        location: { latitude: 0, longitude: 0 },
+                        timestamp: Date.now(),
+                      });
+                      setSafetyToastVisible(true);
+                    })
+                    .catch((error) => {
+                      Alert.alert('Error submitting safety report', error.message);
+                    });
+                }}>
+                SUBMIT
+              </Button>
+            </View>
+          </View>
+        </CustomAlert>
+      )}
+      {safetyToastVisible && (
+        <Toast
+          setToast={setSafetyToastVisible}
+          variant="success"
+          header="Safety Report"
+          message="Safety report submitted successfully!"
+        />
+      )}
     </Container>
   );
 }
@@ -272,7 +307,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: 'transparent',
   },
-  clubMarkerText: {
+  markerText: {
     textShadowColor: Colors.BLACK,
     textShadowRadius: 1,
     textShadowOffset: {
@@ -280,17 +315,42 @@ const styles = StyleSheet.create({
       height: 2,
     },
   },
-  filterContainer: {
-    position: 'absolute',
-    top: '2%',
-    left: '2%',
-    backgroundColor: 'transparent',
-  },
   buttonContainer: {
     flex: 1,
     position: 'absolute',
     backgroundColor: 'transparent',
     bottom: '2%',
     right: '2%',
+  },
+});
+
+const safetyStyles = StyleSheet.create({
+  container: {
+    gap: 20,
+  },
+  header: {
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  blurb: {
+    color: Colors.SUBTEXT,
+    alignSelf: 'center',
+  },
+  descriptionLength: {
+    color: Colors.SUBTEXT,
+    alignSelf: 'flex-end',
+    fontSize: 12,
+  },
+  input: {
+    backgroundColor: Colors.INPUT,
+    borderRadius: 10,
+    padding: 10,
+    color: Colors.WHITE,
+  },
+  controls: {
+    padding: 10,
+    gap: 0,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
 });

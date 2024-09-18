@@ -11,7 +11,6 @@ import { LoginScreen } from '@screens/LoginScreen/LoginScreen';
 import { ClubModal } from '@screens/MapScreen/ClubModal/ClubModal';
 import { MapHelpModal } from '@screens/MapScreen/MapHelpModal/MapHelpModal';
 import { MapScreen } from '@screens/MapScreen/MapScreen';
-import { SafetyReportModal } from '@screens/MapScreen/SafetyReportModal/SafetyReportModal';
 import { InviteModal } from '@screens/PartyScreen/InviteModal/InviteModal';
 import { PartyScreen } from '@screens/PartyScreen/PartyScreen';
 import { RegisterScreen } from '@screens/RegisterScreen/RegisterScreen';
@@ -93,14 +92,9 @@ function LoggedInNavigator() {
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="StartupScreen" component={StartupScreen} />
       <Stack.Screen name="Root" component={BottomTabNavigator} />
-      <Stack.Screen
-        name="ClubModal"
-        component={ClubModal}
-        options={({ route }) => ({ title: route.params.name, id: route.params.id })}
-      />
       <Stack.Group
         screenOptions={{
-          presentation: 'modal',
+          presentation: 'fullScreenModal',
           headerShown: true,
           headerStyle: {
             backgroundColor: Colors.BLACK,
@@ -122,6 +116,11 @@ function LoggedInNavigator() {
           ),
         }}>
         <Stack.Screen
+          name="ClubModal"
+          component={ClubModal}
+          options={({ route }) => ({ title: route.params.name, id: route.params.id })}
+        />
+        <Stack.Screen
           name="UserModal"
           component={UserModalScreen}
           options={({ route }) => ({ title: route.params.title })}
@@ -130,11 +129,6 @@ function LoggedInNavigator() {
           name="InviteModal"
           component={InviteModal}
           options={{ title: 'Invite to Party' }}
-        />
-        <Stack.Screen
-          name="SafetyReportModal"
-          component={SafetyReportModal}
-          options={{ title: 'Report an Incident' }}
         />
         <Stack.Screen
           name="MapHelpModal"

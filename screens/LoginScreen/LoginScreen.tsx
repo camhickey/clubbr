@@ -7,7 +7,7 @@ import { useNavigation } from '@react-navigation/core';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 import React, { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { StyleSheet, TextInput } from 'react-native';
+import { KeyboardAvoidingView, StyleSheet, TextInput } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { loginSchema } from './schema';
@@ -49,58 +49,60 @@ export function LoginScreen() {
 
   return (
     <Container style={styles.container}>
-      <SafeAreaView style={styles.inputContainer}>
-        <Controller
-          control={control}
-          name="email"
-          render={({ field: { onBlur, value } }) => (
-            <TextInput
-              placeholder="Email"
-              placeholderTextColor={Colors.SUBTEXT}
-              style={[styles.input, errors.email && { borderBottomColor: Colors.RED }]}
-              onFocus={() => setFocusedField('email')}
-              onBlur={onBlur}
-              onChange={(e) => setValue('email', e.nativeEvent.text, { shouldValidate: true })}
-              value={value}
-              autoCorrect={false}
-              autoCapitalize="none"
-              keyboardType="email-address"
-            />
+      <KeyboardAvoidingView behavior="padding">
+        <SafeAreaView style={styles.inputContainer}>
+          <Controller
+            control={control}
+            name="email"
+            render={({ field: { onBlur, value } }) => (
+              <TextInput
+                placeholder="Email"
+                placeholderTextColor={Colors.SUBTEXT}
+                style={[styles.input, errors.email && { borderBottomColor: Colors.RED }]}
+                onFocus={() => setFocusedField('email')}
+                onBlur={onBlur}
+                onChange={(e) => setValue('email', e.nativeEvent.text, { shouldValidate: true })}
+                value={value}
+                autoCorrect={false}
+                autoCapitalize="none"
+                keyboardType="email-address"
+              />
+            )}
+          />
+          {errors.email && focusedField === 'email' && (
+            <Text style={styles.error}>{errors.email.message}</Text>
           )}
-        />
-        {errors.email && focusedField === 'email' && (
-          <Text style={styles.error}>{errors.email.message}</Text>
-        )}
-        <Controller
-          control={control}
-          name="password"
-          render={({ field: { onBlur, value } }) => (
-            <TextInput
-              placeholder="Password"
-              placeholderTextColor={Colors.SUBTEXT}
-              style={[styles.input, errors.password && { borderBottomColor: Colors.RED }]}
-              onFocus={() => setFocusedField('password')}
-              onBlur={onBlur}
-              onChange={(e) => setValue('password', e.nativeEvent.text, { shouldValidate: true })}
-              value={value}
-              secureTextEntry
-              autoCapitalize="none"
-            />
+          <Controller
+            control={control}
+            name="password"
+            render={({ field: { onBlur, value } }) => (
+              <TextInput
+                placeholder="Password"
+                placeholderTextColor={Colors.SUBTEXT}
+                style={[styles.input, errors.password && { borderBottomColor: Colors.RED }]}
+                onFocus={() => setFocusedField('password')}
+                onBlur={onBlur}
+                onChange={(e) => setValue('password', e.nativeEvent.text, { shouldValidate: true })}
+                value={value}
+                secureTextEntry
+                autoCapitalize="none"
+              />
+            )}
+          />
+          {errors.password && focusedField === 'password' && (
+            <Text style={styles.error}>{errors.password.message}</Text>
           )}
-        />
-        {errors.password && focusedField === 'password' && (
-          <Text style={styles.error}>{errors.password.message}</Text>
-        )}
-        <Button onPress={handleSubmit(onSubmit)} disabled={!isValid}>
-          LOGIN
-        </Button>
-        <Text style={styles.link} onPress={() => navigation.navigate('Register')}>
-          Don't have an account? Create one <Text style={{ fontWeight: 'bold' }}>here.</Text>
-        </Text>
-        <Text style={styles.link} onPress={() => navigation.navigate('ResetPassword')}>
-          Forgot password?
-        </Text>
-      </SafeAreaView>
+          <Button onPress={handleSubmit(onSubmit)} disabled={!isValid}>
+            LOGIN
+          </Button>
+          <Text style={styles.link} onPress={() => navigation.navigate('Register')}>
+            Don't have an account? Create one <Text style={{ fontWeight: 'bold' }}>here.</Text>
+          </Text>
+          <Text style={styles.link} onPress={() => navigation.navigate('ResetPassword')}>
+            Forgot password?
+          </Text>
+        </SafeAreaView>
+      </KeyboardAvoidingView>
     </Container>
   );
 }
@@ -108,10 +110,11 @@ export function LoginScreen() {
 const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
+    justifyContent: 'center',
   },
   inputContainer: {
     width: '80%',
-    gap: 10,
+    gap: 20,
   },
   error: {
     textAlign: 'center',

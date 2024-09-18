@@ -23,10 +23,6 @@ export interface RootStackParamList {
   UserModal: { user: string; title: string };
   InviteModal: undefined;
   MapHelpModal: undefined;
-  SafetyReportModal: {
-    latitude: number;
-    longitude: number;
-  };
   StartupScreen: undefined;
 }
 

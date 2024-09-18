@@ -15,10 +15,10 @@ export async function changeProfilePicture(localUser: string) {
     mediaTypes: ImagePicker.MediaTypeOptions.Images,
     allowsEditing: true,
   });
-  if (!result) return;
+  if (!result) return false;
   const auth = getAuth();
   const user = auth.currentUser;
-  if (!user) return;
+  if (!user) return false;
   if (!result.canceled) {
     const storage = getStorage();
     const storageRef = ref(storage, `users/${user.uid}/pfp.jpg`);
@@ -29,5 +29,6 @@ export async function changeProfilePicture(localUser: string) {
     await updateDoc(doc(db, 'users', localUser), {
       photoURL: downloadURL,
     });
+    return true;
   }
 }

@@ -10,7 +10,7 @@ import { createUserWithEmailAndPassword, getAuth, sendEmailVerification } from '
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import React, { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { StyleSheet, TextInput } from 'react-native';
+import { KeyboardAvoidingView, StyleSheet, TextInput } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { registerSchema } from './schema';
@@ -84,126 +84,128 @@ export function RegisterScreen() {
 
   return (
     <Container style={styles.container}>
-      <SafeAreaView style={styles.inputContainer}>
-        <Controller
-          control={control}
-          rules={{
-            required: true,
-          }}
-          render={({ field: { onBlur, value } }) => (
-            <TextInput
-              placeholder="Username"
-              placeholderTextColor={Colors.INACTIVE}
-              style={[styles.input, errors.username && { borderBottomColor: Colors.RED }]}
-              onFocus={() => setFocusedField('username')}
-              onBlur={onBlur}
-              onChange={(e) => setValue('username', e.nativeEvent.text, { shouldValidate: true })}
-              value={value}
-              autoCorrect={false}
-              autoCapitalize="none"
-            />
+      <KeyboardAvoidingView behavior="padding">
+        <SafeAreaView style={styles.inputContainer}>
+          <Controller
+            control={control}
+            rules={{
+              required: true,
+            }}
+            render={({ field: { onBlur, value } }) => (
+              <TextInput
+                placeholder="Username"
+                placeholderTextColor={Colors.INACTIVE}
+                style={[styles.input, errors.username && { borderBottomColor: Colors.RED }]}
+                onFocus={() => setFocusedField('username')}
+                onBlur={onBlur}
+                onChange={(e) => setValue('username', e.nativeEvent.text, { shouldValidate: true })}
+                value={value}
+                autoCorrect={false}
+                autoCapitalize="none"
+              />
+            )}
+            name="username"
+          />
+          {errors.username && focusedField === 'username' && (
+            <Text style={styles.error}>{errors.username.message}</Text>
           )}
-          name="username"
-        />
-        {errors.username && focusedField === 'username' && (
-          <Text style={styles.error}>{errors.username.message}</Text>
-        )}
-        <Controller
-          control={control}
-          rules={{
-            required: true,
-          }}
-          render={({ field: { onBlur, value } }) => (
-            <TextInput
-              placeholder="Display name"
-              placeholderTextColor={Colors.INACTIVE}
-              style={[styles.input, errors.displayName && { borderBottomColor: Colors.RED }]}
-              onFocus={() => setFocusedField('displayName')}
-              onBlur={onBlur}
-              onChange={(e) =>
-                setValue('displayName', e.nativeEvent.text, { shouldValidate: true })
-              }
-              value={value}
-              autoCorrect={false}
-              autoCapitalize="none"
-            />
+          <Controller
+            control={control}
+            rules={{
+              required: true,
+            }}
+            render={({ field: { onBlur, value } }) => (
+              <TextInput
+                placeholder="Display name"
+                placeholderTextColor={Colors.INACTIVE}
+                style={[styles.input, errors.displayName && { borderBottomColor: Colors.RED }]}
+                onFocus={() => setFocusedField('displayName')}
+                onBlur={onBlur}
+                onChange={(e) =>
+                  setValue('displayName', e.nativeEvent.text, { shouldValidate: true })
+                }
+                value={value}
+                autoCorrect={false}
+                autoCapitalize="none"
+              />
+            )}
+            name="displayName"
+          />
+          {errors.displayName && focusedField === 'displayName' && (
+            <Text style={styles.error}>{errors.displayName.message}</Text>
           )}
-          name="displayName"
-        />
-        {errors.displayName && focusedField === 'displayName' && (
-          <Text style={styles.error}>{errors.displayName.message}</Text>
-        )}
-        <Controller
-          control={control}
-          rules={{
-            required: true,
-          }}
-          render={({ field: { onBlur, value } }) => (
-            <TextInput
-              placeholder="Email"
-              placeholderTextColor={Colors.INACTIVE}
-              style={[styles.input, errors.email && { borderBottomColor: Colors.RED }]}
-              onFocus={() => setFocusedField('email')}
-              onBlur={onBlur}
-              onChange={(e) => setValue('email', e.nativeEvent.text, { shouldValidate: true })}
-              value={value}
-              autoCorrect={false}
-              autoCapitalize="none"
-              keyboardType="email-address"
-            />
+          <Controller
+            control={control}
+            rules={{
+              required: true,
+            }}
+            render={({ field: { onBlur, value } }) => (
+              <TextInput
+                placeholder="Email"
+                placeholderTextColor={Colors.INACTIVE}
+                style={[styles.input, errors.email && { borderBottomColor: Colors.RED }]}
+                onFocus={() => setFocusedField('email')}
+                onBlur={onBlur}
+                onChange={(e) => setValue('email', e.nativeEvent.text, { shouldValidate: true })}
+                value={value}
+                autoCorrect={false}
+                autoCapitalize="none"
+                keyboardType="email-address"
+              />
+            )}
+            name="email"
+          />
+          {errors.email && focusedField === 'email' && (
+            <Text style={styles.error}>{errors.email.message}</Text>
           )}
-          name="email"
-        />
-        {errors.email && focusedField === 'email' && (
-          <Text style={styles.error}>{errors.email.message}</Text>
-        )}
-        <Controller
-          control={control}
-          render={({ field: { onBlur, value } }) => (
-            <TextInput
-              placeholder="Password"
-              placeholderTextColor={Colors.INACTIVE}
-              style={[styles.input, errors.password && { borderBottomColor: Colors.RED }]}
-              onFocus={() => setFocusedField('password')}
-              onBlur={onBlur}
-              onChange={(e) => setValue('password', e.nativeEvent.text, { shouldValidate: true })}
-              value={value}
-              secureTextEntry
-            />
+          <Controller
+            control={control}
+            render={({ field: { onBlur, value } }) => (
+              <TextInput
+                placeholder="Password"
+                placeholderTextColor={Colors.INACTIVE}
+                style={[styles.input, errors.password && { borderBottomColor: Colors.RED }]}
+                onFocus={() => setFocusedField('password')}
+                onBlur={onBlur}
+                onChange={(e) => setValue('password', e.nativeEvent.text, { shouldValidate: true })}
+                value={value}
+                secureTextEntry
+              />
+            )}
+            name="password"
+          />
+          {errors.password && focusedField === 'password' && (
+            <Text style={styles.error}>{errors.password.message}</Text>
           )}
-          name="password"
-        />
-        {errors.password && focusedField === 'password' && (
-          <Text style={styles.error}>{errors.password.message}</Text>
-        )}
-        <Controller
-          control={control}
-          render={({ field: { onBlur, value } }) => (
-            <TextInput
-              placeholder="Confirm password"
-              placeholderTextColor={Colors.INACTIVE}
-              style={[styles.input, errors.confirmPassword && { borderBottomColor: Colors.RED }]}
-              onFocus={() => setFocusedField('confirmPassword')}
-              onBlur={onBlur}
-              onChange={(e) =>
-                setValue('confirmPassword', e.nativeEvent.text, { shouldValidate: true })
-              }
-              value={value}
-              secureTextEntry
-            />
+          <Controller
+            control={control}
+            render={({ field: { onBlur, value } }) => (
+              <TextInput
+                placeholder="Confirm password"
+                placeholderTextColor={Colors.INACTIVE}
+                style={[styles.input, errors.confirmPassword && { borderBottomColor: Colors.RED }]}
+                onFocus={() => setFocusedField('confirmPassword')}
+                onBlur={onBlur}
+                onChange={(e) =>
+                  setValue('confirmPassword', e.nativeEvent.text, { shouldValidate: true })
+                }
+                value={value}
+                secureTextEntry
+              />
+            )}
+            name="confirmPassword"
+          />
+          {errors.confirmPassword && focusedField === 'confirmPassword' && (
+            <Text style={styles.error}>{errors.confirmPassword.message}</Text>
           )}
-          name="confirmPassword"
-        />
-        {errors.confirmPassword && focusedField === 'confirmPassword' && (
-          <Text style={styles.error}>{errors.confirmPassword.message}</Text>
-        )}
-        <Button onPress={handleSubmit(onSubmit)} disabled={!isValid}>
-          REGISTER
-        </Button>
-        <Text style={styles.link} onPress={() => navigation.navigate('Login')}>
-          Already have an account? Sign in <Text style={{ fontWeight: 'bold' }}>here.</Text>
-        </Text>
-      </SafeAreaView>
+          <Button onPress={handleSubmit(onSubmit)} disabled={!isValid}>
+            REGISTER
+          </Button>
+          <Text style={styles.link} onPress={() => navigation.navigate('Login')}>
+            Already have an account? Sign in <Text style={{ fontWeight: 'bold' }}>here.</Text>
+          </Text>
+        </SafeAreaView>
+      </KeyboardAvoidingView>
     </Container>
   );
 }
@@ -211,10 +213,11 @@ export function RegisterScreen() {
 const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
+    justifyContent: 'center',
   },
   inputContainer: {
     width: '80%',
-    gap: 10,
+    gap: 20,
   },
   error: {
     color: Colors.RED,

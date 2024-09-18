@@ -10,9 +10,9 @@ import Colors from '@constants/Colors';
 import { db } from '@db';
 import { AntDesign, Ionicons } from '@expo/vector-icons';
 import { useProfile } from '@hooks/useProfile';
-import { doc, onSnapshot } from 'firebase/firestore';
+import { doc, getDoc, onSnapshot } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
-import { Alert, FlatList, Keyboard, Pressable, StyleSheet, TextInput } from 'react-native';
+import { FlatList, Keyboard, Pressable, StyleSheet, TextInput } from 'react-native';
 
 export function Friends() {
   const { friends, setFriends, username } = useProfile();
@@ -22,6 +22,16 @@ export function Friends() {
   const [addFriendModalVisible, setAddFriendModalVisible] = useState(false);
   const [addedFriend, setAddedFriend] = useState('');
   const [addFriendToastVisible, setAddFriendToastVisible] = useState(false);
+  enum ADD_FRIEND_TOAST_MESSAGES {
+    SELF_FRIEND = 'You cannot add yourself as a friend.',
+    ALREADY_FRIENDS = 'You are already friends with this user.',
+    FRIEND_REQUEST_SENT = 'Friend request sent successfully!',
+    FRIEND_REQUEST_FAILED = 'Failed to send friend request.',
+    USER_NOT_FOUND = 'The user you are trying to add does not exist.',
+  }
+  const [addFriendToastMessage, setAddFriendToastMessage] = useState<ADD_FRIEND_TOAST_MESSAGES>(
+    ADD_FRIEND_TOAST_MESSAGES.FRIEND_REQUEST_SENT,
+  );
 
   useEffect(() => {
     if (refreshing) {
@@ -96,23 +106,28 @@ export function Friends() {
             <Button
               onPress={() => {
                 Keyboard.dismiss();
-                if (addedFriend === username) {
-                  Alert.alert(
-                    'Failed to send friend request',
-                    'You cannot add yourself as a friend.',
-                  );
-                } else {
-                  sendRequest(username, addedFriend)
-                    .then(() => {
-                      setAddFriendToastVisible(true);
-                      setAddFriendModalVisible(false);
-                      setAddedFriend('');
-                    })
-                    .catch((error) => {
-                      setAddFriendModalVisible(false);
-                      Alert.alert('Failed to send friend request', error.message);
-                    });
+                if (addedFriend === username)
+                  setAddFriendToastMessage(ADD_FRIEND_TOAST_MESSAGES.SELF_FRIEND);
+                else if (friends.includes(addedFriend))
+                  setAddFriendToastMessage(ADD_FRIEND_TOAST_MESSAGES.ALREADY_FRIENDS);
+                else {
+                  getDoc(doc(db, 'users', addedFriend)).then((doc) => {
+                    if (!doc.exists()) {
+                      setAddFriendToastMessage(ADD_FRIEND_TOAST_MESSAGES.USER_NOT_FOUND);
+                    } else {
+                      sendRequest(username, addedFriend)
+                        .then(() => {
+                          setAddFriendToastMessage(ADD_FRIEND_TOAST_MESSAGES.FRIEND_REQUEST_SENT);
+                        })
+                        .catch(() => {
+                          setAddFriendToastMessage(ADD_FRIEND_TOAST_MESSAGES.FRIEND_REQUEST_FAILED);
+                        });
+                    }
+                  });
                 }
+                setAddFriendModalVisible(false);
+                setAddedFriend('');
+                setAddFriendToastVisible(true);
               }}
               disabled={!addedFriend}>
               ADD FRIEND
@@ -130,9 +145,13 @@ export function Friends() {
       {addFriendToastVisible && (
         <Toast
           setToast={setAddFriendToastVisible}
-          variant="success"
+          variant={
+            addFriendToastMessage === ADD_FRIEND_TOAST_MESSAGES.FRIEND_REQUEST_SENT
+              ? 'success'
+              : 'error'
+          }
           header="Friend Request"
-          message="Friend request sent successfully!"
+          message={addFriendToastMessage}
         />
       )}
     </Container>
@@ -148,7 +167,7 @@ const styles = StyleSheet.create({
   },
   controls: {
     padding: 10,
-    gap: 20,
+    gap: 0,
     flexDirection: 'row',
     alignItems: 'center',
   },

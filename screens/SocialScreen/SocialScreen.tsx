@@ -22,14 +22,18 @@ export function SocialScreen() {
   const [newDisplayName, setNewDisplayName] = useState('');
   const [changeDisplayNameToastVisible, setChangeDisplayNameToastVisible] = useState(false);
 
+  const [changeProfilePictureToastVisible, setChangeProfilePictureToastVisible] = useState(false);
+
   return (
     <Container>
       <View style={styles.userCard}>
         <Pressable
           onPress={() =>
             changeProfilePicture(username)
-              .then(() => Alert.alert('Profile picture updated!'))
-              .catch((error) => Alert.alert('Failed to update profile picture', error.message))
+              .then((result) => {
+                if (result) setChangeProfilePictureToastVisible(true);
+              })
+              .catch(() => Alert.alert('Error', 'Failed to change profile picture.'))
           }>
           <Image style={styles.profilePic} source={{ uri: photoURL }} />
         </Pressable>
@@ -88,11 +92,7 @@ export function SocialScreen() {
                       setChangeDisplayNameToastVisible(true);
                       setNewDisplayName('');
                     })
-                    .catch((error) => {
-                      setChangeDisplayNameModalVisible(false);
-                      Alert.alert('Failed to change display name', error.message);
-                      setNewDisplayName('');
-                    });
+                    .catch(() => Alert.alert('Error', 'Failed to change display name.'));
                 }}>
                 SAVE
               </Button>
@@ -105,7 +105,15 @@ export function SocialScreen() {
           setToast={setChangeDisplayNameToastVisible}
           variant="success"
           header="Display Name"
-          message="Your display name was changed successfully!"
+          message="Your display name has been updated!"
+        />
+      )}
+      {changeProfilePictureToastVisible && (
+        <Toast
+          setToast={setChangeProfilePictureToastVisible}
+          variant="success"
+          header="Profile Picture"
+          message="Your profile picture has been updated!"
         />
       )}
     </Container>

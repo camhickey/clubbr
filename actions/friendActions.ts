@@ -1,23 +1,13 @@
 import { db } from '@db';
-import { arrayRemove, arrayUnion, doc, getDoc, updateDoc } from 'firebase/firestore';
-import { Alert } from 'react-native';
+import { arrayRemove, arrayUnion, doc, updateDoc } from 'firebase/firestore';
 
 export async function sendRequest(localUser: string, friend: string) {
-  const friendDoc = await getDoc(doc(db, 'users', friend));
-  if (friendDoc.exists()) {
-    const friendData = friendDoc.data();
-    if (friendData.friends.includes(localUser)) {
-      return Alert.alert(`@${friend} is already your friend`);
-    }
-    await updateDoc(doc(db, 'users', localUser), {
-      friendRequestsPending: arrayUnion(friend),
-    });
-    await updateDoc(doc(db, 'users', friend), {
-      friendRequestsReceived: arrayUnion(localUser),
-    });
-  } else {
-    return Alert.alert('User does not exist');
-  }
+  await updateDoc(doc(db, 'users', localUser), {
+    friendRequestsPending: arrayUnion(friend),
+  });
+  await updateDoc(doc(db, 'users', friend), {
+    friendRequestsReceived: arrayUnion(localUser),
+  });
 }
 
 export async function rejectRequest(localUser: string, friend: string) {

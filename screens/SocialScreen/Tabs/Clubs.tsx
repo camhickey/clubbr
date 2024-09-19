@@ -4,29 +4,13 @@ import { SearchBar } from '@components/SearchBar';
 import { Text } from '@components/Text';
 import { View } from '@components/View';
 import Colors from '@constants/Colors';
-import { db } from '@db';
 import { useProfile } from '@hooks/useProfile';
-import { doc, onSnapshot } from 'firebase/firestore';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { FlatList, StyleSheet } from 'react-native';
 
 export function Clubs() {
-  const { clubs, setClubs, username } = useProfile();
+  const { clubs } = useProfile();
   const [search, setSearch] = useState('');
-  const [refreshing, setRefreshing] = useState(false);
-
-  useEffect(() => {
-    if (refreshing) {
-      onSnapshot(doc(db, 'users', username), (snapshot) => {
-        const data = snapshot.data();
-        if (data) {
-          setClubs([]);
-          setClubs(data.clubs);
-        }
-      });
-      setRefreshing(false);
-    }
-  }, [refreshing]);
 
   return (
     <Container style={styles.container}>
@@ -42,10 +26,8 @@ export function Clubs() {
         </View>
       )}
       <FlatList
-        refreshing={refreshing}
         contentContainerStyle={styles.list}
         showsVerticalScrollIndicator={false}
-        onRefresh={() => setRefreshing(true)}
         data={
           search ? clubs.filter((club) => club.toLowerCase().includes(search.toLowerCase())) : clubs
         }
@@ -71,6 +53,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   list: {
-    gap: 10,
+    gap: 20,
+    paddingHorizontal: 10,
   },
 });

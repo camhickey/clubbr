@@ -17,11 +17,11 @@ import { Alert, Platform, StyleSheet, TextInput } from 'react-native';
 import MapView from 'react-native-map-clustering';
 import { Marker, PROVIDER_DEFAULT } from 'react-native-maps';
 
-import { MARKERS } from '../../data/locations';
 import { ActionButton } from './ActionButton/ActionButton';
 import { PartyListener } from './Listeners/PartyListener';
 import { ProfileListener } from './Listeners/ProfileListener';
 import { MapStyle } from './MapStyle';
+import { MARKERS } from '../../data/locations';
 
 const GAINESVILLE = {
   latitude: 29.6436,
@@ -30,7 +30,7 @@ const GAINESVILLE = {
   longitudeDelta: 2,
 };
 
-export type SafetyMarker = {
+export type SafetyReport = {
   description: string;
   location: { latitude: number; longitude: number };
   timestamp: number;
@@ -41,11 +41,17 @@ export function MapScreen() {
   const [safetyView, setSafetyView] = useState(false);
   const [partyView, setPartyView] = useState(false);
 
-  const [safetyModalVisible, setSafetyModalVisible] = useState(false);
-  const [safetyToastVisible, setSafetyToastVisible] = useState(false);
-
+  const [makeSafetyReportModalVisible, setMakeSafetyReportModalVisible] = useState(false);
+  const [makeSafetyReportToastVisible, setMakeSafetyReportToastVisible] = useState(false);
   const SAFETY_REPORT_MAX_LENGTH = 200;
-  const [safetyReport, setSafetyReport] = useState<SafetyMarker>({
+  const [makeSafetyReport, setMakeSafetyReport] = useState<SafetyReport>({
+    description: '',
+    location: { latitude: 0, longitude: 0 },
+    timestamp: Date.now(),
+  });
+
+  const [showSafetyReportModalVisible, setShowSafetyReportModalVisible] = useState(false);
+  const [showSafetyReport, setShowSafetyReport] = useState<SafetyReport>({
     description: '',
     location: { latitude: 0, longitude: 0 },
     timestamp: Date.now(),
@@ -56,12 +62,12 @@ export function MapScreen() {
   const { partyMembers } = useParty();
   const { username, party } = useProfile();
 
-  const [safetyMarkers, setSafetyMarkers] = useState<SafetyMarker[]>([]);
+  const [safetyMarkers, setSafetyMarkers] = useState<SafetyReport[]>([]);
 
   useEffect(() => {
     const q = query(collection(db, 'safety'));
     const unsubscribe = onSnapshot(q, (snapshot) => {
-      const data = snapshot.docs.map((doc) => doc.data() as SafetyMarker);
+      const data = snapshot.docs.map((doc) => doc.data() as SafetyReport);
       setSafetyMarkers(data);
     });
     return () => unsubscribe();
@@ -90,12 +96,12 @@ export function MapScreen() {
         clusterColor={Colors.WHITE}
         clusterTextColor={Colors.BLACK}
         onLongPress={(e) => {
-          setSafetyReport({
+          setMakeSafetyReport({
             description: '',
             location: e.nativeEvent.coordinate,
             timestamp: Date.now(),
           });
-          setSafetyModalVisible(true);
+          setMakeSafetyReportModalVisible(true);
         }}>
         {/*START: Club rendering*/}
         {clubView &&
@@ -135,9 +141,13 @@ export function MapScreen() {
                 latitude: marker.location.latitude,
                 longitude: marker.location.longitude,
               }}
+              onPress={() => {
+                setShowSafetyReport(marker);
+                setShowSafetyReportModalVisible(true);
+              }}
               tracksViewChanges={false}>
               <View style={styles.marker}>
-                <FontAwesome name="exclamation-triangle" size={16} color={Colors.ORANGE} />
+                <FontAwesome name="exclamation-triangle" size={24} color={Colors.ORANGE} />
               </View>
             </Marker>
           ))}
@@ -218,32 +228,63 @@ export function MapScreen() {
           ]}
         />
       </View>
-      {safetyModalVisible && (
-        <CustomAlert visible={safetyModalVisible}>
-          <View style={safetyStyles.container}>
-            <Text style={safetyStyles.header}>Make a Safety Report</Text>
-            <Text style={safetyStyles.blurb}>
+      {showSafetyReportModalVisible && (
+        <CustomAlert visible={showSafetyReportModalVisible}>
+          <View style={modalStyles.container}>
+            <Text style={modalStyles.header}>Safety Report</Text>
+            <Text style={modalStyles.blurb}>{showSafetyReport.description}</Text>
+            <Text style={modalStyles.blurb}>
+              Reported:{' '}
+              {
+                // Firebase timestamp is being weird and not converting to date properly
+                // @ts-ignore
+                new Date(showSafetyReport.timestamp.seconds * 1000).toLocaleString('en-US', {
+                  timeZone: 'UTC',
+                  hour12: true,
+                  day: 'numeric',
+                  month: 'short',
+                  hour: '2-digit',
+                  minute: '2-digit',
+                })
+              }
+            </Text>
+            <Button
+              onPress={() => {
+                setShowSafetyReportModalVisible(false);
+              }}>
+              CLOSE
+            </Button>
+          </View>
+        </CustomAlert>
+      )}
+      {makeSafetyReportModalVisible && (
+        <CustomAlert visible={makeSafetyReportModalVisible}>
+          <View style={modalStyles.container}>
+            <Text style={modalStyles.header}>Make a Safety Report</Text>
+            <Text style={modalStyles.blurb}>
               Please describe the safety concern you are reporting.
             </Text>
             <TextInput
-              style={safetyStyles.input}
+              style={modalStyles.input}
               placeholder="Type your description here..."
               placeholderTextColor={Colors.SUBTEXT}
               multiline
               blurOnSubmit
               textAlignVertical="top"
               maxLength={SAFETY_REPORT_MAX_LENGTH}
-              value={safetyReport.description}
-              onChangeText={(text) => setSafetyReport({ ...safetyReport, description: text })}
+              value={makeSafetyReport.description}
+              onChangeText={(text) =>
+                setMakeSafetyReport({ ...makeSafetyReport, description: text })
+              }
             />
-            <Text style={safetyStyles.descriptionLength}>
-              Characters: {safetyReport.description.length}/{SAFETY_REPORT_MAX_LENGTH}
+            <Text style={modalStyles.descriptionLength}>
+              Characters: {makeSafetyReport.description.length}/{SAFETY_REPORT_MAX_LENGTH}
             </Text>
-            <View style={safetyStyles.controls}>
+            <View style={modalStyles.controls}>
               <Button
                 onPress={() => {
-                  setSafetyModalVisible(false);
-                  setSafetyReport({
+                  setMakeSafetyReportModalVisible(false);
+                  setMakeSafetyReport({
                     description: '',
                     location: { latitude: 0, longitude: 0 },
                     timestamp: Date.now(),
@@ -252,23 +293,22 @@ export function MapScreen() {
                 CANCEL
               </Button>
               <Button
-                disabled={safetyReport.description.length === 0}
+                disabled={makeSafetyReport.description.length === 0}
                 onPress={() => {
                   submitSafetyReport(
                     username,
-                    safetyReport.description,
-                    safetyReport.location.latitude,
-                    safetyReport.location.longitude,
+                    makeSafetyReport.description,
+                    makeSafetyReport.location.latitude,
+                    makeSafetyReport.location.longitude,
                   )
                     .then(() => {
-                      //add date to schema in firebase
-                      setSafetyModalVisible(false);
-                      setSafetyReport({
+                      setMakeSafetyReportModalVisible(false);
+                      setMakeSafetyReport({
                         description: '',
                         location: { latitude: 0, longitude: 0 },
                         timestamp: Date.now(),
                       });
-                      setSafetyToastVisible(true);
+                      setMakeSafetyReportToastVisible(true);
                     })
                     .catch((error) => {
                       Alert.alert('Error submitting safety report', error.message);
@@ -280,9 +320,9 @@ export function MapScreen() {
           </View>
         </CustomAlert>
       )}
-      {safetyToastVisible && (
+      {makeSafetyReportToastVisible && (
         <Toast
-          setToast={setSafetyToastVisible}
+          setToast={setMakeSafetyReportToastVisible}
           variant="success"
           header="Safety Report"
           message="Safety report submitted successfully!"
@@ -324,7 +364,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const safetyStyles = StyleSheet.create({
+const modalStyles = StyleSheet.create({
   container: {
     gap: 20,
   },
@@ -334,7 +374,6 @@ const safetyStyles = StyleSheet.create({
   },
   blurb: {
     color: Colors.SUBTEXT,
-    alignSelf: 'center',
   },
   descriptionLength: {
     color: Colors.SUBTEXT,

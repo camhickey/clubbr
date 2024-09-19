@@ -10,14 +10,13 @@ import Colors from '@constants/Colors';
 import { db } from '@db';
 import { AntDesign, Ionicons } from '@expo/vector-icons';
 import { useProfile } from '@hooks/useProfile';
-import { doc, getDoc, onSnapshot } from 'firebase/firestore';
-import { useEffect, useState } from 'react';
+import { doc, getDoc } from 'firebase/firestore';
+import { useState } from 'react';
 import { FlatList, Keyboard, Pressable, StyleSheet, TextInput } from 'react-native';
 
 export function Friends() {
-  const { friends, setFriends, username } = useProfile();
+  const { friends, username } = useProfile();
   const [search, setSearch] = useState('');
-  const [refreshing, setRefreshing] = useState(false);
 
   const [addFriendModalVisible, setAddFriendModalVisible] = useState(false);
   const [addedFriend, setAddedFriend] = useState('');
@@ -32,19 +31,6 @@ export function Friends() {
   const [addFriendToastMessage, setAddFriendToastMessage] = useState<ADD_FRIEND_TOAST_MESSAGES>(
     ADD_FRIEND_TOAST_MESSAGES.FRIEND_REQUEST_SENT,
   );
-
-  useEffect(() => {
-    if (refreshing) {
-      onSnapshot(doc(db, 'users', username), (snapshot) => {
-        const data = snapshot.data();
-        if (data) {
-          setFriends([]);
-          setFriends(data.friends);
-        }
-      });
-      setRefreshing(false);
-    }
-  }, [refreshing]);
 
   return (
     <Container>
@@ -63,10 +49,8 @@ export function Friends() {
       </View>
       {friends.length !== 0 ? (
         <FlatList
-          refreshing={refreshing}
           contentContainerStyle={styles.list}
           showsVerticalScrollIndicator={false}
-          onRefresh={() => setRefreshing(true)}
           data={
             search
               ? friends.filter((friend) => friend.toLowerCase().includes(search.toLowerCase()))
@@ -182,7 +166,8 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   list: {
-    gap: 10,
+    gap: 20,
+    paddingHorizontal: 10,
   },
 });
 

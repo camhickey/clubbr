@@ -3,30 +3,12 @@ import { Container } from '@components/Container';
 import { Text } from '@components/Text';
 import { UserCard } from '@components/UserCard';
 import Colors from '@constants/Colors';
-import { db } from '@db';
 import { AntDesign } from '@expo/vector-icons';
 import { useProfile } from '@hooks/useProfile';
-import { doc, onSnapshot } from 'firebase/firestore';
-import { useEffect, useState } from 'react';
 import { FlatList, StyleSheet } from 'react-native';
 
 export function ReceivedFriendRequests() {
-  const { friendRequestsReceived, setFriendRequestsReceived, username } = useProfile();
-
-  const [refreshing, setRefreshing] = useState(false);
-
-  useEffect(() => {
-    if (refreshing) {
-      onSnapshot(doc(db, 'users', username), (snapshot) => {
-        const data = snapshot.data();
-        if (data) {
-          setFriendRequestsReceived([]);
-          setFriendRequestsReceived(data.friendRequestsReceived);
-        }
-      });
-      setRefreshing(false);
-    }
-  }, [refreshing]);
+  const { friendRequestsReceived, username } = useProfile();
 
   return (
     <Container style={styles.container}>
@@ -76,6 +58,7 @@ const styles = StyleSheet.create({
   },
   list: {
     gap: 20,
+    paddingHorizontal: 10,
   },
   icon: {
     padding: 10,

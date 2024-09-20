@@ -1,7 +1,6 @@
 import { inviteUsers } from '@actions/partyActions';
 import { Button } from '@components/Button';
 import { ModalContainer } from '@components/ModalContainer';
-import { SearchBar } from '@components/SearchBar';
 import { Text } from '@components/Text';
 import { View } from '@components/View';
 import Colors from '@constants/Colors';
@@ -9,7 +8,7 @@ import { FontAwesome } from '@expo/vector-icons';
 import { useProfile } from '@hooks/useProfile';
 import { useNavigation } from '@react-navigation/native';
 import { useState } from 'react';
-import { Alert, FlatList, Pressable, StyleSheet } from 'react-native';
+import { Alert, FlatList, Pressable, StyleSheet, TextInput } from 'react-native';
 
 export function InviteModal() {
   const { friends, username } = useProfile();
@@ -19,7 +18,14 @@ export function InviteModal() {
 
   return (
     <ModalContainer style={styles.container}>
-      <SearchBar search={search} setSearch={setSearch} placeholder="Search for friends..." />
+      <TextInput
+        style={styles.search}
+        onChangeText={setSearch}
+        value={search}
+        placeholder="Search for friends..."
+        placeholderTextColor={Colors.SUBTEXT}
+        autoCapitalize="none"
+      />
       <FlatList
         data={friends.filter((friend) => friend.includes(search))}
         showsVerticalScrollIndicator={false}
@@ -81,6 +87,13 @@ export function InviteModal() {
 const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
+  },
+  search: {
+    flex: 1,
+    backgroundColor: Colors.INPUT,
+    borderRadius: 10,
+    padding: 10,
+    color: Colors.WHITE,
   },
   item: {
     flexDirection: 'row',

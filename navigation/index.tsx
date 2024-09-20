@@ -11,7 +11,7 @@ import { LoginScreen } from '@screens/LoginScreen/LoginScreen';
 import { ClubModal } from '@screens/MapScreen/ClubModal/ClubModal';
 import { MapHelpModal } from '@screens/MapScreen/MapHelpModal/MapHelpModal';
 import { MapScreen } from '@screens/MapScreen/MapScreen';
-import { InviteModal } from '@screens/PartyScreen/InviteModal/InviteModal';
+import { InviteModal } from '@screens/PartyScreen/InviteModal';
 import { PartyScreen } from '@screens/PartyScreen/PartyScreen';
 import { RegisterScreen } from '@screens/RegisterScreen/RegisterScreen';
 import { ResetPasswordScreen } from '@screens/ResetPasswordScreeen/ResetPasswordScreen';
@@ -94,7 +94,7 @@ function LoggedInNavigator() {
       <Stack.Screen name="Root" component={BottomTabNavigator} />
       <Stack.Group
         screenOptions={{
-          presentation: 'fullScreenModal',
+          presentation: 'modal',
           headerShown: true,
           headerStyle: {
             backgroundColor: Colors.BLACK,

@@ -9,7 +9,7 @@ import { arrayRemove, arrayUnion, collection, doc, getDocs, updateDoc } from 'fi
 import React, { useEffect, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet } from 'react-native';
 
-import { CommentModal } from '../CommentModal/CommentModal';
+import { CommentModal } from './CommentModal';
 
 interface CommentSectionProps {
   clubId: string;

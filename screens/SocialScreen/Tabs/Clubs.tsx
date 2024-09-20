@@ -1,12 +1,10 @@
 import { ClubCard } from '@components/ClubCard';
 import { Container } from '@components/Container';
-import { SearchBar } from '@components/SearchBar';
 import { Text } from '@components/Text';
-import { View } from '@components/View';
 import Colors from '@constants/Colors';
 import { useProfile } from '@hooks/useProfile';
 import { useState } from 'react';
-import { FlatList, StyleSheet } from 'react-native';
+import { FlatList, StyleSheet, TextInput } from 'react-native';
 
 export function Clubs() {
   const { clubs } = useProfile();
@@ -20,10 +18,14 @@ export function Clubs() {
           the future.
         </Text>
       ) : (
-        <View style={styles.searchBar}>
-          {/*Searching on ID rather than name*/}
-          <SearchBar search={search} setSearch={setSearch} placeholder="Search for clubs..." />
-        </View>
+        <TextInput
+          style={styles.search}
+          onChangeText={setSearch}
+          value={search}
+          placeholder="Search for clubs..."
+          placeholderTextColor={Colors.SUBTEXT}
+          autoCapitalize="none"
+        />
       )}
       <FlatList
         contentContainerStyle={styles.list}
@@ -49,8 +51,12 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginVertical: 10,
   },
-  searchBar: {
-    alignItems: 'center',
+  search: {
+    flex: 1,
+    backgroundColor: Colors.INPUT,
+    borderRadius: 10,
+    padding: 10,
+    color: Colors.WHITE,
   },
   list: {
     gap: 20,

@@ -12,7 +12,7 @@ import { doc, getDoc } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet } from 'react-native';
 
-import { CommentSection } from './CommentSection/CommentSection';
+import { CommentSection } from './CommentSection';
 
 export function ClubModal({ route }: any) {
   const { id } = route.params;

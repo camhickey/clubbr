@@ -17,7 +17,7 @@ import { Alert, Platform, StyleSheet, TextInput } from 'react-native';
 import MapView from 'react-native-map-clustering';
 import { Marker, PROVIDER_DEFAULT } from 'react-native-maps';
 
-import { ActionButton } from './ActionButton/ActionButton';
+import { ActionButton } from './ActionButton';
 import { PartyListener } from './Listeners/PartyListener';
 import { ProfileListener } from './Listeners/ProfileListener';
 import { MapStyle } from './MapStyle';

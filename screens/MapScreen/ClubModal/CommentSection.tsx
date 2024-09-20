@@ -45,7 +45,6 @@ export function CommentSection({ clubId }: CommentSectionProps) {
           user: data.user,
         },
       ]);
-      console.log('comment read from commentSection');
     });
   }
 

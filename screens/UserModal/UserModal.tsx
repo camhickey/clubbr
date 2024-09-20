@@ -2,6 +2,7 @@ import { acceptRequest, cancelRequest, removeFriend, sendRequest } from '@action
 import { Button } from '@components/Button';
 import { ModalContainer } from '@components/ModalContainer';
 import { Text } from '@components/Text';
+import { Toast } from '@components/Toast';
 import { View } from '@components/View';
 import Colors from '@constants/Colors';
 import { DEFAULT_PFP } from '@constants/profile';
@@ -14,9 +15,17 @@ import { Alert, Image, StyleSheet } from 'react-native';
 export function UserModalScreen({ route }: any) {
   const { user } = route.params;
   const { friends, friendRequestsPending, friendRequestsReceived, username } = useProfile();
-  const [relationship, setRelationship] = useState<
-    'friends' | 'request sent' | 'request received' | 'not friends'
-  >('not friends');
+  enum RELATIONSHIP {
+    FRIENDS = 'friends',
+    REQUEST_SENT = 'request sent',
+    REQUEST_RECEIVED = 'request received',
+    NOT_FRIENDS = 'not friends',
+  }
+  const [relationship, setRelationship] = useState<RELATIONSHIP>(RELATIONSHIP.NOT_FRIENDS);
+
+  const [toastVisible, setToastVisible] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
+  const [toastHeader, setToastHeader] = useState('');
 
   const [profile, setProfile] = useState({
     displayName: '',
@@ -33,20 +42,19 @@ export function UserModalScreen({ route }: any) {
           photoURL: data.photoURL,
           username: data.username,
         });
-        console.log('user doc read from userModal');
       }
     });
   }, []);
 
   useEffect(() => {
     if (friends.includes(user)) {
-      setRelationship('friends');
+      setRelationship(RELATIONSHIP.FRIENDS);
     } else if (friendRequestsPending.includes(user)) {
-      setRelationship('request sent');
+      setRelationship(RELATIONSHIP.REQUEST_SENT);
     } else if (friendRequestsReceived.includes(user)) {
-      setRelationship('request received');
+      setRelationship(RELATIONSHIP.REQUEST_RECEIVED);
     } else {
-      setRelationship('not friends');
+      setRelationship(RELATIONSHIP.NOT_FRIENDS);
     }
   }, [friends, friendRequestsPending, friendRequestsReceived]);
 
@@ -61,36 +69,79 @@ export function UserModalScreen({ route }: any) {
           </View>
         </View>
       </View>
-      {relationship === 'friends' && (
+      {relationship === RELATIONSHIP.FRIENDS && (
         <Button
           onPress={() =>
-            Alert.alert('Are you sure you want to remove this friend?', '', [
+            Alert.alert('Remove Friend', `Are you sure you want to remove @${profile.username}?`, [
               {
                 text: 'Cancel',
                 style: 'cancel',
               },
               {
                 text: 'Remove Friend',
-                onPress: () => removeFriend(username, user),
+                onPress: () =>
+                  removeFriend(username, user)
+                    .then(() => {
+                      setToastHeader('Friend Removed');
+                      setToastMessage(`You have removed @${profile.username} as a friend.`);
+                      setToastVisible(true);
+                    })
+                    .catch((error) => Alert.alert('Failed to remove friend', error.message)),
               },
             ])
           }>
           REMOVE FRIEND
         </Button>
       )}
-      {relationship === 'request sent' && (
-        <Button onPress={() => cancelRequest(username, user)}>CANCEL REQUEST</Button>
-      )}
-      {relationship === 'request received' && (
-        <Button onPress={() => acceptRequest(username, user)}>ACCEPT REQUEST</Button>
-      )}
-      {relationship === 'not friends' && (
+      {relationship === RELATIONSHIP.REQUEST_SENT && (
         <Button
           onPress={() =>
-            sendRequest(username, user).then(() => Alert.alert('Friend request sent!'))
+            cancelRequest(username, user)
+              .then(() => {
+                setToastHeader('Friend Request Cancelled');
+                setToastMessage(`You have cancelled the friend request to @${profile.username}.`);
+                setToastVisible(true);
+              })
+              .catch((error) => Alert.alert('Failed to cancel request', error.message))
+          }>
+          CANCEL REQUEST
+        </Button>
+      )}
+      {relationship === RELATIONSHIP.REQUEST_RECEIVED && (
+        <Button
+          onPress={() =>
+            acceptRequest(username, user)
+              .then(() => {
+                setToastHeader('Friend Request Accepted');
+                setToastMessage(`You are now friends with @${profile.username}.`);
+                setToastVisible(true);
+              })
+              .catch((error) => Alert.alert('Failed to accept request', error.message))
+          }>
+          ACCEPT REQUEST
+        </Button>
+      )}
+      {relationship === RELATIONSHIP.NOT_FRIENDS && (
+        <Button
+          onPress={() =>
+            sendRequest(username, user)
+              .then(() => {
+                setToastHeader('Friend Request Sent');
+                setToastMessage(`You have sent a friend request to @${profile.username}.`);
+                setToastVisible(true);
+              })
+              .catch((error) => Alert.alert('Failed to send request', error.message))
           }>
           SEND REQUEST
         </Button>
+      )}
+      {toastVisible && (
+        <Toast
+          setToast={() => setToastVisible(false)}
+          header={toastHeader}
+          message={toastMessage}
+          variant="success"
+        />
       )}
     </ModalContainer>
   );

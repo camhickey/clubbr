@@ -21,16 +21,8 @@ export function Friends() {
   const [addFriendModalVisible, setAddFriendModalVisible] = useState(false);
   const [addedFriend, setAddedFriend] = useState('');
   const [addFriendToastVisible, setAddFriendToastVisible] = useState(false);
-  enum ADD_FRIEND_TOAST_MESSAGES {
-    SELF_FRIEND = 'You cannot add yourself as a friend.',
-    ALREADY_FRIENDS = 'You are already friends with this user.',
-    FRIEND_REQUEST_SENT = 'Friend request sent successfully!',
-    FRIEND_REQUEST_FAILED = 'Failed to send friend request.',
-    USER_NOT_FOUND = 'The user you are trying to add does not exist.',
-  }
-  const [addFriendToastMessage, setAddFriendToastMessage] = useState<ADD_FRIEND_TOAST_MESSAGES>(
-    ADD_FRIEND_TOAST_MESSAGES.FRIEND_REQUEST_SENT,
-  );
+  const [addFriendToastMessage, setAddFriendToastMessage] = useState('');
+  const [didRequestSend, setDidRequestSend] = useState(true);
 
   return (
     <Container>
@@ -90,21 +82,26 @@ export function Friends() {
             <Button
               onPress={() => {
                 Keyboard.dismiss();
-                if (addedFriend === username)
-                  setAddFriendToastMessage(ADD_FRIEND_TOAST_MESSAGES.SELF_FRIEND);
-                else if (friends.includes(addedFriend))
-                  setAddFriendToastMessage(ADD_FRIEND_TOAST_MESSAGES.ALREADY_FRIENDS);
-                else {
+                if (addedFriend === username) {
+                  setAddFriendToastMessage('You cannot add yourself as a friend.');
+                  setDidRequestSend(false);
+                } else if (friends.includes(addedFriend)) {
+                  setAddFriendToastMessage(`You are already friends with @${addedFriend}.`);
+                  setDidRequestSend(false);
+                } else {
                   getDoc(doc(db, 'users', addedFriend)).then((doc) => {
                     if (!doc.exists()) {
-                      setAddFriendToastMessage(ADD_FRIEND_TOAST_MESSAGES.USER_NOT_FOUND);
+                      setAddFriendToastMessage('The user you are trying to add does not exist.');
+                      setDidRequestSend(false);
                     } else {
                       sendRequest(username, addedFriend)
                         .then(() => {
-                          setAddFriendToastMessage(ADD_FRIEND_TOAST_MESSAGES.FRIEND_REQUEST_SENT);
+                          setAddFriendToastMessage(`Friend request sent to @${addedFriend}.`);
+                          setDidRequestSend(true);
                         })
                         .catch(() => {
-                          setAddFriendToastMessage(ADD_FRIEND_TOAST_MESSAGES.FRIEND_REQUEST_FAILED);
+                          setAddFriendToastMessage('Failed to send friend request');
+                          setDidRequestSend(false);
                         });
                     }
                   });
@@ -129,11 +126,7 @@ export function Friends() {
       {addFriendToastVisible && (
         <Toast
           setToast={setAddFriendToastVisible}
-          variant={
-            addFriendToastMessage === ADD_FRIEND_TOAST_MESSAGES.FRIEND_REQUEST_SENT
-              ? 'success'
-              : 'error'
-          }
+          variant={didRequestSend ? 'success' : 'error'}
           header="Friend Request"
           message={addFriendToastMessage}
         />

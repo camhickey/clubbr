@@ -11,8 +11,8 @@ import { createMaterialTopTabNavigator } from '@react-navigation/material-top-ta
 import React, { useState } from 'react';
 import { Alert, Image, Keyboard, Pressable, StyleSheet, TextInput } from 'react-native';
 
-import { Clubs } from './Tabs/Clubs';
-import { Friends } from './Tabs/Friends';
+import { Clubs } from './Tabs/Clubs/Clubs';
+import { Friends } from './Tabs/Friends/Friends';
 
 export function SocialScreen() {
   const { displayName, photoURL, username } = useProfile();

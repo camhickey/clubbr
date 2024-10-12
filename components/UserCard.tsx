@@ -6,9 +6,9 @@ import { DEFAULT_PFP } from '@constants/profile';
 import { db } from '@db';
 import { useProfile } from '@hooks/useProfile';
 import { useNavigation } from '@react-navigation/native';
-import { getDoc, doc } from 'firebase/firestore';
+import { doc, getDoc } from 'firebase/firestore';
 import React, { ReactElement, useEffect, useState } from 'react';
-import { StyleSheet, Image, Pressable, Alert } from 'react-native';
+import { Alert, Image, Pressable, StyleSheet } from 'react-native';
 
 interface Action {
   icon: ReactElement;

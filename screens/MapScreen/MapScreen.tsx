@@ -21,7 +21,6 @@ import { ActionButton } from './ActionButton';
 import { PartyListener } from './Listeners/PartyListener';
 import { ProfileListener } from './Listeners/ProfileListener';
 import { MapStyle } from './MapStyle';
-import { MARKERS } from '../../data/locations';
 
 const GAINESVILLE = {
   latitude: 29.6436,
@@ -36,20 +35,32 @@ export type SafetyReport = {
   timestamp: number;
 };
 
+export type ClubMarker = {
+  id: string;
+  name: string;
+  location: { latitude: number; longitude: number };
+};
+
 export function MapScreen() {
   const [clubView, setClubView] = useState(true);
   const [safetyView, setSafetyView] = useState(false);
   const [partyView, setPartyView] = useState(false);
 
+  const { partyMembers } = useParty();
+  const { username, party } = useProfile();
+  const navigation = useNavigation();
+
+  const [clubMarkers, setClubMarkers] = useState<ClubMarker[]>([]);
+
   const [makeSafetyReportModalVisible, setMakeSafetyReportModalVisible] = useState(false);
   const [makeSafetyReportToastVisible, setMakeSafetyReportToastVisible] = useState(false);
   const SAFETY_REPORT_MAX_LENGTH = 200;
+  const [safetyMarkers, setSafetyMarkers] = useState<SafetyReport[]>([]);
   const [makeSafetyReport, setMakeSafetyReport] = useState<SafetyReport>({
     description: '',
     location: { latitude: 0, longitude: 0 },
     timestamp: Date.now(),
   });
-
   const [showSafetyReportModalVisible, setShowSafetyReportModalVisible] = useState(false);
   const [showSafetyReport, setShowSafetyReport] = useState<SafetyReport>({
     description: '',
@@ -57,18 +68,28 @@ export function MapScreen() {
     timestamp: Date.now(),
   });
 
-  const navigation = useNavigation();
-
-  const { partyMembers } = useParty();
-  const { username, party } = useProfile();
-
-  const [safetyMarkers, setSafetyMarkers] = useState<SafetyReport[]>([]);
-
   useEffect(() => {
     const q = query(collection(db, 'safety'));
     const unsubscribe = onSnapshot(q, (snapshot) => {
       const data = snapshot.docs.map((doc) => doc.data() as SafetyReport);
       setSafetyMarkers(data);
+    });
+    return () => unsubscribe();
+  }, []);
+
+  useEffect(() => {
+    const q = query(collection(db, 'clubs'));
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      snapshot.docs.map((doc) => {
+        setClubMarkers((prev) => [
+          ...prev,
+          {
+            id: doc.id,
+            name: doc.data().name,
+            location: doc.data().location,
+          },
+        ]);
+      });
     });
     return () => unsubscribe();
   }, []);
@@ -103,14 +124,13 @@ export function MapScreen() {
           });
           setMakeSafetyReportModalVisible(true);
         }}>
-        {/*START: Club rendering*/}
         {clubView &&
-          MARKERS.map((marker, index) => (
+          clubMarkers.map((marker, index) => (
             <Marker
               key={index}
               coordinate={{
-                latitude: marker.latitude,
-                longitude: marker.longitude,
+                latitude: marker.location.latitude,
+                longitude: marker.location.longitude,
               }}
               tracksViewChanges={false}
               onPress={() => {
@@ -130,9 +150,7 @@ export function MapScreen() {
               </View>
             </Marker>
           ))}
-        {/*END: Club rendering*/}
 
-        {/*START: Safety rendering*/}
         {safetyView &&
           safetyMarkers.map((marker, index) => (
             <Marker
@@ -151,9 +169,7 @@ export function MapScreen() {
               </View>
             </Marker>
           ))}
-        {/*END: Safety rendering*/}
 
-        {/*START: Party rendering*/}
         {partyView &&
           partyMembers &&
           Object.entries(partyMembers).map((member, index) => {
@@ -181,7 +197,6 @@ export function MapScreen() {
               </Marker>
             );
           })}
-        {/*END: Party rendering*/}
       </MapView>
       <View style={styles.buttonContainer}>
         <ActionButton
@@ -220,8 +235,7 @@ export function MapScreen() {
                 />
               ),
               onPress: () => {
-                if (party === '') return Alert.alert('You are not in a party');
-                else setPartyView(!partyView);
+                console.log(clubMarkers[0]);
               },
               active: partyView,
             },

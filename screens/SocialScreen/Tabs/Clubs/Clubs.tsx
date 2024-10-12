@@ -3,12 +3,25 @@ import { Container } from '@components/Container';
 import { Text } from '@components/Text';
 import Colors from '@constants/Colors';
 import { useProfile } from '@hooks/useProfile';
-import { useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { FlatList, StyleSheet, TextInput } from 'react-native';
 
 export function Clubs() {
-  const { clubs } = useProfile();
+  const { setClubs, clubs } = useProfile();
   const [search, setSearch] = useState('');
+
+  const [refreshing, setRefreshing] = useState(false);
+
+  useEffect(() => {
+    setTimeout(() => {
+      if (!refreshing) return;
+      setClubs([]);
+      setClubs(clubs);
+      setRefreshing(false);
+    }, 5000);
+  }, [refreshing]);
+
+  const renderClubCard = useCallback((item: string) => <ClubCard id={item} />, []);
 
   return (
     <Container style={styles.container}>
@@ -28,12 +41,14 @@ export function Clubs() {
         />
       )}
       <FlatList
+        refreshing={refreshing}
+        onRefresh={() => setRefreshing(true)}
         contentContainerStyle={styles.list}
         showsVerticalScrollIndicator={false}
         data={
           search ? clubs.filter((club) => club.toLowerCase().includes(search.toLowerCase())) : clubs
         }
-        renderItem={({ item }) => <ClubCard id={item} />}
+        renderItem={({ item }) => renderClubCard(item)}
         keyExtractor={(item) => item}
       />
     </Container>

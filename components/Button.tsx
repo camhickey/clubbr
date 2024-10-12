@@ -1,7 +1,7 @@
 import { Text } from '@components/Text';
 import Colors from '@constants/Colors';
 import React from 'react';
-import { StyleSheet, Pressable, StyleProp, ViewStyle, TextStyle } from 'react-native';
+import { Pressable, StyleProp, StyleSheet, TextStyle, ViewStyle } from 'react-native';
 
 export interface ButtonProps {
   children?: React.ReactNode;

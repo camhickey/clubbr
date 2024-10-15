@@ -12,6 +12,8 @@ import MapView from 'react-native-map-clustering';
 import { Marker, PROVIDER_DEFAULT } from 'react-native-maps';
 import Toast from 'react-native-toast-message';
 
+import { db } from '@db*';
+import { collection, onSnapshot, query } from 'firebase/firestore';
 import { ActionButton } from './ActionButton';
 import { PartyListener } from './Listeners/PartyListener';
 import { ProfileListener } from './Listeners/ProfileListener';
@@ -57,7 +59,7 @@ export function MapScreen() {
   const [safetyReportId, setSafetyReportId] = useState('');
 
   //Get safety markers
-  /*useEffect(() => {
+  useEffect(() => {
     const q = query(collection(db, 'safety'));
     const unsubscribe = onSnapshot(q, (snapshot) => {
       snapshot.docs.map((doc) => {
@@ -89,7 +91,7 @@ export function MapScreen() {
       });
     });
     return () => unsubscribe();
-  }, []);*/
+  }, []);
 
   useEffect(() => {
     party === '' && setPartyView(false);
@@ -231,6 +233,7 @@ export function MapScreen() {
                 />
               ),
               onPress: () => {
+                //why is this breaking
                 party === ''
                   ? Toast.show({
                       type: 'error',

@@ -22,6 +22,7 @@ import { getAuth } from 'firebase/auth';
 import * as React from 'react';
 import { useState } from 'react';
 import { Pressable } from 'react-native';
+import Toast from 'react-native-toast-message';
 
 import { loggedInLinking, loggedOutLinking } from './LinkingConfiguration';
 import { RootStackParamList, RootTabParamList, RootTabScreenProps } from '../types';
@@ -40,6 +41,7 @@ export function Navigation() {
 
   return (
     <NavigationContainer linking={isLoggedIn ? loggedInLinking : loggedOutLinking}>
+      <Toast />
       {isLoggedIn ? <LoggedInNavigator /> : <LoggedOutNavigator />}
     </NavigationContainer>
   );

@@ -2,7 +2,6 @@ import { acceptRequest, cancelRequest, removeFriend, sendRequest } from '@action
 import { Button } from '@components/Button';
 import { ModalContainer } from '@components/ModalContainer';
 import { Text } from '@components/Text';
-import { Toast } from '@components/Toast';
 import { View } from '@components/View';
 import Colors from '@constants/Colors';
 import { DEFAULT_PFP } from '@constants/profile';
@@ -11,6 +10,7 @@ import { useProfile } from '@hooks/useProfile';
 import { doc, getDoc } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
 import { Alert, Image, StyleSheet } from 'react-native';
+import Toast from 'react-native-toast-message';
 
 export function UserModalScreen({ route }: any) {
   const { user } = route.params;
@@ -22,10 +22,6 @@ export function UserModalScreen({ route }: any) {
     NOT_FRIENDS = 'not friends',
   }
   const [relationship, setRelationship] = useState<RELATIONSHIP>(RELATIONSHIP.NOT_FRIENDS);
-
-  const [toastVisible, setToastVisible] = useState(false);
-  const [toastMessage, setToastMessage] = useState('');
-  const [toastHeader, setToastHeader] = useState('');
 
   const [profile, setProfile] = useState({
     displayName: '',
@@ -82,11 +78,13 @@ export function UserModalScreen({ route }: any) {
                 onPress: () =>
                   removeFriend(username, user)
                     .then(() => {
-                      setToastHeader('Friend Removed');
-                      setToastMessage(`You have removed @${profile.username} as a friend.`);
-                      setToastVisible(true);
+                      Toast.show({
+                        type: 'success',
+                        text1: 'Friend Removed',
+                        text2: `You have removed @${profile.username} as a friend.`,
+                      });
                     })
-                    .catch((error) => Alert.alert('Failed to remove friend', error.message)),
+                    .catch((error) => Toast.show({ type: 'error', text1: 'Error', text2: error })),
               },
             ])
           }>
@@ -98,11 +96,13 @@ export function UserModalScreen({ route }: any) {
           onPress={() =>
             cancelRequest(username, user)
               .then(() => {
-                setToastHeader('Friend Request Cancelled');
-                setToastMessage(`You have cancelled the friend request to @${profile.username}.`);
-                setToastVisible(true);
+                Toast.show({
+                  type: 'success',
+                  text1: 'Friend Request Cancelled',
+                  text2: `You have cancelled the friend request to @${profile.username}.`,
+                });
               })
-              .catch((error) => Alert.alert('Failed to cancel request', error.message))
+              .catch((error) => Toast.show({ type: 'error', text1: 'Error', text2: error }))
           }>
           CANCEL REQUEST
         </Button>
@@ -112,11 +112,13 @@ export function UserModalScreen({ route }: any) {
           onPress={() =>
             acceptRequest(username, user)
               .then(() => {
-                setToastHeader('Friend Request Accepted');
-                setToastMessage(`You are now friends with @${profile.username}.`);
-                setToastVisible(true);
+                Toast.show({
+                  type: 'success',
+                  text1: 'Friend Request Accepted',
+                  text2: `You are now friends with @${profile.username}.`,
+                });
               })
-              .catch((error) => Alert.alert('Failed to accept request', error.message))
+              .catch((error) => Toast.show({ type: 'error', text1: 'Error', text2: error }))
           }>
           ACCEPT REQUEST
         </Button>
@@ -126,22 +128,16 @@ export function UserModalScreen({ route }: any) {
           onPress={() =>
             sendRequest(username, user)
               .then(() => {
-                setToastHeader('Friend Request Sent');
-                setToastMessage(`You have sent a friend request to @${profile.username}.`);
-                setToastVisible(true);
+                Toast.show({
+                  type: 'success',
+                  text1: 'Friend Request Sent',
+                  text2: `You have sent a friend request to @${profile.username}.`,
+                });
               })
-              .catch((error) => Alert.alert('Failed to send request', error.message))
+              .catch((error) => Toast.show({ type: 'error', text1: 'Error', text2: error }))
           }>
           SEND REQUEST
         </Button>
-      )}
-      {toastVisible && (
-        <Toast
-          setToast={() => setToastVisible(false)}
-          header={toastHeader}
-          message={toastMessage}
-          variant="success"
-        />
       )}
     </ModalContainer>
   );

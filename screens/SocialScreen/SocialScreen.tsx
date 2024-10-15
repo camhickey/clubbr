@@ -1,16 +1,15 @@
-import { changeDisplayName, changeProfilePicture } from '@actions/userActions';
-import { Button } from '@components/Button';
+import { changeProfilePicture } from '@actions/userActions';
 import { Container } from '@components/Container';
-import { CustomAlert } from '@components/CustomAlert';
 import { Text } from '@components/Text';
-import { Toast } from '@components/Toast';
 import { View } from '@components/View';
 import Colors from '@constants/Colors';
 import { useProfile } from '@hooks/useProfile';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import React, { useState } from 'react';
-import { Alert, Image, Keyboard, Pressable, StyleSheet, TextInput } from 'react-native';
+import { Image, Pressable, StyleSheet } from 'react-native';
+import Toast from 'react-native-toast-message';
 
+import { ChangeDisplayNameModal } from './ChangeDisplayNameModal';
 import { Clubs } from './Tabs/Clubs/Clubs';
 import { Friends } from './Tabs/Friends/Friends';
 
@@ -19,10 +18,6 @@ export function SocialScreen() {
   const Tab = createMaterialTopTabNavigator();
 
   const [changeDisplayNameModalVisible, setChangeDisplayNameModalVisible] = useState(false);
-  const [newDisplayName, setNewDisplayName] = useState('');
-  const [changeDisplayNameToastVisible, setChangeDisplayNameToastVisible] = useState(false);
-
-  const [changeProfilePictureToastVisible, setChangeProfilePictureToastVisible] = useState(false);
 
   return (
     <Container>
@@ -31,9 +26,15 @@ export function SocialScreen() {
           onPress={() =>
             changeProfilePicture(username)
               .then((result) => {
-                if (result) setChangeProfilePictureToastVisible(true);
+                if (result) {
+                  Toast.show({
+                    type: 'success',
+                    text1: 'Profile Picture',
+                    text2: 'Your profile picture has been updated!',
+                  });
+                }
               })
-              .catch(() => Alert.alert('Error', 'Failed to change profile picture.'))
+              .catch((error) => Toast.show({ type: 'error', text1: 'Error', text2: error }))
           }>
           <Image style={styles.profilePic} source={{ uri: photoURL }} />
         </Pressable>
@@ -58,64 +59,10 @@ export function SocialScreen() {
         <Tab.Screen name="Invites" component={Friends} options={{ tabBarLabel: 'Friends' }} />
         <Tab.Screen name="Clubs" component={Clubs} options={{ tabBarLabel: 'Clubs' }} />
       </Tab.Navigator>
-      {changeDisplayNameModalVisible && (
-        <CustomAlert visible={changeDisplayNameModalVisible}>
-          <View style={modalStyles.container}>
-            <Text style={modalStyles.header}>Change Display Name</Text>
-            {/*Enforce regex*/}
-            <TextInput
-              style={modalStyles.input}
-              placeholder="Enter your new display name..."
-              placeholderTextColor={Colors.SUBTEXT}
-              onChangeText={setNewDisplayName}
-              value={newDisplayName}
-              autoCapitalize="none"
-              multiline
-              blurOnSubmit
-              maxLength={15}
-            />
-            <View style={modalStyles.buttonGroup}>
-              <Button
-                onPress={() => {
-                  setChangeDisplayNameModalVisible(false);
-                  setNewDisplayName('');
-                }}>
-                CANCEL
-              </Button>
-              <Button
-                disabled={!newDisplayName}
-                onPress={() => {
-                  Keyboard.dismiss();
-                  changeDisplayName(username, newDisplayName)
-                    .then(() => {
-                      setChangeDisplayNameModalVisible(false);
-                      setChangeDisplayNameToastVisible(true);
-                      setNewDisplayName('');
-                    })
-                    .catch(() => Alert.alert('Error', 'Failed to change display name.'));
-                }}>
-                SAVE
-              </Button>
-            </View>
-          </View>
-        </CustomAlert>
-      )}
-      {changeDisplayNameToastVisible && (
-        <Toast
-          setToast={setChangeDisplayNameToastVisible}
-          variant="success"
-          header="Display Name"
-          message="Your display name has been updated!"
-        />
-      )}
-      {changeProfilePictureToastVisible && (
-        <Toast
-          setToast={setChangeProfilePictureToastVisible}
-          variant="success"
-          header="Profile Picture"
-          message="Your profile picture has been updated!"
-        />
-      )}
+      <ChangeDisplayNameModal
+        isVisible={changeDisplayNameModalVisible}
+        onClose={() => setChangeDisplayNameModalVisible(false)}
+      />
     </Container>
   );
 }
@@ -143,26 +90,5 @@ const styles = StyleSheet.create({
   username: {
     fontSize: 16,
     color: Colors.SUBTEXT,
-  },
-});
-
-const modalStyles = StyleSheet.create({
-  container: {
-    gap: 20,
-  },
-  header: {
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  input: {
-    paddingHorizontal: 10,
-    paddingVertical: 10,
-    color: Colors.WHITE,
-    textAlign: 'center',
-  },
-  buttonGroup: {
-    gap: 20,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
   },
 });

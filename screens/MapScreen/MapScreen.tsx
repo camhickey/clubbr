@@ -1,26 +1,23 @@
-import { submitSafetyReport } from '@actions/safetyActions';
-import { Button } from '@components/Button';
 import { Container } from '@components/Container';
-import { CustomAlert } from '@components/CustomAlert';
 import { Text } from '@components/Text';
-import { Toast } from '@components/Toast';
 import { View } from '@components/View';
 import Colors from '@constants/Colors';
-import { db } from '@db*';
 import { FontAwesome } from '@expo/vector-icons';
 import { useParty } from '@hooks/useParty';
 import { useProfile } from '@hooks/useProfile';
 import { useNavigation } from '@react-navigation/native';
-import { collection, onSnapshot, query } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
-import { Alert, Platform, StyleSheet, TextInput } from 'react-native';
+import { Platform, StyleSheet } from 'react-native';
 import MapView from 'react-native-map-clustering';
 import { Marker, PROVIDER_DEFAULT } from 'react-native-maps';
+import Toast from 'react-native-toast-message';
 
 import { ActionButton } from './ActionButton';
 import { PartyListener } from './Listeners/PartyListener';
 import { ProfileListener } from './Listeners/ProfileListener';
 import { MapStyle } from './MapStyle';
+import { MakeSafetyReportModal } from './SafetyModals/MakeSafetyReportModal';
+import { ShowSafetyReportModal } from './SafetyModals/ShowSafetyReportModal';
 
 const GAINESVILLE = {
   latitude: 29.6436,
@@ -29,16 +26,16 @@ const GAINESVILLE = {
   longitudeDelta: 2,
 };
 
-export type SafetyReport = {
-  description: string;
+export type SafetyMarker = {
+  id: string;
   location: { latitude: number; longitude: number };
-  timestamp: number;
 };
 
 export type ClubMarker = {
   id: string;
   name: string;
   location: { latitude: number; longitude: number };
+  //add age and stuff to allow filtering
 };
 
 export function MapScreen() {
@@ -47,36 +44,36 @@ export function MapScreen() {
   const [partyView, setPartyView] = useState(false);
 
   const { partyMembers } = useParty();
-  const { username, party } = useProfile();
+  const { party } = useProfile();
   const navigation = useNavigation();
 
   const [clubMarkers, setClubMarkers] = useState<ClubMarker[]>([]);
+  const [safetyMarkers, setSafetyMarkers] = useState<SafetyMarker[]>([]);
 
   const [makeSafetyReportModalVisible, setMakeSafetyReportModalVisible] = useState(false);
-  const [makeSafetyReportToastVisible, setMakeSafetyReportToastVisible] = useState(false);
-  const SAFETY_REPORT_MAX_LENGTH = 200;
-  const [safetyMarkers, setSafetyMarkers] = useState<SafetyReport[]>([]);
-  const [makeSafetyReport, setMakeSafetyReport] = useState<SafetyReport>({
-    description: '',
-    location: { latitude: 0, longitude: 0 },
-    timestamp: Date.now(),
-  });
-  const [showSafetyReportModalVisible, setShowSafetyReportModalVisible] = useState(false);
-  const [showSafetyReport, setShowSafetyReport] = useState<SafetyReport>({
-    description: '',
-    location: { latitude: 0, longitude: 0 },
-    timestamp: Date.now(),
-  });
+  const [safetyReportLocation, setSafetyReportLocation] = useState({ latitude: 0, longitude: 0 });
 
-  useEffect(() => {
+  const [showSafetyReportModalVisible, setShowSafetyReportModalVisible] = useState(false);
+  const [safetyReportId, setSafetyReportId] = useState('');
+
+  //Get safety markers
+  /*useEffect(() => {
     const q = query(collection(db, 'safety'));
     const unsubscribe = onSnapshot(q, (snapshot) => {
-      const data = snapshot.docs.map((doc) => doc.data() as SafetyReport);
-      setSafetyMarkers(data);
+      snapshot.docs.map((doc) => {
+        setSafetyMarkers((prev) => [
+          ...prev,
+          {
+            id: doc.id,
+            location: doc.data().location,
+          },
+        ]);
+      });
     });
     return () => unsubscribe();
   }, []);
 
+  //Get club markers
   useEffect(() => {
     const q = query(collection(db, 'clubs'));
     const unsubscribe = onSnapshot(q, (snapshot) => {
@@ -92,7 +89,7 @@ export function MapScreen() {
       });
     });
     return () => unsubscribe();
-  }, []);
+  }, []);*/
 
   useEffect(() => {
     party === '' && setPartyView(false);
@@ -117,10 +114,9 @@ export function MapScreen() {
         clusterColor={Colors.WHITE}
         clusterTextColor={Colors.BLACK}
         onLongPress={(e) => {
-          setMakeSafetyReport({
-            description: '',
-            location: e.nativeEvent.coordinate,
-            timestamp: Date.now(),
+          setSafetyReportLocation({
+            latitude: e.nativeEvent.coordinate.latitude,
+            longitude: e.nativeEvent.coordinate.longitude,
           });
           setMakeSafetyReportModalVisible(true);
         }}>
@@ -160,7 +156,7 @@ export function MapScreen() {
                 longitude: marker.location.longitude,
               }}
               onPress={() => {
-                setShowSafetyReport(marker);
+                setSafetyReportId(marker.id);
                 setShowSafetyReportModalVisible(true);
               }}
               tracksViewChanges={false}>
@@ -235,7 +231,13 @@ export function MapScreen() {
                 />
               ),
               onPress: () => {
-                console.log(clubMarkers[0]);
+                party === ''
+                  ? Toast.show({
+                      type: 'error',
+                      text1: 'You are not in a party',
+                      text2: 'Go to the party tab to create a party.',
+                    })
+                  : setPartyView(!partyView);
               },
               active: partyView,
             },
@@ -243,105 +245,17 @@ export function MapScreen() {
         />
       </View>
       {showSafetyReportModalVisible && (
-        <CustomAlert visible={showSafetyReportModalVisible}>
-          <View style={modalStyles.container}>
-            <Text style={modalStyles.header}>Safety Report</Text>
-            <Text style={modalStyles.blurb}>{showSafetyReport.description}</Text>
-            <Text style={modalStyles.blurb}>
-              Reported:{' '}
-              {
-                // Firebase timestamp is being weird and not converting to date properly
-                // @ts-ignore
-                new Date(showSafetyReport.timestamp.seconds * 1000).toLocaleString('en-US', {
-                  timeZone: 'UTC',
-                  hour12: true,
-                  day: 'numeric',
-                  month: 'short',
-                  hour: '2-digit',
-                  minute: '2-digit',
-                })
-              }
-            </Text>
-            <Button
-              onPress={() => {
-                setShowSafetyReportModalVisible(false);
-              }}>
-              CLOSE
-            </Button>
-          </View>
-        </CustomAlert>
-      )}
-      {makeSafetyReportModalVisible && (
-        <CustomAlert visible={makeSafetyReportModalVisible}>
-          <View style={modalStyles.container}>
-            <Text style={modalStyles.header}>Make a Safety Report</Text>
-            <Text style={modalStyles.blurb}>
-              Please describe the safety concern you are reporting.
-            </Text>
-            <TextInput
-              style={modalStyles.input}
-              placeholder="Type your description here..."
-              placeholderTextColor={Colors.SUBTEXT}
-              multiline
-              blurOnSubmit
-              textAlignVertical="top"
-              maxLength={SAFETY_REPORT_MAX_LENGTH}
-              value={makeSafetyReport.description}
-              onChangeText={(text) =>
-                setMakeSafetyReport({ ...makeSafetyReport, description: text })
-              }
-            />
-            <Text style={modalStyles.descriptionLength}>
-              Characters: {makeSafetyReport.description.length}/{SAFETY_REPORT_MAX_LENGTH}
-            </Text>
-            <View style={modalStyles.controls}>
-              <Button
-                onPress={() => {
-                  setMakeSafetyReportModalVisible(false);
-                  setMakeSafetyReport({
-                    description: '',
-                    location: { latitude: 0, longitude: 0 },
-                    timestamp: Date.now(),
-                  });
-                }}>
-                CANCEL
-              </Button>
-              <Button
-                disabled={makeSafetyReport.description.length === 0}
-                onPress={() => {
-                  submitSafetyReport(
-                    username,
-                    makeSafetyReport.description,
-                    makeSafetyReport.location.latitude,
-                    makeSafetyReport.location.longitude,
-                  )
-                    .then(() => {
-                      setMakeSafetyReportModalVisible(false);
-                      setMakeSafetyReport({
-                        description: '',
-                        location: { latitude: 0, longitude: 0 },
-                        timestamp: Date.now(),
-                      });
-                      setMakeSafetyReportToastVisible(true);
-                    })
-                    .catch((error) => {
-                      Alert.alert('Error submitting safety report', error.message);
-                    });
-                }}>
-                SUBMIT
-              </Button>
-            </View>
-          </View>
-        </CustomAlert>
-      )}
-      {makeSafetyReportToastVisible && (
-        <Toast
-          setToast={setMakeSafetyReportToastVisible}
-          variant="success"
-          header="Safety Report"
-          message="Safety report submitted successfully!"
+        <ShowSafetyReportModal
+          id={safetyReportId}
+          isVisible={showSafetyReportModalVisible}
+          onClose={() => setShowSafetyReportModalVisible(false)}
         />
       )}
+      <MakeSafetyReportModal
+        location={safetyReportLocation}
+        isVisible={makeSafetyReportModalVisible}
+        onClose={() => setMakeSafetyReportModalVisible(false)}
+      />
     </Container>
   );
 }
@@ -375,35 +289,5 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
     bottom: '2%',
     right: '2%',
-  },
-});
-
-const modalStyles = StyleSheet.create({
-  container: {
-    gap: 20,
-  },
-  header: {
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  blurb: {
-    color: Colors.SUBTEXT,
-  },
-  descriptionLength: {
-    color: Colors.SUBTEXT,
-    alignSelf: 'flex-end',
-    fontSize: 12,
-  },
-  input: {
-    backgroundColor: Colors.INPUT,
-    borderRadius: 10,
-    padding: 10,
-    color: Colors.WHITE,
-  },
-  controls: {
-    padding: 10,
-    gap: 0,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
   },
 });

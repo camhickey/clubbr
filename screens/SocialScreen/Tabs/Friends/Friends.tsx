@@ -1,28 +1,20 @@
-import { sendRequest } from '@actions/friendActions';
 import { Container } from '@components/Container';
 import { Text } from '@components/Text';
-import { Toast } from '@components/Toast';
 import { UserCard } from '@components/UserCard';
 import { View } from '@components/View';
 import Colors from '@constants/Colors';
-import { db } from '@db';
 import { Ionicons } from '@expo/vector-icons';
 import { useProfile } from '@hooks/useProfile';
-import { doc, getDoc } from 'firebase/firestore';
 import { useCallback, useEffect, useState } from 'react';
-import { FlatList, Keyboard, Pressable, StyleSheet, TextInput } from 'react-native';
+import { FlatList, Pressable, StyleSheet, TextInput } from 'react-native';
 
 import { AddFriendModal } from './AddFriendModal';
 
 export function Friends() {
-  const { friends, username, setFriends } = useProfile();
+  const { friends, setFriends } = useProfile();
   const [search, setSearch] = useState('');
 
-  const [addedFriend, setAddedFriend] = useState('');
   const [addFriendModalVisible, setAddFriendModalVisible] = useState(false);
-  const [addFriendToastVisible, setAddFriendToastVisible] = useState(false);
-  const [addFriendToastMessage, setAddFriendToastMessage] = useState('');
-  const [didRequestSend, setDidRequestSend] = useState(true);
 
   const [refreshing, setRefreshing] = useState(false);
 
@@ -76,46 +68,9 @@ export function Friends() {
         </Text>
       )}
       <AddFriendModal
-        visible={addFriendModalVisible}
-        friendRequestValue={addedFriend}
-        setFriendRequestValue={setAddedFriend}
+        isVisible={addFriendModalVisible}
         onClose={() => setAddFriendModalVisible(false)}
-        onSubmit={async () => {
-          Keyboard.dismiss();
-          if (addedFriend === username) {
-            setDidRequestSend(false);
-            setAddFriendToastMessage("You can't add yourself as a friend.");
-            setAddFriendToastVisible(true);
-            return;
-          }
-          if (friends.includes(addedFriend)) {
-            setDidRequestSend(false);
-            setAddFriendToastMessage('User is already your friend.');
-            setAddFriendToastVisible(true);
-            return;
-          }
-          const userDoc = await getDoc(doc(db, 'users', addedFriend));
-          if (!userDoc.exists()) {
-            setDidRequestSend(false);
-            setAddFriendToastMessage('User does not exist.');
-            setAddFriendToastVisible(true);
-            return;
-          }
-          await sendRequest(username, addedFriend);
-          setDidRequestSend(true);
-          setAddFriendToastMessage('Friend request sent.');
-          setAddFriendToastVisible(true);
-          setAddedFriend('');
-        }}
       />
-      {addFriendToastVisible && (
-        <Toast
-          setToast={setAddFriendToastVisible}
-          variant={didRequestSend ? 'success' : 'error'}
-          header="Friend Request"
-          message={addFriendToastMessage}
-        />
-      )}
     </Container>
   );
 }

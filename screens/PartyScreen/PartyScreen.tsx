@@ -1,9 +1,8 @@
-import { createParty, disbandParty, kickUser, leaveParty } from '@actions/partyActions';
+import { disbandParty, kickUser, leaveParty } from '@actions/partyActions';
 import { Button } from '@components/Button';
 import { Container } from '@components/Container';
-import { CustomAlert } from '@components/CustomAlert';
 import { Text } from '@components/Text';
-import { Toast } from '@components/Toast';
+//import { Toast } from '@components/Toast';
 import { UserCard } from '@components/UserCard';
 import { View } from '@components/View';
 import Colors from '@constants/Colors';
@@ -12,7 +11,9 @@ import { useParty } from '@hooks/useParty';
 import { useProfile } from '@hooks/useProfile';
 import { useNavigation } from '@react-navigation/native';
 import { useState } from 'react';
-import { Alert, FlatList, Keyboard, StyleSheet, TextInput } from 'react-native';
+import { Alert, FlatList, StyleSheet } from 'react-native';
+
+import { CreatePartyModal } from './CreatePartyModal';
 
 export function PartyScreen() {
   const navigation = useNavigation();
@@ -20,8 +21,6 @@ export function PartyScreen() {
   const { partyLeader, partyName, partyMembers } = useParty();
 
   const [createPartyModalVisible, setCreatePartyModalVisible] = useState(false);
-  const [createPartyToastVisible, setCreatePartyToastVisible] = useState(false);
-  const [createPartyName, setCurrentPartyName] = useState('');
 
   return (
     <Container style={styles.container}>
@@ -120,48 +119,10 @@ export function PartyScreen() {
           </Text>
         </View>
       )}
-      <CustomAlert visible={createPartyModalVisible}>
-        <View style={modalStyles.container}>
-          <Text style={modalStyles.header}>Create Party</Text>
-          <TextInput
-            style={modalStyles.input}
-            placeholder="Enter a name for your party..."
-            placeholderTextColor={Colors.SUBTEXT}
-            onChangeText={setCurrentPartyName}
-            value={createPartyName}
-            autoCapitalize="none"
-          />
-          <View style={modalStyles.buttonGroup}>
-            <Button
-              onPress={() => {
-                Keyboard.dismiss();
-                createParty(username, createPartyName)
-                  .then(() => {
-                    setCreatePartyModalVisible(false);
-                    setCreatePartyToastVisible(true);
-                    setCurrentPartyName('');
-                  })
-                  .catch((error) => {
-                    setCreatePartyModalVisible(false);
-                    Alert.alert('Failed to create party', error.message);
-                    setCurrentPartyName('');
-                  });
-              }}
-              disabled={!createPartyName}>
-              CREATE
-            </Button>
-            <Button onPress={() => setCreatePartyModalVisible(false)}>CANCEL</Button>
-          </View>
-        </View>
-      </CustomAlert>
-      {createPartyToastVisible && (
-        <Toast
-          setToast={setCreatePartyToastVisible}
-          variant="success"
-          header="Party Created"
-          message="Your party was created successfully!"
-        />
-      )}
+      <CreatePartyModal
+        isVisible={createPartyModalVisible}
+        onClose={() => setCreatePartyModalVisible(false)}
+      />
     </Container>
   );
 }
@@ -197,27 +158,5 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: Colors.SUBTEXT,
     textAlign: 'center',
-  },
-});
-
-const modalStyles = StyleSheet.create({
-  container: {
-    gap: 20,
-  },
-  header: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    alignSelf: 'center',
-  },
-  input: {
-    paddingHorizontal: 10,
-    paddingVertical: 10,
-    color: Colors.WHITE,
-    textAlign: 'center',
-  },
-  buttonGroup: {
-    gap: 20,
-    flexDirection: 'row',
-    justifyContent: 'space-around',
   },
 });

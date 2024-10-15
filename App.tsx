@@ -5,6 +5,7 @@ import { StatusBar } from 'expo-status-bar';
 import { getAuth } from 'firebase/auth';
 import { useState } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import Toast from 'react-native-toast-message';
 
 import { Navigation } from './navigation';
 
@@ -39,6 +40,7 @@ export default function App() {
             <StatusBar />
           </PartyProvider>
         </ProfileProvider>
+        <Toast />
       </SafeAreaProvider>
     );
   }

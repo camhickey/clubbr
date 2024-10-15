@@ -1,27 +1,27 @@
+import { sendRequest } from '@actions/friendActions';
 import { Button } from '@components/Button';
 import { CustomAlert } from '@components/CustomAlert';
 import { Text } from '@components/Text';
 import { View } from '@components/View';
 import Colors from '@constants/Colors';
-import { StyleSheet, TextInput } from 'react-native';
+import { db } from '@db*';
+import { useProfile } from '@hooks/useProfile';
+import { doc, getDoc } from 'firebase/firestore';
+import { useState } from 'react';
+import { Keyboard, StyleSheet, TextInput } from 'react-native';
+import Toast from 'react-native-toast-message';
 
 export type AddFriendModalProps = {
+  isVisible: boolean;
   onClose: () => void;
-  onSubmit: () => void;
-  friendRequestValue: string;
-  setFriendRequestValue: (username: string) => void;
-  visible: boolean;
 };
 
-export function AddFriendModal({
-  onClose,
-  onSubmit,
-  visible,
-  friendRequestValue,
-  setFriendRequestValue,
-}: AddFriendModalProps) {
+export function AddFriendModal({ isVisible, onClose }: AddFriendModalProps) {
+  const { username, friends } = useProfile();
+  const [friendRequestValue, setFriendRequestValue] = useState('');
+
   return (
-    <CustomAlert visible={visible}>
+    <CustomAlert visible={isVisible}>
       <View style={styles.container}>
         <Text style={styles.header}>Add Friend</Text>
         <TextInput
@@ -33,7 +33,42 @@ export function AddFriendModal({
           autoCapitalize="none"
         />
         <View style={styles.buttonGroup}>
-          <Button onPress={onSubmit} disabled={!friendRequestValue}>
+          <Button
+            onPress={async () => {
+              Keyboard.dismiss();
+              if (friendRequestValue === username) {
+                Toast.show({
+                  type: 'error',
+                  text1: 'Friend request not sent.',
+                  text2: "You can't add yourself as a friend.",
+                });
+                return;
+              }
+              if (friends.includes(friendRequestValue)) {
+                Toast.show({
+                  type: 'error',
+                  text1: 'Friend request not sent.',
+                  text2: `@${friendRequestValue} is already your friend.`,
+                });
+                return;
+              }
+              const userDoc = await getDoc(doc(db, 'users', friendRequestValue));
+              if (!userDoc.exists()) {
+                Toast.show({
+                  type: 'error',
+                  text1: 'Friend request not sent.',
+                  text2: 'User does not exist.',
+                });
+                return;
+              }
+              await sendRequest(username, friendRequestValue);
+              Toast.show({
+                type: 'success',
+                text1: 'Friend request sent!',
+                text2: `Friend request sent to @${friendRequestValue} successfully!`,
+              });
+            }}
+            disabled={!friendRequestValue}>
             ADD FRIEND
           </Button>
           <Button onPress={onClose}>CANCEL</Button>

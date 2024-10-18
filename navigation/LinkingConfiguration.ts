@@ -17,31 +17,31 @@ const loggedInLinking: LinkingOptions<RootStackParamList> = {
         screens: {
           Party: {
             screens: {
-              PartyScreen: 'party',
+              PartyScreen: 'PartyScreen',
             },
           },
           Map: {
             screens: {
-              MapScreen: 'map',
+              MapScreen: 'MapScreen',
             },
           },
           Inbox: {
             screens: {
-              InboxScreen: 'inbox',
+              InboxScreen: 'InboxScreen',
             },
           },
           Social: {
             screens: {
-              SocialScreen: 'social',
+              SocialScreen: 'SocialScreen',
             },
           },
         },
       },
-      StartupScreen: 'startupScreen',
-      InviteModal: 'inviteModal',
-      ClubModal: 'clubModal',
-      UserModal: 'userModal',
-      MapHelpModal: 'mapHelpModal',
+      StartupScreen: 'StartupScreen',
+      InviteModal: 'InviteModal',
+      ClubModal: 'ClubModal',
+      UserModal: 'UserModal',
+      MapHelpModal: 'MapHelpModal',
     },
   },
 };
@@ -50,10 +50,10 @@ const loggedOutLinking: LinkingOptions<RootStackParamList> = {
   prefixes: [Linking.createURL('/')],
   config: {
     screens: {
-      Intro: 'intro',
-      Login: 'login',
-      Register: 'register',
-      ResetPassword: 'resetPassword',
+      Intro: 'IntroScreen',
+      Login: 'LoginScreen',
+      Register: 'RegisterScreen',
+      ResetPassword: 'ResetPasswordScreen',
     },
   },
 };

@@ -2,7 +2,6 @@ import { disbandParty, kickUser, leaveParty } from '@actions/partyActions';
 import { Button } from '@components/Button';
 import { Container } from '@components/Container';
 import { Text } from '@components/Text';
-//import { Toast } from '@components/Toast';
 import { UserCard } from '@components/UserCard';
 import { View } from '@components/View';
 import Colors from '@constants/Colors';

@@ -16,6 +16,7 @@ export type ChangeDisplayNameModalProps = {
 
 export function ChangeDisplayNameModal({ isVisible, onClose }: ChangeDisplayNameModalProps) {
   const [newDisplayName, setNewDisplayName] = useState('');
+
   const { username } = useProfile();
   return (
     <CustomAlert visible={isVisible}>
@@ -34,7 +35,6 @@ export function ChangeDisplayNameModal({ isVisible, onClose }: ChangeDisplayName
           maxLength={15}
         />
         <View style={styles.buttonGroup}>
-          <Button onPress={onClose}>CANCEL</Button>
           <Button
             disabled={!newDisplayName}
             onPress={() => {
@@ -57,6 +57,7 @@ export function ChangeDisplayNameModal({ isVisible, onClose }: ChangeDisplayName
             }}>
             SAVE
           </Button>
+          <Button onPress={onClose}>CANCEL</Button>
         </View>
       </View>
     </CustomAlert>

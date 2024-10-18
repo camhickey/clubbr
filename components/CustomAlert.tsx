@@ -3,7 +3,8 @@ import React, { ReactNode } from 'react';
 import { KeyboardAvoidingView, Modal, StyleSheet, View } from 'react-native';
 import Toast from 'react-native-toast-message';
 
-//extend the props from the Modal component
+import { toastConfig } from './ToastConfig';
+
 export type CustomAlertProps = {
   visible: boolean;
   children: ReactNode;
@@ -15,7 +16,7 @@ export function CustomAlert({
 }: CustomAlertProps & React.ComponentProps<typeof Modal>) {
   return (
     <Modal visible={visible} animationType="slide" transparent={true}>
-      <Toast />
+      <Toast config={toastConfig} />
       <View style={styles.centeredView}>
         <KeyboardAvoidingView behavior="padding">
           <View style={styles.modalView}>{children}</View>

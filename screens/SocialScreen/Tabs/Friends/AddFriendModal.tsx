@@ -7,7 +7,7 @@ import Colors from '@constants/Colors';
 import { db } from '@db*';
 import { useProfile } from '@hooks/useProfile';
 import { doc, getDoc } from 'firebase/firestore';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Keyboard, StyleSheet, TextInput } from 'react-native';
 import Toast from 'react-native-toast-message';
 
@@ -19,6 +19,9 @@ export type AddFriendModalProps = {
 export function AddFriendModal({ isVisible, onClose }: AddFriendModalProps) {
   const { username, friends } = useProfile();
   const [friendRequestValue, setFriendRequestValue] = useState('');
+  useEffect(() => {
+    setFriendRequestValue('');
+  }, [isVisible]);
 
   return (
     <CustomAlert visible={isVisible}>
@@ -39,16 +42,16 @@ export function AddFriendModal({ isVisible, onClose }: AddFriendModalProps) {
               if (friendRequestValue === username) {
                 Toast.show({
                   type: 'error',
-                  text1: 'Friend request not sent.',
-                  text2: "You can't add yourself as a friend.",
+                  text1: 'Friend request not sent',
+                  text2: "You can't add yourself as a friend",
                 });
                 return;
               }
               if (friends.includes(friendRequestValue)) {
                 Toast.show({
                   type: 'error',
-                  text1: 'Friend request not sent.',
-                  text2: `@${friendRequestValue} is already your friend.`,
+                  text1: 'Friend request not sent',
+                  text2: `@${friendRequestValue} is already your friend`,
                 });
                 return;
               }
@@ -56,8 +59,8 @@ export function AddFriendModal({ isVisible, onClose }: AddFriendModalProps) {
               if (!userDoc.exists()) {
                 Toast.show({
                   type: 'error',
-                  text1: 'Friend request not sent.',
-                  text2: 'User does not exist.',
+                  text1: 'Friend request not sent',
+                  text2: 'User does not exist',
                 });
                 return;
               }
@@ -71,7 +74,7 @@ export function AddFriendModal({ isVisible, onClose }: AddFriendModalProps) {
             disabled={!friendRequestValue}>
             ADD FRIEND
           </Button>
-          <Button onPress={onClose}>CANCEL</Button>
+          <Button onPress={onClose}>CLOSE</Button>
         </View>
       </View>
     </CustomAlert>

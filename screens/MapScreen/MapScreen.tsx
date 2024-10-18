@@ -2,18 +2,18 @@ import { Container } from '@components/Container';
 import { Text } from '@components/Text';
 import { View } from '@components/View';
 import Colors from '@constants/Colors';
+import { db } from '@db*';
 import { FontAwesome } from '@expo/vector-icons';
 import { useParty } from '@hooks/useParty';
 import { useProfile } from '@hooks/useProfile';
 import { useNavigation } from '@react-navigation/native';
+import { collection, onSnapshot, query } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
 import { Platform, StyleSheet } from 'react-native';
 import MapView from 'react-native-map-clustering';
 import { Marker, PROVIDER_DEFAULT } from 'react-native-maps';
 import Toast from 'react-native-toast-message';
 
-import { db } from '@db*';
-import { collection, onSnapshot, query } from 'firebase/firestore';
 import { ActionButton } from './ActionButton';
 import { PartyListener } from './Listeners/PartyListener';
 import { ProfileListener } from './Listeners/ProfileListener';
@@ -37,11 +37,13 @@ export type ClubMarker = {
   id: string;
   name: string;
   location: { latitude: number; longitude: number };
-  //add age and stuff to allow filtering
+  age: number;
+  price: number;
 };
 
 export function MapScreen() {
   const [clubView, setClubView] = useState(true);
+  const [filterView, setFilterView] = useState(false);
   const [safetyView, setSafetyView] = useState(false);
   const [partyView, setPartyView] = useState(false);
 
@@ -50,6 +52,7 @@ export function MapScreen() {
   const navigation = useNavigation();
 
   const [clubMarkers, setClubMarkers] = useState<ClubMarker[]>([]);
+  const [filteredClubMarkers, setFilteredClubMarkers] = useState<ClubMarker[]>([]);
   const [safetyMarkers, setSafetyMarkers] = useState<SafetyMarker[]>([]);
 
   const [makeSafetyReportModalVisible, setMakeSafetyReportModalVisible] = useState(false);
@@ -59,7 +62,8 @@ export function MapScreen() {
   const [safetyReportId, setSafetyReportId] = useState('');
 
   //Get safety markers
-  useEffect(() => {
+  /*useEffect(() => {
+    setSafetyMarkers([]);
     const q = query(collection(db, 'safety'));
     const unsubscribe = onSnapshot(q, (snapshot) => {
       snapshot.docs.map((doc) => {
@@ -73,10 +77,11 @@ export function MapScreen() {
       });
     });
     return () => unsubscribe();
-  }, []);
+  }, []);*/
 
   //Get club markers
   useEffect(() => {
+    setClubMarkers([]);
     const q = query(collection(db, 'clubs'));
     const unsubscribe = onSnapshot(q, (snapshot) => {
       snapshot.docs.map((doc) => {
@@ -86,6 +91,8 @@ export function MapScreen() {
             id: doc.id,
             name: doc.data().name,
             location: doc.data().location,
+            price: doc.data().price,
+            age: doc.data().age,
           },
         ]);
       });
@@ -135,6 +142,8 @@ export function MapScreen() {
                 navigation.navigate('ClubModal', {
                   name: marker.name,
                   id: marker.id,
+                  age: marker.age,
+                  price: marker.price,
                 });
               }}>
               <View style={styles.marker}>
@@ -148,7 +157,6 @@ export function MapScreen() {
               </View>
             </Marker>
           ))}
-
         {safetyView &&
           safetyMarkers.map((marker, index) => (
             <Marker
@@ -196,6 +204,7 @@ export function MapScreen() {
             );
           })}
       </MapView>
+      {/*filterView*/}
       <View style={styles.buttonContainer}>
         <ActionButton
           options={[
@@ -233,12 +242,11 @@ export function MapScreen() {
                 />
               ),
               onPress: () => {
-                //why is this breaking
                 party === ''
                   ? Toast.show({
-                      type: 'error',
+                      type: 'info',
                       text1: 'You are not in a party',
-                      text2: 'Go to the party tab to create a party.',
+                      text2: 'Create or join a party to see your party members on the map',
                     })
                   : setPartyView(!partyView);
               },
@@ -285,6 +293,12 @@ const styles = StyleSheet.create({
       width: 2,
       height: 2,
     },
+  },
+  filterContainer: {
+    position: 'absolute',
+    top: '2%',
+    left: '2%',
+    backgroundColor: 'transparent',
   },
   buttonContainer: {
     flex: 1,

@@ -54,7 +54,6 @@ export function MakeSafetyReportModal({
           Characters: {safetyReport.description.length}/{SAFETY_REPORT_MAX_LENGTH}
         </Text>
         <View style={styles.controls}>
-          <Button onPress={onClose}>CANCEL</Button>
           <Button
             disabled={safetyReport.description.length === 0}
             onPress={() => {
@@ -81,6 +80,7 @@ export function MakeSafetyReportModal({
             }}>
             SUBMIT
           </Button>
+          <Button onPress={onClose}>CANCEL</Button>
         </View>
       </View>
     </CustomAlert>

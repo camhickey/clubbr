@@ -22,7 +22,6 @@ import { getAuth } from 'firebase/auth';
 import * as React from 'react';
 import { useState } from 'react';
 import { Pressable } from 'react-native';
-import Toast from 'react-native-toast-message';
 
 import { loggedInLinking, loggedOutLinking } from './LinkingConfiguration';
 import { RootStackParamList, RootTabParamList, RootTabScreenProps } from '../types';
@@ -41,7 +40,6 @@ export function Navigation() {
 
   return (
     <NavigationContainer linking={isLoggedIn ? loggedInLinking : loggedOutLinking}>
-      <Toast />
       {isLoggedIn ? <LoggedInNavigator /> : <LoggedOutNavigator />}
     </NavigationContainer>
   );
@@ -120,7 +118,12 @@ function LoggedInNavigator() {
         <Stack.Screen
           name="ClubModal"
           component={ClubModal}
-          options={({ route }) => ({ title: route.params.name, id: route.params.id })}
+          options={({ route }) => ({
+            title: route.params.name,
+            id: route.params.id,
+            age: route.params.age,
+            price: route.params.price,
+          })}
         />
         <Stack.Screen
           name="UserModal"

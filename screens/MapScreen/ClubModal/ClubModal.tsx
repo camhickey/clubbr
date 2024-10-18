@@ -8,47 +8,51 @@ import Colors from '@constants/Colors';
 import { db } from '@db';
 import { useProfile } from '@hooks/useProfile';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import { doc, getDoc } from 'firebase/firestore';
+import { collection, doc, getDoc } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet } from 'react-native';
 
 import { CommentSection } from './CommentSection';
 
+type ClubDetails = {
+  age: number;
+  description: string;
+  images: string[];
+  name: string;
+  price: number;
+  tonight: string;
+};
+
 export function ClubModal({ route }: any) {
-  const { id } = route.params;
+  const { id, age, price, title } = route.params;
   const { clubs, username } = useProfile();
 
   const Tab = createMaterialTopTabNavigator();
 
-  const [details, setDetails] = useState({
-    age: null,
+  const [details, setDetails] = useState<ClubDetails>({
+    age,
     description: '',
     images: [],
-    name: '',
-    price: null,
+    name: title,
+    price,
     tonight: '',
-    vibes: [],
   });
 
   const [isFollowing, setIsFollowing] = useState<boolean>(false);
 
+  const collectionRef = collection(db, 'clubs', id, 'info');
   useEffect(() => {
-    getDoc(doc(db, 'clubs', id)).then((userDoc) => {
-      if (userDoc.exists()) {
-        const data = userDoc.data()!;
-        setDetails({
-          price: data.price,
-          description: data.description,
-          tonight: data.tonight,
-          images: data.images,
-          name: data.name,
-          vibes: data.vibes,
-          age: data.age,
-        });
-        console.log('club doc read from clubModal');
-      }
+    getDoc(doc(collectionRef, 'info')).then((clubInfoDoc) => {
+      if (!clubInfoDoc.exists()) return;
+      const data = clubInfoDoc.data();
+      setDetails({
+        ...details,
+        description: data.description,
+        images: data.images,
+        tonight: data.tonight,
+      });
     });
-  }, []);
+  });
 
   useEffect(() => {
     if (clubs.includes(id)) {
@@ -80,15 +84,6 @@ export function ClubModal({ route }: any) {
             <Text style={styles.age}>{details.age}+</Text>
           </View>
         </View>
-      </View>
-      <View style={styles.scrollContainer}>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-          {details.vibes.map((vibe: string) => (
-            <View style={styles.vibe} key={vibe}>
-              <Text>{vibe.charAt(0).toUpperCase() + vibe.slice(1)}</Text>
-            </View>
-          ))}
-        </ScrollView>
       </View>
       <Tab.Navigator
         screenOptions={{
@@ -151,21 +146,11 @@ const styles = StyleSheet.create({
   },
   price: {
     fontWeight: 'bold',
-    color: '#85bb65',
+    color: Colors.GREEN,
   },
   age: {
     fontWeight: 'bold',
     color: Colors.RED,
-  },
-  scrollContainer: {
-    padding: 5,
-  },
-  vibe: {
-    backgroundColor: Colors.INPUT,
-    borderRadius: 10,
-    padding: 5,
-    paddingHorizontal: 10,
-    marginHorizontal: 5,
   },
   tabContainer: {
     padding: 5,

@@ -1,7 +1,7 @@
 import { Text } from '@components/Text';
 import Colors from '@constants/Colors';
 import React from 'react';
-import { StyleSheet, ScrollView, Pressable } from 'react-native';
+import { Pressable, ScrollView, StyleSheet } from 'react-native';
 
 export interface Option {
   text: string;
@@ -9,14 +9,15 @@ export interface Option {
   active: boolean;
 }
 
-export interface MapFilterProps {
-  options: Option[];
-}
-
-export function MapFilter({ options }: MapFilterProps) {
+export function MapFilter() {
+  const OPTIONS = [
+    { text: 'Clubs', onPress: () => {}, active: false },
+    { text: 'Safety', onPress: () => {}, active: false },
+    { text: 'Parties', onPress: () => {}, active: false },
+  ];
   return (
     <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-      {options.map((option: Option, index) => (
+      {OPTIONS.map((option: Option, index) => (
         <Pressable
           style={[styles.vibe, option.active && { borderColor: Colors.WHITE }]}
           key={index}

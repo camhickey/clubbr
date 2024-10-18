@@ -1,3 +1,4 @@
+import { toastConfig } from '@components/ToastConfig';
 import useCachedResources from '@hooks/useCachedResources';
 import { PartyProvider } from '@hooks/useParty';
 import { ProfileProvider } from '@hooks/useProfile';
@@ -33,15 +34,17 @@ export default function App() {
     );
   } else {
     return (
-      <SafeAreaProvider>
-        <ProfileProvider>
-          <PartyProvider>
-            <Navigation />
-            <StatusBar />
-          </PartyProvider>
-        </ProfileProvider>
-        <Toast />
-      </SafeAreaProvider>
+      <>
+        <SafeAreaProvider>
+          <ProfileProvider>
+            <PartyProvider>
+              <Navigation />
+              <StatusBar />
+            </PartyProvider>
+          </ProfileProvider>
+        </SafeAreaProvider>
+        <Toast config={toastConfig} />
+      </>
     );
   }
 }

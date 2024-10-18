@@ -19,7 +19,7 @@ export interface RootStackParamList {
   Login: undefined;
   Register: undefined;
   ResetPassword: undefined;
-  ClubModal: { name: string; id: string };
+  ClubModal: { name: string; id: string; age: number; price: number };
   UserModal: { user: string; title: string };
   InviteModal: undefined;
   MapHelpModal: undefined;

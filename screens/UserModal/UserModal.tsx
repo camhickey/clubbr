@@ -81,7 +81,7 @@ export function UserModalScreen({ route }: any) {
                       Toast.show({
                         type: 'success',
                         text1: 'Friend Removed',
-                        text2: `You have removed @${profile.username} as a friend.`,
+                        text2: `You have removed @${profile.username} as a friend`,
                       });
                     })
                     .catch((error) => Toast.show({ type: 'error', text1: 'Error', text2: error })),
@@ -99,7 +99,7 @@ export function UserModalScreen({ route }: any) {
                 Toast.show({
                   type: 'success',
                   text1: 'Friend Request Cancelled',
-                  text2: `You have cancelled the friend request to @${profile.username}.`,
+                  text2: `You have cancelled your friend request to @${profile.username}`,
                 });
               })
               .catch((error) => Toast.show({ type: 'error', text1: 'Error', text2: error }))
@@ -115,7 +115,7 @@ export function UserModalScreen({ route }: any) {
                 Toast.show({
                   type: 'success',
                   text1: 'Friend Request Accepted',
-                  text2: `You are now friends with @${profile.username}.`,
+                  text2: `You are now friends with @${profile.username}`,
                 });
               })
               .catch((error) => Toast.show({ type: 'error', text1: 'Error', text2: error }))
@@ -131,7 +131,7 @@ export function UserModalScreen({ route }: any) {
                 Toast.show({
                   type: 'success',
                   text1: 'Friend Request Sent',
-                  text2: `You have sent a friend request to @${profile.username}.`,
+                  text2: `You have sent a friend request to @${profile.username}`,
                 });
               })
               .catch((error) => Toast.show({ type: 'error', text1: 'Error', text2: error }))

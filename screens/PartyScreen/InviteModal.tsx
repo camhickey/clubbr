@@ -8,7 +8,8 @@ import { FontAwesome } from '@expo/vector-icons';
 import { useProfile } from '@hooks/useProfile';
 import { useNavigation } from '@react-navigation/native';
 import { useState } from 'react';
-import { Alert, FlatList, Pressable, StyleSheet, TextInput } from 'react-native';
+import { FlatList, Pressable, StyleSheet, TextInput } from 'react-native';
+import Toast from 'react-native-toast-message';
 
 export function InviteModal() {
   const { friends, username } = useProfile();
@@ -69,11 +70,19 @@ export function InviteModal() {
           onPress={() =>
             inviteUsers(username, invitedUsers)
               .then(() => {
-                Alert.alert('Invites sent!', 'Your friends have been invited to your party.');
+                Toast.show({
+                  text1: 'Invites sent',
+                  text2: 'Your friends have been invited to your party!',
+                  type: 'success',
+                });
                 navigation.goBack();
               })
               .catch((error) => {
-                console.error('Error inviting users: ', error);
+                Toast.show({
+                  text1: 'Error',
+                  text2: error.message,
+                  type: 'error',
+                });
               })
           }
           disabled={invitedUsers.length < 1}>
@@ -89,7 +98,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   search: {
-    flex: 1,
+    width: '100%',
     backgroundColor: Colors.INPUT,
     borderRadius: 10,
     padding: 10,

@@ -42,7 +42,7 @@ export function ClubModal({ route }: any) {
 
   const collectionRef = collection(db, 'clubs', id, 'info');
   useEffect(() => {
-    getDoc(doc(collectionRef, 'info')).then((clubInfoDoc) => {
+    getDoc(doc(collectionRef, 'page')).then((clubInfoDoc) => {
       if (!clubInfoDoc.exists()) return;
       const data = clubInfoDoc.data();
       setDetails({

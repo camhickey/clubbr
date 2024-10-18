@@ -10,7 +10,7 @@ import { createUserWithEmailAndPassword, getAuth, sendEmailVerification } from '
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import React, { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { KeyboardAvoidingView, StyleSheet, TextInput } from 'react-native';
+import { Alert, KeyboardAvoidingView, StyleSheet, TextInput } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { registerSchema } from './schema';
@@ -39,17 +39,16 @@ export function RegisterScreen() {
     getDoc(doc(db, 'users', formState.username.toLowerCase()))
       .then((userDoc) => {
         if (userDoc.exists()) {
-          console.log('Username is taken');
-          alert('This username is already taken.');
+          Alert.alert('This username is already taken.');
         } else {
           createUserWithEmailAndPassword(auth, formState.email, formState.password)
             .then(async (userCredentials: { user: any }) => {
               const user = userCredentials.user;
               if (user.emailVerified) {
-                alert('There is already a user associated with this email address.');
+                Alert.alert('There is already a user associated with this email address.');
               }
               sendEmailVerification(user);
-              alert(
+              Alert.alert(
                 `A verification email has been sent to ${formState.email}. Once verified, you may log in with the email and password you just entered.`,
               );
               await setDoc(doc(db, 'usernames', user.uid), {
@@ -73,12 +72,11 @@ export function RegisterScreen() {
               auth.signOut();
               navigation.navigate('Login');
             })
-            .catch((error: { message: any }) => alert(error.message));
+            .catch((error: { message: any }) => Alert.alert(error.message));
         }
       })
       .catch((error) => {
-        console.log(error);
-        alert(error.message);
+        Alert.alert(error.message);
       });
   }
 

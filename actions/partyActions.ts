@@ -44,9 +44,7 @@ export async function acceptInvite(localUser: string, party: string) {
   });
   //move error checking out of these functions
   getDoc(doc(db, 'parties', party)).then(async (partyDoc) => {
-    if (!partyDoc.exists()) {
-      return Alert.alert('This party is on longer active.');
-    }
+    if (!partyDoc.exists()) return Alert.alert('This party is on longer active.');
     const { party } = useProfile();
     if (party) {
       return Alert.alert('You must leave your current party before joining a new one.');

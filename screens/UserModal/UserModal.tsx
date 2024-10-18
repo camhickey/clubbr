@@ -31,14 +31,13 @@ export function UserModalScreen({ route }: any) {
 
   useEffect(() => {
     getDoc(doc(db, 'users', user)).then((userDoc) => {
-      if (userDoc.exists()) {
-        const data = userDoc.data()!;
-        setProfile({
-          displayName: data.displayName,
-          photoURL: data.photoURL,
-          username: data.username,
-        });
-      }
+      if (!userDoc.exists()) return;
+      const data = userDoc.data()!;
+      setProfile({
+        displayName: data.displayName,
+        photoURL: data.photoURL,
+        username: data.username,
+      });
     });
   }, []);
 

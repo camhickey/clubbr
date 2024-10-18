@@ -8,7 +8,7 @@ import { useProfile } from '@hooks/useProfile';
 import { useNavigation } from '@react-navigation/native';
 import { doc, getDoc } from 'firebase/firestore';
 import React, { ReactElement, useEffect, useState } from 'react';
-import { Alert, Image, Pressable, StyleSheet } from 'react-native';
+import { Image, Pressable, StyleSheet } from 'react-native';
 
 interface Action {
   icon: ReactElement;
@@ -23,56 +23,33 @@ interface UserCardProps {
 
 export function UserCard({ user, actions, blurb }: UserCardProps) {
   const navigation = useNavigation();
-  const { username, photoURL, displayName } = useProfile();
+  const { username } = useProfile();
   const [searchedUser, setSearchedUser] = useState({
-    displayName: '',
+    displayName: 'Loading...',
     photoURL: DEFAULT_PFP,
-    username: '',
+    username: 'Loading...',
   });
-  const IS_USER = user === username;
-
-  const [userFound, setUserFound] = useState(true);
 
   useEffect(() => {
-    if (IS_USER) {
-      setSearchedUser({ displayName, photoURL, username });
-    } else {
-      getDoc(doc(db, 'users', user)).then((userDoc) => {
-        if (userDoc.exists()) {
-          const data = userDoc.data()!;
-          setSearchedUser({
-            displayName: data.displayName,
-            photoURL: data.photoURL,
-            username: data.username,
-          });
-          console.log('user doc read from profile card');
-        } else {
-          setSearchedUser({
-            displayName: 'User not found',
-            photoURL: DEFAULT_PFP,
-            username: user,
-          });
-          setUserFound(false);
-        }
+    getDoc(doc(db, 'users', user)).then((userDoc) => {
+      if (!userDoc.exists()) return;
+      const data = userDoc.data()!;
+      setSearchedUser({
+        displayName: data.displayName,
+        photoURL: data.photoURL,
+        username: data.username,
       });
-    }
+    });
   }, []);
 
   return (
     <Container style={styles.container}>
       <Pressable
         onPress={() => {
-          if (userFound) {
-            if (IS_USER) {
-              navigation.navigate('Root', { screen: 'Social' });
-            } else {
-              navigation.navigate('UserModal', { user, title: user });
-            }
-          } else {
-            Alert.alert('User not found');
-          }
+          user === username
+            ? navigation.navigate('Root', { screen: 'Social' })
+            : navigation.navigate('UserModal', { user, title: user });
         }}
-        onLongPress={() => alert('long press')}
         style={styles.container}>
         <Image source={{ uri: searchedUser.photoURL }} style={styles.profilePic} />
         <View style={styles.identification}>

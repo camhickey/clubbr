@@ -2,6 +2,7 @@ import { Container } from '@components/Container';
 import { Text } from '@components/Text';
 import { View } from '@components/View';
 import Colors from '@constants/Colors';
+import { DEFAULT_PFP } from '@constants/profile';
 import { db } from '@db';
 import { useNavigation } from '@react-navigation/native';
 import { doc, getDoc } from 'firebase/firestore';
@@ -16,34 +17,26 @@ interface Action {
 interface ClubCardProps {
   id: string;
   actions?: Action[];
-  blurb?: string;
 }
 
-export function ClubCard({ id, actions, blurb }: ClubCardProps) {
+export function ClubCard({ id, actions }: ClubCardProps) {
   const navigation = useNavigation();
   const [clubFound, setClubFound] = useState<boolean>(true);
   const [club, setClub] = useState({
-    name: '',
-    photoURL: '',
+    name: 'Loading...',
+    photoURL: DEFAULT_PFP,
   });
 
   useEffect(() => {
     getDoc(doc(db, 'clubs', id)).then((clubDoc) => {
-      if (clubDoc.exists()) {
-        const data = clubDoc.data()!;
-        setClub({
-          name: data.name,
-          photoURL: '',
-        });
-        setClubFound(true);
-        console.log('club doc read from club card');
-      } else {
-        setClub({
-          name: 'Club Not Found',
-          photoURL: '',
-        });
-        setClubFound(false);
-      }
+      if (!clubDoc.exists()) return;
+      const data = clubDoc.data()!;
+      setClub({
+        name: data.name,
+        photoURL: '',
+      });
+      setClubFound(true);
+      console.log('club doc read from club card');
     });
   }, []);
 
@@ -52,6 +45,7 @@ export function ClubCard({ id, actions, blurb }: ClubCardProps) {
       <Pressable
         onPress={() => {
           if (clubFound) {
+            //need to fix this (don't need access to age and price)
             navigation.navigate('ClubModal', { name: club.name, id });
           } else {
             Alert.alert('Club not found');

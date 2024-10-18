@@ -23,13 +23,12 @@ export function ShowSafetyReportModal({ id, isVisible, onClose }: ShowSafetyRepo
   useEffect(() => {
     id &&
       getDoc(doc(db, 'safety', id)).then((safetyReportDoc) => {
-        if (safetyReportDoc.exists()) {
-          const data = safetyReportDoc.data()!;
-          setSafetyReport({
-            description: data.description,
-            timestamp: data.timestamp,
-          });
-        }
+        if (!safetyReportDoc.exists()) return;
+        const data = safetyReportDoc.data()!;
+        setSafetyReport({
+          description: data.description,
+          timestamp: data.timestamp,
+        });
       });
   }, []);
 

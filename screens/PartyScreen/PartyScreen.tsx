@@ -9,23 +9,28 @@ import { Ionicons } from '@expo/vector-icons';
 import { useParty } from '@hooks/useParty';
 import { useProfile } from '@hooks/useProfile';
 import { useNavigation } from '@react-navigation/native';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Alert, FlatList, StyleSheet } from 'react-native';
 
 import { CreatePartyModal } from './CreatePartyModal';
 
 export function PartyScreen() {
-  const navigation = useNavigation();
   const { party, username } = useProfile();
   const { partyLeader, partyName, partyMembers } = useParty();
+  const navigation = useNavigation();
 
   const [createPartyModalVisible, setCreatePartyModalVisible] = useState(false);
+
+  //iffy
+  useEffect(() => {
+    navigation.setOptions({ title:  party !== '' ? partyName : 'Party Screen' });
+  }
+  , [partyName, party]);
 
   return (
     <Container style={styles.container}>
       {party ? (
         <View>
-          <Text style={styles.partyName}>{partyName}</Text>
           {partyMembers && (
             <FlatList
               data={Object.keys(partyMembers)}

@@ -42,7 +42,6 @@ export async function acceptInvite(localUser: string, party: string) {
   const location = await Location.getCurrentPositionAsync({
     accuracy: Location.Accuracy.Balanced,
   });
-  //move error checking out of these functions
   getDoc(doc(db, 'parties', party)).then(async (partyDoc) => {
     if (!partyDoc.exists()) return Alert.alert('This party is on longer active.');
     const { party } = useProfile();

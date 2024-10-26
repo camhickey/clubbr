@@ -17,7 +17,7 @@ import { RegisterScreen } from '@screens/RegisterScreen/RegisterScreen';
 import { ResetPasswordScreen } from '@screens/ResetPasswordScreeen/ResetPasswordScreen';
 import { SocialScreen } from '@screens/SocialScreen/SocialScreen';
 import { StartupScreen } from '@screens/StartupScreen/StartupScreen';
-import { UserModalScreen } from '@screens/UserModal/UserModal';
+import { UserModal } from '@screens/UserModal/UserModal';
 import { getAuth } from 'firebase/auth';
 import * as React from 'react';
 import { useState } from 'react';
@@ -51,7 +51,7 @@ function LoggedOutNavigator() {
   const navigation = useNavigation();
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="Intro" component={IntroScreen} />
+      <Stack.Screen name="IntroScreen" component={IntroScreen} />
       <Stack.Group
         screenOptions={{
           presentation: 'card',
@@ -66,7 +66,7 @@ function LoggedOutNavigator() {
           },
           headerLeft: () => (
             <Pressable
-              onPress={() => navigation.navigate('Intro')}
+              onPress={() => navigation.navigate('IntroScreen')}
               style={({ pressed }) => ({
                 opacity: pressed ? 0.5 : 1,
               })}>
@@ -74,10 +74,10 @@ function LoggedOutNavigator() {
             </Pressable>
           ),
         }}>
-        <Stack.Screen name="Login" component={LoginScreen} />
-        <Stack.Screen name="Register" component={RegisterScreen} />
+        <Stack.Screen name="LoginScreen" component={LoginScreen} />
+        <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
         <Stack.Screen
-          name="ResetPassword"
+          name="ResetPasswordScreen"
           component={ResetPasswordScreen}
           options={{ title: 'Reset Password' }}
         />
@@ -119,16 +119,17 @@ function LoggedInNavigator() {
           name="ClubModal"
           component={ClubModal}
           options={({ route }) => ({
-            title: route.params.name,
+            title: 'Loading...',
             id: route.params.id,
-            age: route.params.age,
-            price: route.params.price,
           })}
         />
         <Stack.Screen
           name="UserModal"
-          component={UserModalScreen}
-          options={({ route }) => ({ title: route.params.title })}
+          component={UserModal}
+          options={({ route }) => ({
+            title: 'Loading...',
+            user: route.params.user,
+          })}
         />
         <Stack.Screen
           name="InviteModal"

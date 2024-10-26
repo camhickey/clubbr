@@ -4,11 +4,11 @@
     "slug": "clubbr",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/NightVibes.png",
+    "icon": "./assets/images/clubbr.png",
     "scheme": "myapp",
     "userInterfaceStyle": "dark",
     "splash": {
-      "image": "./assets/images/NightVibes.png",
+      "image": "./assets/images/clubbr.png",
       "resizeMode": "contain",
       "backgroundColor": "#000000"
     },
@@ -27,7 +27,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/NightVibes.png",
+        "foregroundImage": "./assets/images/clubbr.png",
         "backgroundColor": "#000000"
       }
     },

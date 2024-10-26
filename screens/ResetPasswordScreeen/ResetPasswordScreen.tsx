@@ -4,7 +4,7 @@ import { Text } from '@components/Text';
 import Colors from '@constants/Colors';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useNavigation } from '@react-navigation/core';
-import { sendPasswordResetEmail, getAuth } from 'firebase/auth';
+import { getAuth, sendPasswordResetEmail } from 'firebase/auth';
 import React from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { StyleSheet, TextInput } from 'react-native';
@@ -35,7 +35,7 @@ export function ResetPasswordScreen() {
           alert(
             `An email has been sent to ${formState.email} with instructions to reset your password. If the email has not shown up after 10 minutes, check your spam folder or try again.`,
           );
-          navigation.navigate('Login');
+          navigation.navigate('LoginScreen');
         })
         .catch((error) => {
           alert(error.message);

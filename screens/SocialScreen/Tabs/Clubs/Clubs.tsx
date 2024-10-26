@@ -67,11 +67,11 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   search: {
-    flex: 1,
     backgroundColor: Colors.INPUT,
     borderRadius: 10,
     padding: 10,
     color: Colors.WHITE,
+    width: '100%',
   },
   list: {
     gap: 20,

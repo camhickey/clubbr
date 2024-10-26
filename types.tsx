@@ -13,30 +13,30 @@ declare global {
   }
 }
 
-export interface RootStackParamList {
+export type RootStackParamList = {
   Root: NavigatorScreenParams<RootTabParamList> | undefined;
-  Intro: undefined;
-  Login: undefined;
-  Register: undefined;
-  ResetPassword: undefined;
-  ClubModal: { name: string; id: string; age: number; price: number };
-  UserModal: { user: string; title: string };
+  IntroScreen: undefined;
+  LoginScreen: undefined;
+  RegisterScreen: undefined;
+  ResetPasswordScreen: undefined;
+  ClubModal: { id: string };
+  UserModal: { user: string };
   InviteModal: undefined;
   MapHelpModal: undefined;
   StartupScreen: undefined;
-}
+};
 
 export type RootStackScreenProps<Screen extends keyof RootStackParamList> = NativeStackScreenProps<
   RootStackParamList,
   Screen
 >;
 
-export interface RootTabParamList {
+export type RootTabParamList = {
   Party: { title: string };
   Map: undefined;
   Inbox: undefined;
   Social: undefined;
-}
+};
 
 export type RootTabScreenProps<Screen extends keyof RootTabParamList> = CompositeScreenProps<
   BottomTabScreenProps<RootTabParamList, Screen>,

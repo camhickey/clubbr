@@ -7,7 +7,7 @@ import { db } from '@db';
 import { useNavigation } from '@react-navigation/native';
 import { doc, getDoc } from 'firebase/firestore';
 import React, { ReactElement, useEffect, useState } from 'react';
-import { Alert, Image, Pressable, StyleSheet } from 'react-native';
+import { Image, Pressable, StyleSheet } from 'react-native';
 
 interface Action {
   icon: ReactElement;
@@ -21,7 +21,6 @@ interface ClubCardProps {
 
 export function ClubCard({ id, actions }: ClubCardProps) {
   const navigation = useNavigation();
-  const [clubFound, setClubFound] = useState<boolean>(true);
   const [club, setClub] = useState({
     name: 'Loading...',
     photoURL: DEFAULT_PFP,
@@ -29,14 +28,16 @@ export function ClubCard({ id, actions }: ClubCardProps) {
 
   useEffect(() => {
     getDoc(doc(db, 'clubs', id)).then((clubDoc) => {
-      if (!clubDoc.exists()) return;
-      const data = clubDoc.data()!;
+      if (!clubDoc.exists()) {
+        console.error('Club does not exist');
+        console.error(id);
+        return;
+      }
+      const data = clubDoc.data();
       setClub({
         name: data.name,
         photoURL: '',
       });
-      setClubFound(true);
-      console.log('club doc read from club card');
     });
   }, []);
 
@@ -44,14 +45,8 @@ export function ClubCard({ id, actions }: ClubCardProps) {
     <Container style={styles.container}>
       <Pressable
         onPress={() => {
-          if (clubFound) {
-            //need to fix this (don't need access to age and price)
-            navigation.navigate('ClubModal', { name: club.name, id });
-          } else {
-            Alert.alert('Club not found');
-          }
+          navigation.navigate('ClubModal', { id });
         }}
-        onLongPress={() => alert('long press')}
         style={styles.container}>
         <Image source={{ uri: club.photoURL }} style={styles.profilePic} />
         <Text style={styles.displayName}>{club.name}</Text>

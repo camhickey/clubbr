@@ -139,12 +139,7 @@ export function MapScreen() {
               }}
               tracksViewChanges={false}
               onPress={() => {
-                navigation.navigate('ClubModal', {
-                  name: marker.name,
-                  id: marker.id,
-                  age: marker.age,
-                  price: marker.price,
-                });
+                navigation.navigate('ClubModal', { id: marker.id });
               }}>
               <View style={styles.marker}>
                 <Text style={styles.markerText}>{marker.name}</Text>

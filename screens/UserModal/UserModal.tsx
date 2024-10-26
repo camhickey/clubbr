@@ -7,14 +7,16 @@ import Colors from '@constants/Colors';
 import { DEFAULT_PFP } from '@constants/profile';
 import { db } from '@db';
 import { useProfile } from '@hooks/useProfile';
+import { useNavigation } from '@react-navigation/native';
 import { doc, getDoc } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
 import { Alert, Image, StyleSheet } from 'react-native';
 import Toast from 'react-native-toast-message';
 
-export function UserModalScreen({ route }: any) {
+export function UserModal({ route }: any) {
   const { user } = route.params;
   const { friends, friendRequestsPending, friendRequestsReceived, username } = useProfile();
+  const navigation = useNavigation();
   enum RELATIONSHIP {
     FRIENDS = 'friends',
     REQUEST_SENT = 'request sent',
@@ -40,6 +42,10 @@ export function UserModalScreen({ route }: any) {
       });
     });
   }, []);
+
+  useEffect(() => {
+    navigation.setOptions({ title: user });
+  }, [user]);
 
   useEffect(() => {
     if (friends.includes(user)) {

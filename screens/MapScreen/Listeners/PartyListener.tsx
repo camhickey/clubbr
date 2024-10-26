@@ -33,12 +33,7 @@ export function PartyListener() {
           const location = await Location.getCurrentPositionAsync({
             accuracy: Location.Accuracy.Balanced,
           });
-          updatePosition(
-            username,
-            location.coords.latitude,
-            location.coords.longitude,
-            party,
-          ).catch((err) => console.log(err));
+          updatePosition(username, location.coords.latitude, location.coords.longitude, party);
         }
       })();
     }, 60000);

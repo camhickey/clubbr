@@ -50,10 +50,10 @@ const loggedOutLinking: LinkingOptions<RootStackParamList> = {
   prefixes: [Linking.createURL('/')],
   config: {
     screens: {
-      Intro: 'IntroScreen',
-      Login: 'LoginScreen',
-      Register: 'RegisterScreen',
-      ResetPassword: 'ResetPasswordScreen',
+      IntroScreen: 'IntroScreen',
+      LoginScreen: 'LoginScreen',
+      RegisterScreen: 'RegisterScreen',
+      ResetPasswordScreen: 'ResetPasswordScreen',
     },
   },
 };

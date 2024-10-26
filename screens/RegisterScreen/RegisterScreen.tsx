@@ -70,7 +70,7 @@ export function RegisterScreen() {
             })
             .then(() => {
               auth.signOut();
-              navigation.navigate('Login');
+              navigation.navigate('LoginScreen');
             })
             .catch((error: { message: any }) => Alert.alert(error.message));
         }
@@ -199,7 +199,7 @@ export function RegisterScreen() {
           <Button onPress={handleSubmit(onSubmit)} disabled={!isValid}>
             REGISTER
           </Button>
-          <Text style={styles.link} onPress={() => navigation.navigate('Login')}>
+          <Text style={styles.link} onPress={() => navigation.navigate('LoginScreen')}>
             Already have an account? Sign in <Text style={{ fontWeight: 'bold' }}>here.</Text>
           </Text>
         </SafeAreaView>

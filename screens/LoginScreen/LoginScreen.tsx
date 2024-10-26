@@ -95,10 +95,10 @@ export function LoginScreen() {
           <Button onPress={handleSubmit(onSubmit)} disabled={!isValid}>
             LOGIN
           </Button>
-          <Text style={styles.link} onPress={() => navigation.navigate('Register')}>
+          <Text style={styles.link} onPress={() => navigation.navigate('RegisterScreen')}>
             Don't have an account? Create one <Text style={{ fontWeight: 'bold' }}>here.</Text>
           </Text>
-          <Text style={styles.link} onPress={() => navigation.navigate('ResetPassword')}>
+          <Text style={styles.link} onPress={() => navigation.navigate('ResetPasswordScreen')}>
             Forgot password?
           </Text>
         </SafeAreaView>

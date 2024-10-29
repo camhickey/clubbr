@@ -4,7 +4,7 @@ import Colors from '@constants/Colors';
 import { AntDesign, FontAwesome } from '@expo/vector-icons';
 import { ScrollView, StyleSheet, View } from 'react-native';
 
-export function MapHelpModal() {
+export function MapHelpScreen() {
   return (
     <ModalContainer>
       <ScrollView showsVerticalScrollIndicator={false}>

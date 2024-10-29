@@ -2,7 +2,7 @@ import { Container } from '@components/Container';
 import { Text } from '@components/Text';
 import { View } from '@components/View';
 import Colors from '@constants/Colors';
-import { DEFAULT_PFP } from '@constants/profile';
+import { DEFAULT_PFP } from '@constants/pfp';
 import { db } from '@db';
 import { useNavigation } from '@react-navigation/native';
 import { doc, getDoc } from 'firebase/firestore';
@@ -23,20 +23,16 @@ export function ClubCard({ id, actions }: ClubCardProps) {
   const navigation = useNavigation();
   const [club, setClub] = useState({
     name: 'Loading...',
-    photoURL: DEFAULT_PFP,
+    pfp: DEFAULT_PFP,
   });
 
   useEffect(() => {
     getDoc(doc(db, 'clubs', id)).then((clubDoc) => {
-      if (!clubDoc.exists()) {
-        console.error('Club does not exist');
-        console.error(id);
-        return;
-      }
+      if (!clubDoc.exists()) return;
       const data = clubDoc.data();
       setClub({
         name: data.name,
-        photoURL: '',
+        pfp: data.pfp,
       });
     });
   }, []);
@@ -45,10 +41,10 @@ export function ClubCard({ id, actions }: ClubCardProps) {
     <Container style={styles.container}>
       <Pressable
         onPress={() => {
-          navigation.navigate('ClubModal', { id });
+          navigation.navigate('ClubScreen', { id });
         }}
         style={styles.container}>
-        <Image source={{ uri: club.photoURL }} style={styles.profilePic} />
+        <Image source={{ uri: club.pfp }} style={styles.profilePic} />
         <Text style={styles.displayName}>{club.name}</Text>
       </Pressable>
       <View style={styles.actions}>

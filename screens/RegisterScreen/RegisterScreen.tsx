@@ -2,7 +2,7 @@ import { Button } from '@components/Button';
 import { Container } from '@components/Container';
 import { Text } from '@components/Text';
 import Colors from '@constants/Colors';
-import { DEFAULT_PFP } from '@constants/profile';
+import { DEFAULT_PFP } from '@constants/pfp';
 import { db } from '@db';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useNavigation } from '@react-navigation/native';

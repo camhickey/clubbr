@@ -15,6 +15,7 @@ export function ProfileListener() {
     setInvites,
     setParty,
     setPhotoURL,
+    setOwnedClubs,
   } = useProfile();
 
   useEffect(() => {
@@ -30,6 +31,7 @@ export function ProfileListener() {
         setInvites(data.invites);
         setParty(data.party);
         setPhotoURL(data.photoURL);
+        setOwnedClubs(data.ownedClubs);
       }
     });
     return () => unsubscribe();

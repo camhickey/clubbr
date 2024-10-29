@@ -8,16 +8,17 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { InboxScreen } from '@screens/InboxScreen/InboxScreen';
 import { IntroScreen } from '@screens/IntroScreen/IntroScreen';
 import { LoginScreen } from '@screens/LoginScreen/LoginScreen';
-import { ClubModal } from '@screens/MapScreen/ClubModal/ClubModal';
-import { MapHelpModal } from '@screens/MapScreen/MapHelpModal/MapHelpModal';
+import { ClubScreen } from '@screens/MapScreen/ClubScreen/ClubScreen';
+import { MapHelpScreen } from '@screens/MapScreen/MapHelpScreen/MapHelpScreen';
 import { MapScreen } from '@screens/MapScreen/MapScreen';
-import { InviteModal } from '@screens/PartyScreen/InviteModal';
+import { InviteScreen } from '@screens/PartyScreen/InviteScreen/InviteScreen';
 import { PartyScreen } from '@screens/PartyScreen/PartyScreen';
 import { RegisterScreen } from '@screens/RegisterScreen/RegisterScreen';
 import { ResetPasswordScreen } from '@screens/ResetPasswordScreeen/ResetPasswordScreen';
 import { SocialScreen } from '@screens/SocialScreen/SocialScreen';
+import { UserSettingsScreen } from '@screens/SocialScreen/UserSettingsScreen/UserSettingsScreen';
 import { StartupScreen } from '@screens/StartupScreen/StartupScreen';
-import { UserModal } from '@screens/UserModal/UserModal';
+import { UserScreen } from '@screens/UserScreen/UserScreen';
 import { getAuth } from 'firebase/auth';
 import * as React from 'react';
 import { useState } from 'react';
@@ -116,30 +117,35 @@ function LoggedInNavigator() {
           ),
         }}>
         <Stack.Screen
-          name="ClubModal"
-          component={ClubModal}
+          name="ClubScreen"
+          component={ClubScreen}
           options={({ route }) => ({
             title: 'Loading...',
             id: route.params.id,
           })}
         />
         <Stack.Screen
-          name="UserModal"
-          component={UserModal}
+          name="UserScreen"
+          component={UserScreen}
           options={({ route }) => ({
             title: 'Loading...',
             user: route.params.user,
           })}
         />
         <Stack.Screen
-          name="InviteModal"
-          component={InviteModal}
+          name="InviteScreen"
+          component={InviteScreen}
           options={{ title: 'Invite to Party' }}
         />
         <Stack.Screen
-          name="MapHelpModal"
-          component={MapHelpModal}
+          name="MapHelpScreen"
+          component={MapHelpScreen}
           options={{ title: 'How to use the map' }}
+        />
+        <Stack.Screen
+          name="UserSettingsScreen"
+          component={UserSettingsScreen}
+          options={{ title: 'User Settings' }}
         />
       </Stack.Group>
     </Stack.Navigator>
@@ -189,7 +195,7 @@ function BottomTabNavigator() {
           tabBarIcon: ({ color, focused }) => <TabBarIcon name="map" color={color} />,
           headerRight: () => (
             <Pressable
-              onPress={() => navigation.navigate('MapHelpModal')}
+              onPress={() => navigation.navigate('MapHelpScreen')}
               style={({ pressed }) => ({
                 opacity: pressed ? 0.5 : 1,
               })}>
@@ -217,7 +223,7 @@ function BottomTabNavigator() {
           headerRight: () => (
             <>
               <Pressable
-                onPress={() => alert('log out')}
+                onPress={() => navigation.navigate('UserSettingsScreen')}
                 style={({ pressed }) => ({
                   opacity: pressed ? 0.5 : 1,
                 })}>

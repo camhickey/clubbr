@@ -68,8 +68,7 @@ export function CommentSection({ clubId }: CommentSectionProps) {
                   onPress={() =>
                     comment.user === username
                       ? navigation.navigate('Root', { screen: 'Social' })
-                      : navigation.navigate('UserModal', {
-                          title: comment.user,
+                      : navigation.navigate('UserScreen', {
                           user: comment.user,
                         })
                   }>

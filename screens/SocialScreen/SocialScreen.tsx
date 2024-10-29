@@ -10,8 +10,8 @@ import { Image, Pressable, StyleSheet } from 'react-native';
 import Toast from 'react-native-toast-message';
 
 import { ChangeDisplayNameModal } from './ChangeDisplayNameModal';
-import { Clubs } from './Tabs/Clubs/Clubs';
-import { Friends } from './Tabs/Friends/Friends';
+import { Clubs } from './Tabs/Clubs';
+import { Friends } from './Tabs/Friends';
 
 export function SocialScreen() {
   const { displayName, photoURL, username } = useProfile();

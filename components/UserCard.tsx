@@ -2,7 +2,7 @@ import { Container } from '@components/Container';
 import { Text } from '@components/Text';
 import { View } from '@components/View';
 import Colors from '@constants/Colors';
-import { DEFAULT_PFP } from '@constants/profile';
+import { DEFAULT_PFP } from '@constants/pfp';
 import { db } from '@db';
 import { useProfile } from '@hooks/useProfile';
 import { useNavigation } from '@react-navigation/native';
@@ -46,9 +46,11 @@ export function UserCard({ user, actions, blurb }: UserCardProps) {
     <Container style={styles.container}>
       <Pressable
         onPress={() => {
-          user === username
-            ? navigation.navigate('Root', { screen: 'Social' })
-            : navigation.navigate('UserModal', { user, title: user });
+          if (user === username) {
+            navigation.navigate('Root', { screen: 'Social' });
+          } else {
+            navigation.navigate('UserScreen', { user });
+          }
         }}
         style={styles.container}>
         <Image source={{ uri: searchedUser.photoURL }} style={styles.profilePic} />

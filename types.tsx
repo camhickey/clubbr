@@ -19,11 +19,12 @@ export type RootStackParamList = {
   LoginScreen: undefined;
   RegisterScreen: undefined;
   ResetPasswordScreen: undefined;
-  ClubModal: { id: string };
-  UserModal: { user: string };
-  InviteModal: undefined;
-  MapHelpModal: undefined;
+  ClubScreen: { id: string };
+  UserScreen: { user: string };
+  InviteScreen: undefined;
+  MapHelpScreen: undefined;
   StartupScreen: undefined;
+  UserSettingsScreen: undefined;
 };
 
 export type RootStackScreenProps<Screen extends keyof RootStackParamList> = NativeStackScreenProps<
@@ -32,7 +33,7 @@ export type RootStackScreenProps<Screen extends keyof RootStackParamList> = Nati
 >;
 
 export type RootTabParamList = {
-  Party: { title: string };
+  Party: undefined;
   Map: undefined;
   Inbox: undefined;
   Social: undefined;

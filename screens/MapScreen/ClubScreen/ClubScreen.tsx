@@ -15,7 +15,7 @@ import { ScrollView, StyleSheet } from 'react-native';
 
 import { CommentSection } from './CommentSection';
 
-export function ClubModal({ route }: any) {
+export function ClubScreen({ route }: any) {
   const { id } = route.params;
   const { clubs, username } = useProfile();
   const navigation = useNavigation();
@@ -98,7 +98,7 @@ export function ClubModal({ route }: any) {
           children={() => (
             <Container style={styles.tabContainer}>
               <ScrollView showsVerticalScrollIndicator={false}>
-                <Text>{id}</Text>
+                <Text>{description}</Text>
               </ScrollView>
             </Container>
           )}

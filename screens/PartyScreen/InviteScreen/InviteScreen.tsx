@@ -11,7 +11,7 @@ import { useState } from 'react';
 import { FlatList, Pressable, StyleSheet, TextInput } from 'react-native';
 import Toast from 'react-native-toast-message';
 
-export function InviteModal() {
+export function InviteScreen() {
   const { friends, username } = useProfile();
   const navigation = useNavigation();
   const [invitedUsers, setInvitedUsers] = useState<string[]>([]);

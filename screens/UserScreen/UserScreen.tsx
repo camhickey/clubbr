@@ -4,7 +4,7 @@ import { ModalContainer } from '@components/ModalContainer';
 import { Text } from '@components/Text';
 import { View } from '@components/View';
 import Colors from '@constants/Colors';
-import { DEFAULT_PFP } from '@constants/profile';
+import { DEFAULT_PFP } from '@constants/pfp';
 import { db } from '@db';
 import { useProfile } from '@hooks/useProfile';
 import { useNavigation } from '@react-navigation/native';
@@ -13,7 +13,7 @@ import React, { useEffect, useState } from 'react';
 import { Alert, Image, StyleSheet } from 'react-native';
 import Toast from 'react-native-toast-message';
 
-export function UserModal({ route }: any) {
+export function UserScreen({ route }: any) {
   const { user } = route.params;
   const { friends, friendRequestsPending, friendRequestsReceived, username } = useProfile();
   const navigation = useNavigation();

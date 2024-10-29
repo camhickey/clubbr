@@ -2,14 +2,12 @@ import { Container } from '@components/Container';
 import { Text } from '@components/Text';
 import { View } from '@components/View';
 import Colors from '@constants/Colors';
-import { db } from '@db*';
 import { FontAwesome } from '@expo/vector-icons';
 import { useParty } from '@hooks/useParty';
 import { useProfile } from '@hooks/useProfile';
 import { useNavigation } from '@react-navigation/native';
-import { collection, onSnapshot, query } from 'firebase/firestore';
-import React, { useEffect, useState } from 'react';
-import { Platform, StyleSheet } from 'react-native';
+import React, { useState } from 'react';
+import { Image, Platform, StyleSheet } from 'react-native';
 import MapView from 'react-native-map-clustering';
 import { Marker, PROVIDER_DEFAULT } from 'react-native-maps';
 import Toast from 'react-native-toast-message';
@@ -17,9 +15,9 @@ import Toast from 'react-native-toast-message';
 import { ActionButton } from './ActionButton';
 import { PartyListener } from './Listeners/PartyListener';
 import { ProfileListener } from './Listeners/ProfileListener';
+import { MakeSafetyReportModal } from './MakeSafetyReportModal';
 import { MapStyle } from './MapStyle';
-import { MakeSafetyReportModal } from './SafetyModals/MakeSafetyReportModal';
-import { ShowSafetyReportModal } from './SafetyModals/ShowSafetyReportModal';
+import { ShowSafetyReportModal } from './ShowSafetyReportModal';
 
 const GAINESVILLE = {
   latitude: 29.6436,
@@ -39,6 +37,7 @@ export type ClubMarker = {
   location: { latitude: number; longitude: number };
   age: number;
   price: number;
+  pfp: string;
 };
 
 export function MapScreen() {
@@ -80,7 +79,7 @@ export function MapScreen() {
   }, []);*/
 
   //Get club markers
-  useEffect(() => {
+  /*useEffect(() => {
     setClubMarkers([]);
     const q = query(collection(db, 'clubs'));
     const unsubscribe = onSnapshot(q, (snapshot) => {
@@ -93,16 +92,17 @@ export function MapScreen() {
             location: doc.data().location,
             price: doc.data().price,
             age: doc.data().age,
+            pfp: DEFAULT_PFP,
           },
         ]);
       });
     });
     return () => unsubscribe();
-  }, []);
+  }, []);*/
 
-  useEffect(() => {
+  /*useEffect(() => {
     party === '' && setPartyView(false);
-  }, [party]);
+  }, [party]);*/
 
   return (
     <Container>
@@ -139,16 +139,11 @@ export function MapScreen() {
               }}
               tracksViewChanges={false}
               onPress={() => {
-                navigation.navigate('ClubModal', { id: marker.id });
+                navigation.navigate('ClubScreen', { id: marker.id });
               }}>
               <View style={styles.marker}>
+                <Image source={{ uri: marker.pfp }} style={styles.markerIcon} />
                 <Text style={styles.markerText}>{marker.name}</Text>
-                <FontAwesome
-                  style={styles.markerText}
-                  name="map-marker"
-                  size={24}
-                  color={Colors.WHITE}
-                />
               </View>
             </Marker>
           ))}
@@ -186,9 +181,8 @@ export function MapScreen() {
                 cluster={false}
                 tracksViewChanges={false}
                 onPress={() => {
-                  navigation.navigate('UserModal', {
+                  navigation.navigate('UserScreen', {
                     user: member[0],
-                    title: '@' + member[0],
                   });
                 }}>
                 <View style={styles.marker}>
@@ -280,6 +274,13 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     backgroundColor: 'transparent',
+  },
+  markerIcon: {
+    width: 40,
+    height: 40,
+    borderRadius: 50,
+    borderWidth: 2,
+    borderColor: Colors.WHITE,
   },
   markerText: {
     textShadowColor: Colors.BLACK,

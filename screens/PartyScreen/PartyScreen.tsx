@@ -23,9 +23,8 @@ export function PartyScreen() {
 
   //iffy
   useEffect(() => {
-    navigation.setOptions({ title:  party !== '' ? partyName : 'Party Screen' });
-  }
-  , [partyName, party]);
+    navigation.setOptions({ title: party !== '' ? partyName : 'Party Screen' });
+  }, [partyName, party]);
 
   return (
     <Container style={styles.container}>
@@ -109,7 +108,7 @@ export function PartyScreen() {
             )}
             <Button
               titleStyle={styles.buttonTitle}
-              onPress={() => navigation.navigate('InviteModal')}>
+              onPress={() => navigation.navigate('InviteScreen')}>
               INVITE FRIENDS
             </Button>
           </View>

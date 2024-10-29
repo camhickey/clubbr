@@ -1,4 +1,4 @@
-import { DEFAULT_PFP } from '@constants/profile';
+import { DEFAULT_PFP } from '@constants/pfp';
 import { createContext, useContext, useState } from 'react';
 
 interface ProfileContextType {
@@ -24,6 +24,8 @@ interface ProfileContextType {
   setUserId: (userId: string) => void;
   username: string;
   setUsername: (username: string) => void;
+  ownedClubs: string[];
+  setOwnedClubs: (ownedClubs: string[]) => void;
 }
 
 const initialState: ProfileContextType = {
@@ -49,6 +51,8 @@ const initialState: ProfileContextType = {
   setUserId: () => {},
   username: '',
   setUsername: () => {},
+  ownedClubs: [],
+  setOwnedClubs: () => {},
 };
 
 const ProfileContext = createContext<ProfileContextType>(initialState);
@@ -65,6 +69,7 @@ export function ProfileProvider({ children }: any) {
   const [photoURL, setPhotoURL] = useState<string>(DEFAULT_PFP);
   const [userId, setUserId] = useState<string>('');
   const [username, setUsername] = useState<string>('');
+  const [ownedClubs, setOwnedClubs] = useState<string[]>([]);
 
   return (
     <ProfileContext.Provider
@@ -91,6 +96,8 @@ export function ProfileProvider({ children }: any) {
         setUserId,
         username,
         setUsername,
+        ownedClubs,
+        setOwnedClubs,
       }}>
       {children}
     </ProfileContext.Provider>

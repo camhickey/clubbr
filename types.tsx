@@ -6,6 +6,7 @@
 import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 import { CompositeScreenProps, NavigatorScreenParams } from '@react-navigation/native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { ClubDetails } from '@screens/MapScreen/ClubScreen/ClubScreen';
 
 declare global {
   namespace ReactNavigation {
@@ -20,6 +21,7 @@ export type RootStackParamList = {
   RegisterScreen: undefined;
   ResetPasswordScreen: undefined;
   ClubScreen: { id: string };
+  EditClubScreen: { id: string; clubDetails: ClubDetails };
   UserScreen: { user: string };
   InviteScreen: undefined;
   MapHelpScreen: undefined;

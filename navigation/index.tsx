@@ -5,6 +5,7 @@ import { useProfile } from '@hooks/useProfile';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer, useNavigation } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { EditClubScreen } from '@screens/EditClubScreen/EditClubScreen';
 import { InboxScreen } from '@screens/InboxScreen/InboxScreen';
 import { IntroScreen } from '@screens/IntroScreen/IntroScreen';
 import { LoginScreen } from '@screens/LoginScreen/LoginScreen';
@@ -75,8 +76,12 @@ function LoggedOutNavigator() {
             </Pressable>
           ),
         }}>
-        <Stack.Screen name="LoginScreen" component={LoginScreen} />
-        <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
+        <Stack.Screen name="LoginScreen" component={LoginScreen} options={{ title: 'Login' }} />
+        <Stack.Screen
+          name="RegisterScreen"
+          component={RegisterScreen}
+          options={{ title: 'Make an account' }}
+        />
         <Stack.Screen
           name="ResetPasswordScreen"
           component={ResetPasswordScreen}
@@ -117,14 +122,6 @@ function LoggedInNavigator() {
           ),
         }}>
         <Stack.Screen
-          name="ClubScreen"
-          component={ClubScreen}
-          options={({ route }) => ({
-            title: 'Loading...',
-            id: route.params.id,
-          })}
-        />
-        <Stack.Screen
           name="UserScreen"
           component={UserScreen}
           options={({ route }) => ({
@@ -146,6 +143,23 @@ function LoggedInNavigator() {
           name="UserSettingsScreen"
           component={UserSettingsScreen}
           options={{ title: 'User Settings' }}
+        />
+        <Stack.Screen
+          name="ClubScreen"
+          component={ClubScreen}
+          options={({ route }) => ({
+            title: 'Loading...',
+            id: route.params.id,
+          })}
+        />
+        <Stack.Screen
+          name="EditClubScreen"
+          component={EditClubScreen}
+          options={({ route }) => ({
+            title: 'Edit Club',
+            id: route.params.id,
+            clubDetails: route.params.clubDetails,
+          })}
         />
       </Stack.Group>
     </Stack.Navigator>

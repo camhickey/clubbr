@@ -5,7 +5,8 @@ import Colors from '@constants/Colors';
 import { Ionicons } from '@expo/vector-icons';
 import { useProfile } from '@hooks/useProfile';
 import React, { useState } from 'react';
-import { Alert, Modal, Pressable, StyleSheet, TextInput } from 'react-native';
+import { Modal, Pressable, StyleSheet, TextInput } from 'react-native';
+import Toast from 'react-native-toast-message';
 
 export type CommentModalProps = {
   clubId: string;
@@ -45,11 +46,19 @@ export function CommentModal({ clubId, isVisible, onClose }: CommentModalProps) 
               onPress={() =>
                 sendComment(username, clubId, comment)
                   .then(() => {
-                    Alert.alert('Comment sent!');
+                    Toast.show({
+                      type: 'success',
+                      text1: 'Comment',
+                      text2: 'Your comment has been sent!',
+                    });
                     onClose();
                   })
                   .catch((error) => {
-                    Alert.alert('Failed to send comment', error.message);
+                    Toast.show({
+                      type: 'error',
+                      text1: 'Error',
+                      text2: error,
+                    });
                   })
               }
               style={styles.sendButton}>

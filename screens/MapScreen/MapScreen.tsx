@@ -2,11 +2,13 @@ import { Container } from '@components/Container';
 import { Text } from '@components/Text';
 import { View } from '@components/View';
 import Colors from '@constants/Colors';
+import { db } from '@db*';
 import { FontAwesome } from '@expo/vector-icons';
 import { useParty } from '@hooks/useParty';
 import { useProfile } from '@hooks/useProfile';
 import { useNavigation } from '@react-navigation/native';
-import React, { useState } from 'react';
+import { collection, onSnapshot, query } from 'firebase/firestore';
+import React, { useEffect, useState } from 'react';
 import { Image, Platform, StyleSheet } from 'react-native';
 import MapView from 'react-native-map-clustering';
 import { Marker, PROVIDER_DEFAULT } from 'react-native-maps';
@@ -50,6 +52,7 @@ export function MapScreen() {
   const { party } = useProfile();
   const navigation = useNavigation();
 
+  //make a hash map of all the clubs
   const [clubMarkers, setClubMarkers] = useState<ClubMarker[]>([]);
   const [filteredClubMarkers, setFilteredClubMarkers] = useState<ClubMarker[]>([]);
   const [safetyMarkers, setSafetyMarkers] = useState<SafetyMarker[]>([]);
@@ -79,7 +82,7 @@ export function MapScreen() {
   }, []);*/
 
   //Get club markers
-  /*useEffect(() => {
+  useEffect(() => {
     setClubMarkers([]);
     const q = query(collection(db, 'clubs'));
     const unsubscribe = onSnapshot(q, (snapshot) => {
@@ -90,15 +93,15 @@ export function MapScreen() {
             id: doc.id,
             name: doc.data().name,
             location: doc.data().location,
-            price: doc.data().price,
             age: doc.data().age,
-            pfp: DEFAULT_PFP,
+            price: doc.data().price,
+            pfp: doc.data().pfp,
           },
         ]);
       });
     });
     return () => unsubscribe();
-  }, []);*/
+  }, []);
 
   /*useEffect(() => {
     party === '' && setPartyView(false);
@@ -207,7 +210,7 @@ export function MapScreen() {
                 />
               ),
               active: clubView,
-              onPress: () => setClubView(!clubView),
+              onPress: () => console.log(clubMarkers),
             },
             {
               title: 'Safety',

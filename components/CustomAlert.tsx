@@ -1,5 +1,5 @@
 import Colors from '@constants/Colors';
-import React, { ReactNode } from 'react';
+import React, { ComponentProps, ReactNode } from 'react';
 import { KeyboardAvoidingView, Modal, StyleSheet, View } from 'react-native';
 import Toast from 'react-native-toast-message';
 
@@ -13,7 +13,7 @@ export type CustomAlertProps = {
 export function CustomAlert({
   visible,
   children,
-}: CustomAlertProps & React.ComponentProps<typeof Modal>) {
+}: CustomAlertProps & ComponentProps<typeof Modal>) {
   return (
     <Modal visible={visible} animationType="slide" transparent={true}>
       <Toast config={toastConfig} />

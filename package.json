@@ -45,6 +45,7 @@
     "react-dom": "18.2.0",
     "react-hook-form": "^7.45.4",
     "react-native": "0.74.5",
+    "react-native-animated-carousel": "^1.0.3",
     "react-native-map-clustering": "^3.4.2",
     "react-native-maps": "1.14.0",
     "react-native-pager-view": "6.3.0",

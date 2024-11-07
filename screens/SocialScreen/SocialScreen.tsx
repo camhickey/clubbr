@@ -26,17 +26,16 @@ export function SocialScreen() {
           onPress={() =>
             changeProfilePicture(username)
               .then((result) => {
-                if (result) {
+                result &&
                   Toast.show({
                     type: 'success',
                     text1: 'Profile Picture',
                     text2: 'Your profile picture has been updated!',
                   });
-                }
               })
               .catch((error) => Toast.show({ type: 'error', text1: 'Error', text2: error }))
           }>
-          <Image style={styles.profilePic} source={{ uri: photoURL }} />
+          <Image style={styles.pfp} source={{ uri: photoURL }} />
         </Pressable>
         <View>
           <Pressable onPress={() => setChangeDisplayNameModalVisible(true)}>
@@ -75,7 +74,7 @@ const styles = StyleSheet.create({
     padding: 10,
     gap: 10,
   },
-  profilePic: {
+  pfp: {
     width: 100,
     height: 100,
     borderRadius: 50,

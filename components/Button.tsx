@@ -1,10 +1,10 @@
 import { Text } from '@components/Text';
 import Colors from '@constants/Colors';
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { Pressable, StyleProp, StyleSheet, TextStyle, ViewStyle } from 'react-native';
 
 export interface ButtonProps {
-  children?: React.ReactNode;
+  children?: ReactNode;
   onPress?: () => void;
   disabled?: boolean;
   buttonStyle?: StyleProp<ViewStyle>;

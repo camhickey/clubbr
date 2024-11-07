@@ -54,7 +54,7 @@ export function StartupScreen() {
     getUserDetails().then(() => {
       /*Need to remove this screen from the navigation stack.
         Otherwise, the user can swipe back button and return to this screen.*/
-      navigation.navigate('Root', { screen: 'Map'});
+      navigation.navigate('Root', { screen: 'Map' });
     });
   }, [user]);
 

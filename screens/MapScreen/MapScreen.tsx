@@ -142,7 +142,7 @@ export function MapScreen() {
               }}
               tracksViewChanges={false}
               onPress={() => {
-                navigation.navigate('ClubScreen', { id: marker.id });
+                navigation.navigate('ClubScreen', { clubId: marker.id });
               }}>
               <View style={styles.marker}>
                 <Image source={{ uri: marker.pfp }} style={styles.markerIcon} />

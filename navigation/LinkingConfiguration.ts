@@ -42,6 +42,7 @@ const loggedInLinking: LinkingOptions<RootStackParamList> = {
       InviteScreen: 'InviteScreen',
       ClubScreen: 'ClubScreen',
       EditClubScreen: 'EditClubScreen',
+      CommentScreen: 'CommentScreen',
       UserScreen: 'UserScreen',
       MapHelpScreen: 'MapHelpScreen',
     },

@@ -5,11 +5,12 @@ import { useProfile } from '@hooks/useProfile';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer, useNavigation } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { EditClubScreen } from '@screens/EditClubScreen/EditClubScreen';
 import { InboxScreen } from '@screens/InboxScreen/InboxScreen';
 import { IntroScreen } from '@screens/IntroScreen/IntroScreen';
 import { LoginScreen } from '@screens/LoginScreen/LoginScreen';
 import { ClubScreen } from '@screens/MapScreen/ClubScreen/ClubScreen';
+import { CommentScreen } from '@screens/MapScreen/ClubScreen/CommentScreen/CommentScreen';
+import { EditClubScreen } from '@screens/MapScreen/ClubScreen/EditClubScreen/EditClubScreen';
 import { MapHelpScreen } from '@screens/MapScreen/MapHelpScreen/MapHelpScreen';
 import { MapScreen } from '@screens/MapScreen/MapScreen';
 import { InviteScreen } from '@screens/PartyScreen/InviteScreen/InviteScreen';
@@ -149,7 +150,7 @@ function LoggedInNavigator() {
           component={ClubScreen}
           options={({ route }) => ({
             title: 'Loading...',
-            id: route.params.id,
+            clubId: route.params.clubId,
           })}
         />
         <Stack.Screen
@@ -157,8 +158,16 @@ function LoggedInNavigator() {
           component={EditClubScreen}
           options={({ route }) => ({
             title: 'Edit Club',
-            id: route.params.id,
+            clubId: route.params.clubId,
             clubDetails: route.params.clubDetails,
+          })}
+        />
+        <Stack.Screen
+          name="CommentScreen"
+          component={CommentScreen}
+          options={({ route }) => ({
+            title: 'Comments',
+            clubId: route.params.clubId,
           })}
         />
       </Stack.Group>

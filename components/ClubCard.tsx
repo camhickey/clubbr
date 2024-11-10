@@ -41,7 +41,7 @@ export function ClubCard({ id, actions }: ClubCardProps) {
     <Container style={styles.container}>
       <Pressable
         onPress={() => {
-          navigation.navigate('ClubScreen', { id });
+          navigation.navigate('ClubScreen', { clubId: id });
         }}
         style={styles.container}>
         <Image source={{ uri: club.pfp }} style={styles.profilePic} />

@@ -3,8 +3,9 @@ import { Button } from '@components/Button';
 import { CustomAlert } from '@components/CustomAlert';
 import { Text } from '@components/Text';
 import { View } from '@components/View';
+import Colors from '@constants/Colors';
 import React, { useState } from 'react';
-import { TextInput } from 'react-native';
+import { StyleSheet, TextInput } from 'react-native';
 
 import { modalStyles } from './styles';
 
@@ -30,13 +31,14 @@ export function ChangeTonightModal({
           Change the cover price of your club. If there is no cover, enter "0".
         </Text>
         <TextInput
-          style={[modalStyles.input, { height: 100 }]}
+          style={styles.input}
           value={tonight.toString()}
           onChangeText={(text) => setTonight(text)}
           multiline
+          placeholderTextColor={Colors.SUBTEXT}
         />
         <View style={modalStyles.footer}>
-          <Button onPress={() => updateClubTonight(id, tonight)}>SAVE</Button>
+          <Button onPress={() => updateClubTonight(id, tonight).then(onClose)}>SAVE</Button>
           <Button
             onPress={() => {
               onClose();
@@ -49,3 +51,13 @@ export function ChangeTonightModal({
     </CustomAlert>
   );
 }
+
+const styles = StyleSheet.create({
+  input: {
+    padding: 10,
+    borderRadius: 10,
+    color: Colors.WHITE,
+    backgroundColor: Colors.INPUT,
+    height: 100,
+  },
+});

@@ -92,7 +92,7 @@ export function RegisterScreen() {
             render={({ field: { onBlur, value } }) => (
               <TextInput
                 placeholder="Username"
-                placeholderTextColor={Colors.INACTIVE}
+                placeholderTextColor={Colors.SUBTEXT}
                 style={[styles.input, errors.username && { borderBottomColor: Colors.RED }]}
                 onFocus={() => setFocusedField('username')}
                 onBlur={onBlur}
@@ -115,7 +115,7 @@ export function RegisterScreen() {
             render={({ field: { onBlur, value } }) => (
               <TextInput
                 placeholder="Display name"
-                placeholderTextColor={Colors.INACTIVE}
+                placeholderTextColor={Colors.SUBTEXT}
                 style={[styles.input, errors.displayName && { borderBottomColor: Colors.RED }]}
                 onFocus={() => setFocusedField('displayName')}
                 onBlur={onBlur}
@@ -140,7 +140,7 @@ export function RegisterScreen() {
             render={({ field: { onBlur, value } }) => (
               <TextInput
                 placeholder="Email"
-                placeholderTextColor={Colors.INACTIVE}
+                placeholderTextColor={Colors.SUBTEXT}
                 style={[styles.input, errors.email && { borderBottomColor: Colors.RED }]}
                 onFocus={() => setFocusedField('email')}
                 onBlur={onBlur}
@@ -161,7 +161,7 @@ export function RegisterScreen() {
             render={({ field: { onBlur, value } }) => (
               <TextInput
                 placeholder="Password"
-                placeholderTextColor={Colors.INACTIVE}
+                placeholderTextColor={Colors.SUBTEXT}
                 style={[styles.input, errors.password && { borderBottomColor: Colors.RED }]}
                 onFocus={() => setFocusedField('password')}
                 onBlur={onBlur}
@@ -180,7 +180,7 @@ export function RegisterScreen() {
             render={({ field: { onBlur, value } }) => (
               <TextInput
                 placeholder="Confirm password"
-                placeholderTextColor={Colors.INACTIVE}
+                placeholderTextColor={Colors.SUBTEXT}
                 style={[styles.input, errors.confirmPassword && { borderBottomColor: Colors.RED }]}
                 onFocus={() => setFocusedField('confirmPassword')}
                 onBlur={onBlur}

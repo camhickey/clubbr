@@ -20,8 +20,9 @@ export type RootStackParamList = {
   LoginScreen: undefined;
   RegisterScreen: undefined;
   ResetPasswordScreen: undefined;
-  ClubScreen: { id: string };
-  EditClubScreen: { id: string; clubDetails: ClubDetails };
+  ClubScreen: { clubId: string };
+  EditClubScreen: { clubId: string; clubDetails: ClubDetails };
+  CommentScreen: { clubId: string };
   UserScreen: { user: string };
   InviteScreen: undefined;
   MapHelpScreen: undefined;

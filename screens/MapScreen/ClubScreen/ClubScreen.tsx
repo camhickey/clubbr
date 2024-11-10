@@ -1,18 +1,18 @@
-import { Container } from '@components/Container';
+import { followClub, unfollowClub } from '@actions/clubActions';
+import { Button } from '@components/Button';
 import { ModalContainer } from '@components/ModalContainer';
 import { Text } from '@components/Text';
 import { View } from '@components/View';
 import Colors from '@constants/Colors';
 import { db } from '@db';
 import Feather from '@expo/vector-icons/Feather';
+import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useProfile } from '@hooks/useProfile';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { useNavigation } from '@react-navigation/native';
 import { collection, doc, getDoc } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
-import { Image, ScrollView, StyleSheet } from 'react-native';
-
-import { CommentSection } from './CommentSection';
+import { Image, Pressable, ScrollView, StyleSheet } from 'react-native';
 
 export type ClubDetails = {
   age: number;
@@ -26,8 +26,8 @@ export type ClubDetails = {
 };
 
 export function ClubScreen({ route }: any) {
-  const { id } = route.params;
-  const { ownedClubs } = useProfile();
+  const { clubId } = route.params;
+  const { ownedClubs, username, clubs } = useProfile();
   const navigation = useNavigation();
 
   const Tab = createMaterialTopTabNavigator();
@@ -41,17 +41,17 @@ export function ClubScreen({ route }: any) {
     banner: '',
     images: [],
     tonight: '',
-  })
+  });
 
   useEffect(() => {
-    getDoc(doc(db, 'clubs', id))
+    getDoc(doc(db, 'clubs', clubId))
       .then((clubDoc) => {
         if (!clubDoc.exists()) return;
         const data = clubDoc.data();
         setClubDetails((prev) => ({ ...prev, ...data }));
       })
       .then(() => {
-        const collectionRef = collection(db, 'clubs', id, 'info');
+        const collectionRef = collection(db, 'clubs', clubId, 'info');
         getDoc(doc(collectionRef, 'page')).then((clubInfoDoc) => {
           if (!clubInfoDoc.exists()) return;
           const data = clubInfoDoc.data();
@@ -64,11 +64,11 @@ export function ClubScreen({ route }: any) {
     navigation.setOptions({
       title: clubDetails.name,
       headerRight: () =>
-        ownedClubs.includes(id) && (
+        ownedClubs.includes(clubId) && (
           <Feather
             onPress={() =>
               navigation.navigate('EditClubScreen', {
-                id,
+                clubId,
                 clubDetails,
               })
             }
@@ -83,10 +83,6 @@ export function ClubScreen({ route }: any) {
   return (
     <ModalContainer>
       <Image source={{ uri: clubDetails.banner }} style={styles.banner} />
-      <View style={styles.header}>
-        <Text style={styles.price}>{clubDetails.price === 0 ? 'NO COVER' : '$' + clubDetails.price}</Text>
-        <Text style={styles.age}>{clubDetails.age}+</Text>
-      </View>
       <Tab.Navigator
         screenOptions={{
           tabBarActiveTintColor: Colors.WHITE,
@@ -94,39 +90,68 @@ export function ClubScreen({ route }: any) {
           tabBarIndicatorStyle: { backgroundColor: Colors.WHITE },
           tabBarLabelStyle: { fontSize: 12 },
           tabBarStyle: { backgroundColor: Colors.BLACK },
+          tabBarAllowFontScaling: true,
         }}>
         <Tab.Screen
           name="Description"
           children={() => (
-            <Container style={styles.tabContainer}>
-              <ScrollView showsVerticalScrollIndicator={false}>
-                <Text>{clubDetails.description}</Text>
-              </ScrollView>
-            </Container>
+            <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+              <View style={styles.infoContainer}>
+                <View style={styles.infoSection}>
+                  <Text style={styles.infoTitle}>Cover: </Text>
+                  <Text style={styles.infoValue}>
+                    {clubDetails.price === 0 ? 'FREE' : '$' + clubDetails.price}
+                  </Text>
+                </View>
+                <View style={styles.infoSection}>
+                  <Text style={styles.infoTitle}>Age: </Text>
+                  <Text style={styles.infoValue}>
+                    {clubDetails.age === 0 ? 'NONE' : clubDetails.age + '+'}
+                  </Text>
+                </View>
+              </View>
+              <Text>{clubDetails.description}</Text>
+            </ScrollView>
           )}
           options={{ tabBarLabel: 'Description' }}
         />
         <Tab.Screen
           name="Tonight"
           children={() => (
-            <Container style={styles.tabContainer}>
-              <ScrollView showsVerticalScrollIndicator={false}>
-                <Text>{clubDetails.tonight}</Text>
-              </ScrollView>
-            </Container>
+            <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+              <Text>{clubDetails.tonight}</Text>
+            </ScrollView>
           )}
           options={{ tabBarLabel: 'Tonight' }}
         />
         <Tab.Screen
-          name="Comments"
+          name="Images"
           children={() => (
-            <Container style={styles.tabContainer}>
-              <CommentSection clubId={id} />
-            </Container>
+            <ScrollView style={{backgroundColor: Colors.BLACK}} showsVerticalScrollIndicator={false}>
+              <View style={styles.imageContainer}>
+              {clubDetails.images.map((image, index) => (
+                <Image key={index} source={{ uri: image }} style={styles.images} />
+              ))}
+              </View>
+            </ScrollView>
           )}
-          options={{ tabBarLabel: 'Comments' }}
+          options={{ tabBarLabel: 'Images' }}
         />
       </Tab.Navigator>
+      <View style={styles.controlsContainer}>
+        <Button
+          titleStyle={{ fontSize: 12 }}
+          onPress={() =>
+            clubs.includes(clubId) ? unfollowClub(username, clubId) : followClub(username, clubId)
+          }>
+          {clubs.includes(clubId) ? 'UNFOLLOW' : 'FOLLOW'}
+        </Button>
+        <Pressable
+          style={styles.control}
+          onPress={() => navigation.navigate('CommentScreen', { clubId })}>
+          <FontAwesome5 name="comment" size={24} color="white" />
+        </Pressable>
+      </View>
     </ModalContainer>
   );
 }
@@ -136,26 +161,53 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 200,
     resizeMode: 'stretch',
-    borderRadius: 10,
   },
-  header: {
-    flexDirection: 'row',
-    padding: 10,
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  metaDataContainer: {
-    flexDirection: 'row',
-  },
-  price: {
-    fontWeight: 'light',
-    color: Colors.SUBTEXT,
-  },
-  age: {
-    color: Colors.SUBTEXT,
-    fontWeight: 'condensed',
+  scrollView: {
+    backgroundColor: Colors.BLACK,
+    padding: 5,
   },
   tabContainer: {
+    padding: 5,
+  },
+  infoContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    padding: 5,
+  },
+  infoSection: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5,
+  },
+  infoTitle: {
+    fontWeight: 'bold',
+    fontSize: 16,
+    color: Colors.SUBTEXT,
+  },
+  infoValue: {
+    fontSize: 16,
+  },
+  imageContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-around',
+  },
+  images: {
+    width: '50%',
+    height: 200,
+    resizeMode: 'stretch',
+  },
+  controlsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    padding: 5,
+    borderTopWidth: 2,
+    borderTopColor: Colors.SUBTEXT,
+  },
+  control: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5,
     padding: 5,
   },
 });

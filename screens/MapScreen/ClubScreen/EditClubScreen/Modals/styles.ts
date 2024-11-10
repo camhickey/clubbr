@@ -9,12 +9,6 @@ export const modalStyles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
   },
-  input: {
-    color: Colors.SUBTEXT,
-    backgroundColor: Colors.INPUT,
-    borderRadius: 10,
-    padding: 10,
-  },
   description: {
     fontSize: 12,
     color: Colors.SUBTEXT,

@@ -82,15 +82,15 @@ export function CommentSection({ clubId }: CommentSectionProps) {
                       // Update the likes array in the comment state???
                       //i do not like this
                       setComments((prev) =>
-                        prev.map((c) =>
-                          c.id === comment.id
+                        prev.map((comment) =>
+                          comment.id === comment.id
                             ? {
-                                ...c,
-                                likes: c.likes.includes(username)
-                                  ? c.likes.filter((like) => like !== username)
-                                  : [...c.likes, username],
+                                ...comment,
+                                likes: comment.likes.includes(username)
+                                  ? comment.likes.filter((like) => like !== username)
+                                  : [...comment.likes, username],
                               }
-                            : c,
+                            : comment,
                         ),
                       );
                       updateDoc(doc(db, 'clubs', clubId, 'comments', comment.id), {

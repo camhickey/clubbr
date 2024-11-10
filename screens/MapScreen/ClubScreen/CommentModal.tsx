@@ -41,6 +41,7 @@ export function CommentModal({ clubId, isVisible, onClose }: CommentModalProps) 
               maxLength={COMMENT_CHAR_LIMIT}
               blurOnSubmit
               multiline
+          placeholderTextColor={Colors.SUBTEXT}
             />
             <Pressable
               onPress={() =>

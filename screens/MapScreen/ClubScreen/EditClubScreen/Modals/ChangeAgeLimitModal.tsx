@@ -3,8 +3,9 @@ import { Button } from '@components/Button';
 import { CustomAlert } from '@components/CustomAlert';
 import { Text } from '@components/Text';
 import { View } from '@components/View';
+import Colors from '@constants/Colors';
 import React, { useState } from 'react';
-import { TextInput } from 'react-native';
+import { StyleSheet, TextInput } from 'react-native';
 
 import { modalStyles } from './styles';
 
@@ -30,13 +31,15 @@ export function ChangeAgeLimitModal({
           Change the minimum age limit of your club. If there is no age limit, enter "0".
         </Text>
         <TextInput
-          style={modalStyles.input}
+          style={styles.input}
           value={ageLimit.toString()}
           onChangeText={(text) => setAgeLimit(+text)}
           keyboardType="number-pad"
+          maxLength={2}
+          placeholderTextColor={Colors.SUBTEXT}
         />
         <View style={modalStyles.footer}>
-          <Button onPress={() => updateClubAge(id, ageLimit)}>SAVE</Button>
+          <Button onPress={() => updateClubAge(id, ageLimit).then(onClose)}>SAVE</Button>
           <Button
             onPress={() => {
               onClose();
@@ -49,3 +52,14 @@ export function ChangeAgeLimitModal({
     </CustomAlert>
   );
 }
+
+const styles = StyleSheet.create({
+  input: {
+    padding: 10,
+    borderRadius: 10,
+    fontSize: 48,
+    fontWeight: 'bold',
+    color: Colors.WHITE,
+    textAlign: 'center',
+  },
+});

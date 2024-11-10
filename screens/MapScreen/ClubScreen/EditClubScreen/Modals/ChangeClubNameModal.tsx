@@ -4,8 +4,9 @@ import { CustomAlert } from '@components/CustomAlert';
 import { Text } from '@components/Text';
 import { View } from '@components/View';
 import React, { useState } from 'react';
-import { TextInput } from 'react-native';
+import { StyleSheet, TextInput } from 'react-native';
 
+import Colors from '@constants/Colors';
 import { modalStyles } from './styles';
 
 export type ChangeClubNameModalProps = {
@@ -30,9 +31,10 @@ export function ChangeClubNameModal({
           Change the name of your club and how it appears on the map and club screen.
         </Text>
         <TextInput
-          style={modalStyles.input}
+          style={styles.input}
           value={clubName}
           onChangeText={(text) => setClubName(text)}
+          placeholderTextColor={Colors.SUBTEXT}
         />
         <View style={modalStyles.footer}>
           <Button onPress={() => updateClubName(id, clubName)}>SAVE</Button>
@@ -48,3 +50,13 @@ export function ChangeClubNameModal({
     </CustomAlert>
   );
 }
+
+const styles = StyleSheet.create({
+  input: {
+    padding: 10,
+    borderRadius: 10,
+    fontSize: 16,
+    backgroundColor: Colors.INPUT,
+    color: Colors.WHITE
+  },
+});

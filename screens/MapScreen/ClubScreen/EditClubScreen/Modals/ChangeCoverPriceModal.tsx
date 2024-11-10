@@ -3,8 +3,9 @@ import { Button } from '@components/Button';
 import { CustomAlert } from '@components/CustomAlert';
 import { Text } from '@components/Text';
 import { View } from '@components/View';
+import Colors from '@constants/Colors';
 import React, { useState } from 'react';
-import { TextInput } from 'react-native';
+import { StyleSheet, TextInput } from 'react-native';
 
 import { modalStyles } from './styles';
 
@@ -25,16 +26,21 @@ export function ChangeCoverPriceModal({
   return (
     <CustomAlert visible={visible}>
       <View style={modalStyles.contentContainer}>
-        <Text style={modalStyles.title}>Age limit</Text>
+        <Text style={modalStyles.title}>Cover price</Text>
         <Text style={modalStyles.description}>
           Change the cover price of your club. If there is no cover, enter "0".
         </Text>
-        <TextInput
-          style={modalStyles.input}
-          value={coverPrice.toString()}
-          onChangeText={(text) => setCoverPrice(+text)}
-          keyboardType="number-pad"
-        />
+        <View style={styles.inputContainer}>
+          <Text style={styles.currency}>$</Text>
+          <TextInput
+            style={styles.input}
+            value={coverPrice.toString()}
+            onChangeText={(text) => setCoverPrice(+text)}
+            keyboardType="number-pad"
+            maxLength={3}
+          placeholderTextColor={Colors.SUBTEXT}
+          />
+        </View>
         <View style={modalStyles.footer}>
           <Button onPress={() => updateClubPrice(id, coverPrice)}>SAVE</Button>
           <Button
@@ -49,3 +55,23 @@ export function ChangeCoverPriceModal({
     </CustomAlert>
   );
 }
+
+const styles = StyleSheet.create({
+  inputContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  currency: {
+    fontSize: 48,
+    fontWeight: 'bold',
+  },
+  input: {
+    padding: 10,
+    borderRadius: 10,
+    fontSize: 48,
+    fontWeight: 'bold',
+    color: Colors.WHITE,
+    textAlign: 'center',
+  },
+});

@@ -3,10 +3,10 @@ import { Button } from '@components/Button';
 import { CustomAlert } from '@components/CustomAlert';
 import { Text } from '@components/Text';
 import { View } from '@components/View';
-import React, { useState } from 'react';
-import { StyleSheet, TextInput } from 'react-native';
-
 import Colors from '@constants/Colors';
+import React, { useState } from 'react';
+import { Keyboard, StyleSheet, TextInput } from 'react-native';
+
 import { modalStyles } from './styles';
 
 export type ChangeClubNameModalProps = {
@@ -35,6 +35,10 @@ export function ChangeClubNameModal({
           value={clubName}
           onChangeText={(text) => setClubName(text)}
           placeholderTextColor={Colors.SUBTEXT}
+          placeholder="Enter club name"
+          blurOnSubmit
+          returnKeyType="done"
+          onSubmitEditing={() => Keyboard.dismiss()}
         />
         <View style={modalStyles.footer}>
           <Button onPress={() => updateClubName(id, clubName)}>SAVE</Button>
@@ -57,6 +61,6 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     fontSize: 16,
     backgroundColor: Colors.INPUT,
-    color: Colors.WHITE
+    color: Colors.WHITE,
   },
 });

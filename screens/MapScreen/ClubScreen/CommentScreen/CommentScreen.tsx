@@ -1,14 +1,17 @@
 import { likeComment, unlikeComment } from '@actions/clubActions';
+import { Button } from '@components/Button';
 import { ModalContainer } from '@components/ModalContainer';
 import { Text } from '@components/Text';
 import Colors from '@constants/Colors';
 import { db } from '@db*';
-import { FontAwesome } from '@expo/vector-icons';
+import { FontAwesome, FontAwesome5 } from '@expo/vector-icons';
 import { useProfile } from '@hooks/useProfile';
 import { useNavigation } from '@react-navigation/native';
 import { collection, getDocs } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
-import { KeyboardAvoidingView, Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
+
+import { CommentModal } from './CommentModal';
 
 export type Comment = {
   id: string;
@@ -23,6 +26,7 @@ export function CommentScreen({ route }: any) {
   const { username } = useProfile();
   const navigation = useNavigation();
   const [comments, setComments] = useState<Comment[]>([]);
+  const [commentModalVisible, setCommentModalVisible] = useState(false);
   async function fetchComments() {
     const querySnapshot = await getDocs(collection(db, 'clubs', clubId, 'comments'));
     querySnapshot.forEach((doc) => {
@@ -46,7 +50,10 @@ export function CommentScreen({ route }: any) {
 
   return (
     <ModalContainer style={styles.container}>
-      <ScrollView automaticallyAdjustKeyboardInsets showsVerticalScrollIndicator={false}>
+      <ScrollView
+        style={styles.scrollView}
+        automaticallyAdjustKeyboardInsets
+        showsVerticalScrollIndicator={false}>
         {comments
           .sort((a, b) => b.likes.length - a.likes.length)
           .map((comment, index) => (
@@ -95,12 +102,14 @@ export function CommentScreen({ route }: any) {
             </View>
           ))}
       </ScrollView>
-      <KeyboardAvoidingView>
-      <TextInput style={styles.input} placeholder="Leave a comment..."
-          placeholderTextColor={Colors.SUBTEXT}
-      
+      <Button onPress={() => setCommentModalVisible(true)}>
+        COMMENT <FontAwesome5 name="comment" size={24} color="white" />
+      </Button>
+      <CommentModal
+        clubId={clubId}
+        isVisible={commentModalVisible}
+        onClose={() => setCommentModalVisible(false)}
       />
-      </KeyboardAvoidingView>
     </ModalContainer>
   );
 }
@@ -109,6 +118,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 10,
+  },
+  scrollView: {
+    marginBottom: 10,
   },
   commentContainer: {
     flex: 1,
@@ -132,20 +144,5 @@ const styles = StyleSheet.create({
   },
   likes: {
     fontSize: 10,
-  },
-  commentButton: {
-    padding: 5,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    gap: 5,
-  },
-  input: {
-    backgroundColor: Colors.INPUT,
-    borderRadius: 5,
-    padding: 10,
-    color: Colors.WHITE,
-    marginTop: 10,
-
   },
 });

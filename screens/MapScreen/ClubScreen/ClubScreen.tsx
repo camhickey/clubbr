@@ -63,20 +63,21 @@ export function ClubScreen({ route }: any) {
   useEffect(() => {
     navigation.setOptions({
       title: clubDetails.name,
-      headerRight: () =>
+      headerRight: () => (
         ownedClubs.includes(clubId) && (
-          <Feather
-            onPress={() =>
-              navigation.navigate('EditClubScreen', {
-                clubId,
-                clubDetails,
-              })
-            }
-            name="edit"
-            size={24}
-            color={Colors.WHITE}
-          />
-        ),
+        <Feather
+          onPress={() =>
+            navigation.navigate('EditClubScreen', {
+              clubId,
+              clubDetails,
+            })
+          }
+          name="edit"
+          size={24}
+          color={Colors.WHITE}
+        />
+      )
+      ),
     });
   }, [clubDetails.name]);
 
@@ -95,7 +96,7 @@ export function ClubScreen({ route }: any) {
         <Tab.Screen
           name="Description"
           children={() => (
-            <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+            <View>
               <View style={styles.infoContainer}>
                 <View style={styles.infoSection}>
                   <Text style={styles.infoTitle}>Cover: </Text>
@@ -110,8 +111,10 @@ export function ClubScreen({ route }: any) {
                   </Text>
                 </View>
               </View>
-              <Text>{clubDetails.description}</Text>
-            </ScrollView>
+              <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+                <Text>{clubDetails.description}</Text>
+              </ScrollView>
+            </View>
           )}
           options={{ tabBarLabel: 'Description' }}
         />
@@ -127,11 +130,13 @@ export function ClubScreen({ route }: any) {
         <Tab.Screen
           name="Images"
           children={() => (
-            <ScrollView style={{backgroundColor: Colors.BLACK}} showsVerticalScrollIndicator={false}>
+            <ScrollView
+              style={{ backgroundColor: Colors.BLACK }}
+              showsVerticalScrollIndicator={false}>
               <View style={styles.imageContainer}>
-              {clubDetails.images.map((image, index) => (
-                <Image key={index} source={{ uri: image }} style={styles.images} />
-              ))}
+                {clubDetails.images.map((image, index) => (
+                  <Image key={index} source={{ uri: image }} style={styles.images} />
+                ))}
               </View>
             </ScrollView>
           )}
@@ -165,6 +170,7 @@ const styles = StyleSheet.create({
   scrollView: {
     backgroundColor: Colors.BLACK,
     padding: 5,
+    height: '100%',
   },
   tabContainer: {
     padding: 5,
@@ -201,8 +207,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     padding: 5,
-    borderTopWidth: 2,
-    borderTopColor: Colors.SUBTEXT,
   },
   control: {
     flexDirection: 'row',

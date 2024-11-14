@@ -38,7 +38,7 @@ export function ChangeCoverPriceModal({
             onChangeText={(text) => setCoverPrice(+text)}
             keyboardType="number-pad"
             maxLength={3}
-          placeholderTextColor={Colors.SUBTEXT}
+            placeholderTextColor={Colors.SUBTEXT}
           />
         </View>
         <View style={modalStyles.footer}>

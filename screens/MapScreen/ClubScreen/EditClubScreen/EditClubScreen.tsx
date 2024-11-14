@@ -7,7 +7,7 @@ import { db } from '@db*';
 import { ClubDetails } from '@screens/MapScreen/ClubScreen/ClubScreen';
 import { collection, doc, onSnapshot } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
-import { Image, KeyboardAvoidingView, Pressable, ScrollView, StyleSheet } from 'react-native';
+import { Image, Pressable, ScrollView, StyleSheet } from 'react-native';
 
 import { ChangeAgeLimitModal } from './Modals/ChangeAgeLimitModal';
 import { ChangeClubNameModal } from './Modals/ChangeClubNameModal';
@@ -43,63 +43,61 @@ export function EditClubScreen({ route }: any) {
     <Container>
       <ScrollView showsVerticalScrollIndicator keyboardShouldPersistTaps="handled">
         <View style={styles.listContainer}>
-          <KeyboardAvoidingView behavior="height">
-            <Pressable onPress={() => updateClubPfp(clubId)}>
-              <View style={styles.listSection}>
-                <Text style={styles.sectionTitle}>Profile picture</Text>
-                <Image source={{ uri: newClubDetails.pfp }} style={styles.pfp} />
+          <Pressable onPress={() => updateClubPfp(clubId)}>
+            <View style={styles.listSection}>
+              <Text style={styles.sectionTitle}>Profile picture</Text>
+              <Image source={{ uri: newClubDetails.pfp }} style={styles.pfp} />
+            </View>
+          </Pressable>
+          <Pressable onPress={() => setNameModalVisible(true)}>
+            <View style={styles.listSection}>
+              <Text style={styles.sectionTitle}>Club name</Text>
+              <Text style={styles.sectionValue}>{newClubDetails.name}</Text>
+            </View>
+          </Pressable>
+          <Pressable onPress={() => setAgeModalVisible(true)}>
+            <View style={styles.listSection}>
+              <Text style={styles.sectionTitle}>Age limit</Text>
+              <Text style={styles.sectionValue}>{newClubDetails.age}</Text>
+            </View>
+          </Pressable>
+          <Pressable onPress={() => setPriceModalVisible(true)}>
+            <View style={styles.listSection}>
+              <Text style={styles.sectionTitle}>Cover price</Text>
+              <Text style={styles.sectionValue}>{newClubDetails.price}</Text>
+            </View>
+          </Pressable>
+          <Pressable onPress={() => setTonightModalVisible(true)}>
+            <View style={styles.listSection}>
+              <Text style={styles.sectionTitle}>"Tonight"</Text>
+              <Text style={styles.sectionValue}>{newClubDetails.tonight}</Text>
+            </View>
+          </Pressable>
+          <Pressable onPress={() => setDescriptionModalVisible(true)}>
+            <View style={styles.listSection}>
+              <Text style={styles.sectionTitle}>"Description"</Text>
+              <Text style={styles.sectionValue}>{newClubDetails.description}</Text>
+            </View>
+          </Pressable>
+          <Pressable onPress={() => updateClubBanner(clubId)}>
+            <View style={styles.listSection}>
+              <Text style={styles.sectionTitle}>Banner image</Text>
+              <Image source={{ uri: newClubDetails.banner }} style={styles.banner} />
+            </View>
+          </Pressable>
+          <Pressable onPress={() => updateClubImages(clubId)}>
+            <View style={styles.listSection}>
+              <Text style={styles.sectionTitle}>Images</Text>
+              <View style={styles.imagesSection}>
+                <Text style={styles.sectionValue}>Select up to 10 images</Text>
+                {newClubDetails.images.map((image, index) => (
+                  <Pressable onPress={() => updateClubImages(clubId)}>
+                    <Image key={index} source={{ uri: image }} style={styles.images} />
+                  </Pressable>
+                ))}
               </View>
-            </Pressable>
-            <Pressable onPress={() => setNameModalVisible(true)}>
-              <View style={styles.listSection}>
-                <Text style={styles.sectionTitle}>Club name</Text>
-                <Text style={styles.sectionValue}>{newClubDetails.name}</Text>
-              </View>
-            </Pressable>
-            <Pressable onPress={() => setAgeModalVisible(true)}>
-              <View style={styles.listSection}>
-                <Text style={styles.sectionTitle}>Age limit</Text>
-                <Text style={styles.sectionValue}>{newClubDetails.age}</Text>
-              </View>
-            </Pressable>
-            <Pressable onPress={() => setPriceModalVisible(true)}>
-              <View style={styles.listSection}>
-                <Text style={styles.sectionTitle}>Cover price</Text>
-                <Text style={styles.sectionValue}>{newClubDetails.price}</Text>
-              </View>
-            </Pressable>
-            <Pressable onPress={() => setTonightModalVisible(true)}>
-              <View style={styles.listSection}>
-                <Text style={styles.sectionTitle}>"Tonight"</Text>
-                <Text style={styles.sectionValue}>{newClubDetails.tonight}</Text>
-              </View>
-            </Pressable>
-            <Pressable onPress={() => setDescriptionModalVisible(true)}>
-              <View style={styles.listSection}>
-                <Text style={styles.sectionTitle}>"Description"</Text>
-                <Text style={styles.sectionValue}>{newClubDetails.description}</Text>
-              </View>
-            </Pressable>
-            <Pressable onPress={() => updateClubBanner(clubId)}>
-              <View style={styles.listSection}>
-                <Text style={styles.sectionTitle}>Banner image</Text>
-                <Image source={{ uri: newClubDetails.banner }} style={styles.banner} />
-              </View>
-            </Pressable>
-            <Pressable onPress={() => updateClubImages(clubId)}>
-              <View style={styles.listSection}>
-                <Text style={styles.sectionTitle}>Images</Text>
-                <View style={styles.imagesSection}>
-                  <Text style={styles.sectionValue}>Select up to 10 images</Text>
-                  {newClubDetails.images.map((image, index) => (
-                    <Pressable onPress={() => updateClubImages(clubId)}>
-                      <Image key={index} source={{ uri: image }} style={styles.images}/>
-                    </Pressable>
-                  ))}
-              </View>
-              </View>
-            </Pressable>
-          </KeyboardAvoidingView>
+            </View>
+          </Pressable>
         </View>
       </ScrollView>
       <ChangeClubNameModal
@@ -182,7 +180,7 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     flexDirection: 'row',
     width: 200,
-    gap: 10
+    gap: 10,
   },
   images: {
     width: 95,

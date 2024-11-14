@@ -5,7 +5,7 @@ import { Text } from '@components/Text';
 import { View } from '@components/View';
 import Colors from '@constants/Colors';
 import React, { useState } from 'react';
-import { StyleSheet, TextInput } from 'react-native';
+import { Keyboard, StyleSheet, TextInput } from 'react-native';
 
 import { modalStyles } from './styles';
 
@@ -36,6 +36,10 @@ export function ChangeDescriptionModal({
           onChangeText={(text) => setDescription(text)}
           multiline
           placeholderTextColor={Colors.SUBTEXT}
+          placeholder="Describe your club"
+          blurOnSubmit
+          returnKeyType="done"
+          onSubmitEditing={() => Keyboard.dismiss()}
         />
         <View style={modalStyles.footer}>
           <Button onPress={() => updateClubDescription(id, description).then(onClose)}>SAVE</Button>

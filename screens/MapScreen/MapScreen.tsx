@@ -83,9 +83,10 @@ export function MapScreen() {
 
   //Get club markers
   useEffect(() => {
-    setClubMarkers([]);
     const q = query(collection(db, 'clubs'));
     const unsubscribe = onSnapshot(q, (snapshot) => {
+      //super hacky fix for rn
+      setClubMarkers([]);
       snapshot.docs.map((doc) => {
         setClubMarkers((prev) => [
           ...prev,
@@ -103,9 +104,9 @@ export function MapScreen() {
     return () => unsubscribe();
   }, []);
 
-  /*useEffect(() => {
+  useEffect(() => {
     party === '' && setPartyView(false);
-  }, [party]);*/
+  }, [party]);
 
   return (
     <Container>
@@ -210,7 +211,7 @@ export function MapScreen() {
                 />
               ),
               active: clubView,
-              onPress: () => console.log(clubMarkers),
+              onPress: () => setClubView(!clubView),
             },
             {
               title: 'Safety',
@@ -279,8 +280,8 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
   },
   markerIcon: {
-    width: 40,
-    height: 40,
+    width: 50,
+    height: 50,
     borderRadius: 50,
     borderWidth: 2,
     borderColor: Colors.WHITE,
